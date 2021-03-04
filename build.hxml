@@ -1,0 +1,5 @@
+-cp src
+-main tests.TestLoader
+-D php-front=autoload.php
+
+--php bin
