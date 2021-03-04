@@ -21,10 +21,12 @@ class TypeBuilder {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
-			public static var gql_fields : Array<graphql.GraphQLField> = $v{ graphql_field_definitions };
+			public static var gql_fields:Array<graphql.GraphQLField> = $v{graphql_field_definitions};
 		}
 
-		for (mcf in tmp_class.fields) fields.push(mcf);
+		for (field in tmp_class.fields) {
+			fields.push(field);
+		}
 
 		return fields;
 	}
