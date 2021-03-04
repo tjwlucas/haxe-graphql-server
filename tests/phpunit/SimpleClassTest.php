@@ -16,13 +16,13 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLFieldListIsHaxeArray()
     {
-        $this->assertInstanceOf(\Array_hx::class , SimpleClass::$gql_fields);
+        $this->assertInstanceOf(\Array_hx::class, SimpleClass::$gql_fields);
     }
 
     function testAllFieldDefinitionsHaveName()
     {
         $this->assertIsArray(SimpleClass::$gql_fields->arr);
-        foreach(SimpleClass::$gql_fields->arr as $field) {
+        foreach (SimpleClass::$gql_fields->arr as $field) {
             $this->assertObjectHasAttribute('name', $field);
         }
     }

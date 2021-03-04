@@ -1,4 +1,5 @@
 package tests;
+
 import tests.cases.SimpleClass;
 import tests.Util;
 
