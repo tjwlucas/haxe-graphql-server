@@ -18,15 +18,18 @@ class SimpleClassTest extends TestCase
     function testGraphQLFieldListIsHaxeArray($gql_fields)
     {
         $this->assertInstanceOf(\Array_hx::class, $gql_fields);
+        $native_array = $gql_fields->arr;
+        $this->assertIsArray($native_array);
+        return $native_array;
     }
 
     /**
-     * @depends testGraphQLFieldListExists
+     * @depends testGraphQLFieldListIsHaxeArray
      */
-    function testAllFieldDefinitionsHaveName($gql_fields)
+    function testAllFieldDefinitionsHaveName($gql_fields_array)
     {
-        $this->assertIsArray($gql_fields->arr);
-        foreach ($gql_fields->arr as $field) {
+        $this->assertIsArray($gql_fields_array);
+        foreach ($gql_fields_array as $field) {
             $this->assertObjectHasAttribute('name', $field);
         }
     }
