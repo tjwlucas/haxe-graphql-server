@@ -18,6 +18,13 @@ class SimpleClassTest extends TestCase
         $this->assertInstanceOf(\Array_hx::class , SimpleClass::$gql_fields);
     }
 
+    function testAllFieldDefinitionsHaveName()
+    {
+        foreach(SimpleClass::$gql_fields->arr as $field) {
+            $this->assertObjectHasAttribute('name', $field);
+        }
+    }
+
     function getFieldDefinitionByName($field_array, $name)
     {
         $field_array = $field_array->arr;
