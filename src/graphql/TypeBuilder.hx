@@ -17,15 +17,14 @@ class TypeBuilder {
 			}
 		}
 
-		var gql_fields = {
-			name: 'gql_fields',
-			doc: 'Auto-generated list of public fields on the class. Prototype for generating a full graphql definition',
-			meta: [],
-			access: [AStatic, APublic],
-			kind: FVar(macro:Array<graphql.GraphQLField>, macro $v{graphql_field_definitions}),
-			pos: Context.currentPos()
-		};
-		fields.push(gql_fields);
+		var tmp_class = macro class {
+			/**
+				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
+			**/
+			public static var gql_fields : Array<graphql.GraphQLField> = $v{ graphql_field_definitions };
+		}
+
+		for (mcf in tmp_class.fields) fields.push(mcf);
 
 		return fields;
 	}
