@@ -20,6 +20,7 @@ class SimpleClassTest extends TestCase
 
     function testAllFieldDefinitionsHaveName()
     {
+        $this->assertIsArray(SimpleClass::$gql_fields->arr);
         foreach(SimpleClass::$gql_fields->arr as $field) {
             $this->assertObjectHasAttribute('name', $field);
         }
