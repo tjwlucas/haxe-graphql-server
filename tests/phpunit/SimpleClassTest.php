@@ -72,4 +72,14 @@ class SimpleClassTest extends TestCase
     {
         $this->assertEquals('This is the `simple_string_field` documentation', $simple_string_field->comment);
     }
+
+
+    /**
+     * @depends testGraphQLFieldListExists
+     * Test that a field marked with @:GraphQLHide metadata should *not* appear in the schema
+     */
+    function testHiddenFieldNotInDefinition($gql_fields)
+    {
+        $this->assertNull(Util::getFieldDefinitionByName($gql_fields, 'hidden_field'));
+    }
 }

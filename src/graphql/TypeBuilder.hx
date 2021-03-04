@@ -31,6 +31,11 @@ class TypeBuilder {
 	}
 
 	static function buildFieldType(f:Field):GraphQLField {
+		for(meta in f.meta) {
+			if(meta.name == ':GraphQLHide') {
+				return null;
+			}
+		}
 		if (f.access.contains(APublic)) {
 			var type:String;
 			switch (f.kind) {
