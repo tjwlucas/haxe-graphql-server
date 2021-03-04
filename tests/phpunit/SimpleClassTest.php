@@ -110,6 +110,7 @@ class SimpleClassTest extends TestCase
         $this->assertObjectHasAttribute('deprecationReason', $deprecated_string_field);
         $reason = $deprecated_string_field->deprecationReason;
         $this->assertNotNull($reason);
+        return $reason;
     }
 
     /**

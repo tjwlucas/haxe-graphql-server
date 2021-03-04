@@ -31,17 +31,22 @@ class TypeBuilder {
 	}
 
 	static function buildFieldType(f:Field):GraphQLField {
-		for(meta in f.meta) {
-			if(meta.name == ':GraphQLHide') {
+		for (meta in f.meta) {
+			if (meta.name == ':GraphQLHide') {
 				return null;
 			}
 		}
 
 		if (f.access.contains(APublic)) {
-			var deprecationReason : Null<String>;
-			for(meta in f.meta) {
-				if(meta.name == ':deprecated') {
-					deprecationReason = 'deprecated';
+			var deprecationReason:Null<String>;
+			for (meta in f.meta) {
+				if (meta.name == ':deprecated') {
+					deprecationReason = switch (meta.params[0].expr) {
+						case(EConst(CString(value))):
+							value;
+						default:
+							throw 'Deprecation reson must be a string literal';
+					}
 				}
 			}
 
