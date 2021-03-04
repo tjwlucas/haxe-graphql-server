@@ -123,4 +123,30 @@ class SimpleClassTest extends TestCase
     {
         $this->assertEquals('With a deprecation reason', $reason);
     }
+
+    /**
+     * @depends testGraphQLFieldListExists
+     */
+    function testGraphQLFieldListDefinesIntField($gql_fields)
+    {
+        $int_field = Util::getFieldDefinitionByName($gql_fields, 'int_field');
+        $this->assertNotNull($int_field);
+        return $int_field;
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesIntField
+     */
+    function testGraphQLIntFieldHasType($int_field)
+    {
+        $this->assertObjectHasAttribute('type', $int_field);
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesIntField
+     */
+    function testGraphQLIntFieldTypeValue($int_field)
+    {
+        $this->assertEquals('Int', $int_field->type);
+    }
 }
