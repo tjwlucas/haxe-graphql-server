@@ -18,54 +18,58 @@ class SimpleClassTest extends TestCase
         $this->assertInstanceOf(\Array_hx::class , SimpleClass::$gql_fields);
     }
 
-    function testGraphQLFieldListHasName()
+    function getFieldDefinitionByName($field_array, $name)
     {
-        $field_array = SimpleClass::$gql_fields->arr;
-        $first_field = $field_array[0];
-        $this->assertObjectHasAttribute('name', $first_field);
+        $field_array = $field_array->arr;
+        foreach($field_array as $item) {
+            if($item->name === $name) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    function testGraphQLFieldListDefinesSimpleStringField()
+    {
+        $simple_string_field = $this->getFieldDefinitionByName(SimpleClass::$gql_fields, 'simple_string_field');
+        $this->assertNotNull($simple_string_field);
     }
 
     /**
-     * @depends testGraphQLFieldListHasName
+     * @depends testGraphQLFieldListDefinesSimpleStringField
      */
-    function testGraphQLFieldListNameValue()
+    function testGraphQLSimpleStringFieldHasType()
     {
-        $field_array = SimpleClass::$gql_fields->arr;
-        $first_field = $field_array[0];
-        $this->assertEquals('simple_string_field', $first_field->name);
-    }
-
-    function testGraphQLFieldListHasType()
-    {
-        $field_array = SimpleClass::$gql_fields->arr;
-        $first_field = $field_array[0];
-        $this->assertObjectHasAttribute('type', $first_field);
+        $simple_string_field = $this->getFieldDefinitionByName(SimpleClass::$gql_fields, 'simple_string_field');
+        $this->assertObjectHasAttribute('type', $simple_string_field);
     }
 
     /**
-     * @depends testGraphQLFieldListHasType
+     * @depends testGraphQLSimpleStringFieldHasType
+     * @depends testGraphQLFieldListDefinesSimpleStringField
      */
-    function testGraphQLFieldListTypeValue()
+    function testGraphQLSimpleStringFieldTypeValue()
     {
-        $field_array = SimpleClass::$gql_fields->arr;
-        $first_field = $field_array[0];
-        $this->assertEquals('String', $first_field->type);
-    }
-
-    function testGraphQLFieldListHasComment()
-    {
-        $field_array = SimpleClass::$gql_fields->arr;
-        $first_field = $field_array[0];
-        $this->assertObjectHasAttribute('comment', $first_field);
+        $simple_string_field = $this->getFieldDefinitionByName(SimpleClass::$gql_fields, 'simple_string_field');
+        $this->assertEquals('String', $simple_string_field->type);
     }
 
     /**
-     * @depends testGraphQLFieldListHasName
+     * @depends testGraphQLFieldListDefinesSimpleStringField
      */
-    function testGraphQLFieldListTypeComment()
+    function testGraphQLSimpleStringFieldHasComment()
     {
-        $field_array = SimpleClass::$gql_fields->arr;
-        $first_field = $field_array[0];
-        $this->assertEquals('This is the `simple_string_field` documentation', $first_field->comment);
+        $simple_string_field = $this->getFieldDefinitionByName(SimpleClass::$gql_fields, 'simple_string_field');
+        $this->assertObjectHasAttribute('comment', $simple_string_field);
+    }
+
+    /**
+     * @depends testGraphQLSimpleStringFieldHasComment
+     * @depends testGraphQLFieldListDefinesSimpleStringField
+     */
+    function testGraphQLSimpleStringFieldCommentValue()
+    {
+        $simple_string_field = $this->getFieldDefinitionByName(SimpleClass::$gql_fields, 'simple_string_field');
+        $this->assertEquals('This is the `simple_string_field` documentation', $simple_string_field->comment);
     }
 }
