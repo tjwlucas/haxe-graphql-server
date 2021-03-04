@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use tests\cases\SimpleClass;
+use tests\Util;
 
 class SimpleClassTest extends TestCase
 {
