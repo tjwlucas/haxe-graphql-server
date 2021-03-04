@@ -34,27 +34,14 @@ class TypeBuilder {
 	#if macro
 	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
 		if (isVisible(f)) {
-			var deprecationReason:Expr = macro null;
-			for (meta in f.meta) {
-				if (meta.name == ':deprecated') {
-					deprecationReason = meta.params[0];
-				}
-			}
-
-			var type:String;
-			switch (f.kind) {
-				case(FVar(TPath({name: a}))):
-					type = a;
-				default:
-					type = 'Dynamic';
-			}
-
-			var comment = if (f.doc != null) f.doc.trim() else null;
+			var deprecationReason = getDeprecationReason(f);
+			var comment = getComment(f);
+			var type = getType(f);
 
 			var field:ExprOf<GraphQLField> = macro {
-				name: $v{ f.name },
-				type: $v{ type },
-				comment: $v{ comment },
+				name: $v{f.name},
+				type: $v{type},
+				comment: $v{comment},
 				deprecationReason: $deprecationReason
 			}
 			return field;
@@ -72,6 +59,44 @@ class TypeBuilder {
 			}
 		}
 		return field.access.contains(APublic);
+	}
+
+	/**
+		Returns a string expression for the deprecation reason, if provided using the @:deprecated metadata
+	**/
+	static function getDeprecationReason(field:Field):ExprOf<String> {
+		var deprecationReason = macro null;
+		for (meta in field.meta) {
+			if (meta.name == ':deprecated') {
+				deprecationReason = meta.params[0];
+			}
+		}
+		return deprecationReason;
+	}
+
+	/**
+		Get the commment string from a field
+	**/
+	static function getComment(field:Field) : Null<String> {
+		return if (field.doc != null) {
+			field.doc.trim();
+		} else {
+			null;
+		};
+	}
+
+	/**
+		Determine the type of a field in a macro
+	**/
+	static function getType(field:Field) {
+		var type:String;
+		switch (field.kind) {
+			case(FVar(TPath({name: a}))):
+				type = a;
+			default:
+				type = 'Dynamic';
+		}
+		return type;
 	}
 	#end
 }
