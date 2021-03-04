@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use tests\cases\SimpleClass;
 use tests\Util;
+use graphql\GraphQLTypes;
 
 class SimpleClassTest extends TestCase
 {
@@ -57,7 +58,7 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLSimpleStringFieldTypeValue($simple_string_field)
     {
-        $this->assertEquals('String', $simple_string_field->type);
+        $this->assertEquals(GraphQLTypes::String, $simple_string_field->type);
     }
 
     /**
@@ -147,6 +148,6 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLIntFieldTypeValue($int_field)
     {
-        $this->assertEquals('Int', $int_field->type);
+        $this->assertEquals(GraphQLTypes::Int, $int_field->type);
     }
 }
