@@ -1,0 +1,17 @@
+kind: pipeline
+type: docker
+
+steps:
+  - name: Build
+    image:  builtbyto.ml/tlucas/haxe
+    commands:
+      - haxelib install --always build.hxml
+      - haxe build.hxml
+  - name: Composer install
+    image: composer
+    commands:
+      - composer install
+  - name: Run Tests
+    image: php:cli-alpine
+    commands:
+      - ./vendor/bin/phpunit
