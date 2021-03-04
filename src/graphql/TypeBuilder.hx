@@ -45,7 +45,7 @@ class TypeBuilder {
 						case(EConst(CString(value))):
 							value;
 						default:
-							throw 'Deprecation reson must be a string literal';
+							throw 'Deprecation reason must be a string literal';
 					}
 				}
 			}
