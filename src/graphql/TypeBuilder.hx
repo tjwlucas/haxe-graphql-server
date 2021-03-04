@@ -9,7 +9,7 @@ using StringTools;
 class TypeBuilder {
 	macro static public function build():Array<Field> {
 		var fields = Context.getBuildFields();
-		var graphql_field_definitions:Array<GraphQLField> = [];
+		var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
 		for (f in fields) {
 			var new_field = buildFieldType(f);
 			if (new_field != null) {
@@ -21,7 +21,7 @@ class TypeBuilder {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
-			public static var gql_fields:Array<graphql.GraphQLField> = $v{graphql_field_definitions};
+			public static var gql_fields:Array<graphql.GraphQLField> = $a{graphql_field_definitions};
 		}
 
 		for (field in tmp_class.fields) {
@@ -31,7 +31,8 @@ class TypeBuilder {
 		return fields;
 	}
 
-	static function buildFieldType(f:Field):GraphQLField {
+	#if macro
+	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
 		for (meta in f.meta) {
 			if (meta.name == ':GraphQLHide') {
 				return null;
@@ -39,15 +40,10 @@ class TypeBuilder {
 		}
 
 		if (f.access.contains(APublic)) {
-			var deprecationReason:Null<String>;
+			var deprecationReason:Expr = macro null;
 			for (meta in f.meta) {
 				if (meta.name == ':deprecated') {
-					deprecationReason = switch (meta.params[0].expr) {
-						case(EConst(CString(value))):
-							value;
-						default:
-							throw 'Deprecation reason must be a string literal';
-					}
+					deprecationReason = meta.params[0];
 				}
 			}
 
@@ -58,14 +54,18 @@ class TypeBuilder {
 				default:
 					type = 'Dynamic';
 			}
-			var field:GraphQLField = {
-				name: f.name,
-				type: type,
-				comment: if (f.doc != null) f.doc.trim() else null,
-				deprecationReason: deprecationReason
+
+			var comment = if (f.doc != null) f.doc.trim() else null;
+
+			var field:ExprOf<GraphQLField> = macro {
+				name: $v{ f.name },
+				type: $v{ type },
+				comment: $v{ comment },
+				deprecationReason: $deprecationReason
 			}
 			return field;
 		}
 		return null;
 	}
+	#end
 }
