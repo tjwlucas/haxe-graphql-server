@@ -33,13 +33,7 @@ class TypeBuilder {
 
 	#if macro
 	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
-		for (meta in f.meta) {
-			if (meta.name == ':GraphQLHide') {
-				return null;
-			}
-		}
-
-		if (f.access.contains(APublic)) {
+		if (isVisible(f)) {
 			var deprecationReason:Expr = macro null;
 			for (meta in f.meta) {
 				if (meta.name == ':deprecated') {
@@ -66,6 +60,18 @@ class TypeBuilder {
 			return field;
 		}
 		return null;
+	}
+
+	/**
+		Determines if the field should be visible in the GraphQL Schema
+	**/
+	static function isVisible(field:Field) {
+		for (meta in field.meta) {
+			if (meta.name == ':GraphQLHide') {
+				return false;
+			}
+		}
+		return field.access.contains(APublic);
 	}
 	#end
 }
