@@ -12,4 +12,11 @@ class SimpleClass {
     **/
     @:GraphQLHide
     public var hidden_field : String;
+
+
+    /**
+        This field is a deprecated `String`
+    **/
+    @:deprecated('With a deprecation reason')
+    public var deprecated_string_field:String;
 }

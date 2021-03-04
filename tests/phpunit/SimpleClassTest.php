@@ -73,7 +73,6 @@ class SimpleClassTest extends TestCase
         $this->assertEquals('This is the `simple_string_field` documentation', $simple_string_field->comment);
     }
 
-
     /**
      * @depends testGraphQLFieldListExists
      * Test that a field marked with @:GraphQLHide metadata should *not* appear in the schema
@@ -81,5 +80,43 @@ class SimpleClassTest extends TestCase
     function testHiddenFieldNotInDefinition($gql_fields)
     {
         $this->assertNull(Util::getFieldDefinitionByName($gql_fields, 'hidden_field'));
+    }
+
+    /**
+     * @depends testGraphQLFieldListExists
+     * Test that a field marked with @:GraphQLHide metadata should *not* appear in the schema
+     */
+    function testDeprecatedStringFieldExists($gql_fields)
+    {
+        $deprecated_string_field = Util::getFieldDefinitionByName($gql_fields, 'deprecated_string_field');
+        $this->assertNotNull($deprecated_string_field);
+        return $deprecated_string_field;
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesSimpleStringField
+     */
+    function testDeprecatedStringFieldHasNullDeprecationReason($simple_string_field)
+    {
+        $this->assertObjectHasAttribute('deprecationReason', $simple_string_field);
+        $this->assertNull($simple_string_field->deprecationReason);
+    }
+
+    /**
+     * @depends testDeprecatedStringFieldExists
+     */
+    function testDeprecatedStringFieldHasDeprecationReason($deprecated_string_field)
+    {
+        $this->assertObjectHasAttribute('deprecationReason', $deprecated_string_field);
+        $reason = $deprecated_string_field->deprecationReason;
+        $this->assertNotNull($reason);
+    }
+
+    /**
+     * @depends testDeprecatedStringFieldHasDeprecationReason
+     */
+    function testDeprecatedStringFieldDeprecationReasonValue($reason)
+    {
+        $this->assertEquals('With a deprecation reason', $reason);
     }
 }

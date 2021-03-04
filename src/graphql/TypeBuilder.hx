@@ -36,7 +36,15 @@ class TypeBuilder {
 				return null;
 			}
 		}
+
 		if (f.access.contains(APublic)) {
+			var deprecationReason : Null<String>;
+			for(meta in f.meta) {
+				if(meta.name == ':deprecated') {
+					deprecationReason = 'deprecated';
+				}
+			}
+
 			var type:String;
 			switch (f.kind) {
 				case(FVar(TPath({name: a}))):
@@ -47,7 +55,8 @@ class TypeBuilder {
 			var field:GraphQLField = {
 				name: f.name,
 				type: type,
-				comment: if (f.doc != null) f.doc.trim() else null
+				comment: if (f.doc != null) f.doc.trim() else null,
+				deprecationReason: deprecationReason
 			}
 			return field;
 		}
