@@ -136,11 +136,11 @@ class TypeBuilder {
 			case(FVar(TPath({name: a}))):
 				type = a;
 			default:
-				type = 'Dynamic';
+				type = 'Unknown';
 		}
 
 		if( Reflect.field(GraphQLTypes, type) == null ) {
-			throw new Error('Type declaration not (yet) supported', field.pos); 
+			throw new Error('Type declaration ($type) not supported', field.pos); 
 		}
 
 		return type;
