@@ -1,11 +1,9 @@
 package graphql;
 
 import haxe.macro.TypeTools;
-import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import graphql.GraphQLField;
-import haxe.macro.Type;
 
 using StringTools;
 using graphql.TypeBuilder;
