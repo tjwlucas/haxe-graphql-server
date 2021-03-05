@@ -2,4 +2,6 @@
 -main tests.TestLoader
 -D php-front=autoload.php
 
+--macro graphql.TypeBuilder.process()
+
 --php bin

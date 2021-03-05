@@ -1,6 +1,6 @@
 package tests.cases;
 
-@:build(graphql.TypeBuilder.build())
+@:graphql
 class SimpleClass {
 	/**
 		This is the `simple_string_field` documentation

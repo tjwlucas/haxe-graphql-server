@@ -1,14 +1,36 @@
 package graphql;
 
+import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import graphql.GraphQLField;
+import haxe.macro.Type;
 
 using StringTools;
 
 class TypeBuilder {
+	macro static public function process():Void {
+		Compiler.addGlobalMetadata('', '@:build(graphql.TypeBuilder.build())', true, true, false);
+	}
+
 	macro static public function build():Array<Field> {
 		var fields = Context.getBuildFields();
+		switch Context.getLocalType() {
+			case null:
+				null;
+			case TInst(_.get() => c, _):
+				if ( (c.meta.has(':graphql') || c.meta.has('graphql'))  && !c.meta.has(':graphql_built')) {
+					buildClass(c, fields);
+					c.meta.add(':graphql_built', [], Context.currentPos());
+				}
+			default:
+				null;
+		}
+		return fields;
+	}
+
+	#if macro
+	static function buildClass(cls:ClassType, fields:Array<Field>) {
 		var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
 		for (f in fields) {
 			var new_field = buildFieldType(f);
@@ -27,11 +49,8 @@ class TypeBuilder {
 		for (field in tmp_class.fields) {
 			fields.push(field);
 		}
-
-		return fields;
 	}
 
-	#if macro
 	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
 		if (isVisible(f)) {
 			var deprecationReason = getDeprecationReason(f);
@@ -77,7 +96,7 @@ class TypeBuilder {
 	/**
 		Get the commment string from a field
 	**/
-	static function getComment(field:Field) : Null<String> {
+	static function getComment(field:Field):Null<String> {
 		return if (field.doc != null) {
 			field.doc.trim();
 		} else {
