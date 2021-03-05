@@ -1,5 +1,6 @@
 package graphql;
 
+import haxe.macro.TypeTools;
 import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -125,7 +126,10 @@ class TypeBuilder {
 				type = 'Unknown';
 		}
 
-		if( Reflect.field(GraphQLTypes, type) == null ) {
+		var types_class = Context.getType('graphql.GraphQLTypes');
+		var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
+
+		if( !static_field_name_list.contains(type) ) {
 			throw new Error('Type declaration ($type) not supported', field.pos); 
 		}
 
