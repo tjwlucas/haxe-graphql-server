@@ -128,7 +128,7 @@ class TypeBuilder {
 		var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
 
 		if( !static_field_name_list.contains(type) ) {
-			throw new Error('Type declaration ($type) not supported', field.pos); 
+			throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
 		}
 
 		return type;
