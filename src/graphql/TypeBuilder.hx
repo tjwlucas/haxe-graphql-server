@@ -126,12 +126,34 @@ class TypeBuilder {
 			}
 		}
 
+		function arrayType(params: Array<TypeParam>) {
+			var type : Expr;
+			switch(params[0]) {
+				case(TPType(TPath({name: a, params: p}))):
+					checkTypeDefined(a);
+					if(a == 'Array') {
+						var arrayOf = arrayType(p);
+						type = macro graphql.GraphQLTypes.$a($arrayOf);
+					} else {
+						type = macro graphql.GraphQLTypes.$a;
+					}
+				default:
+					checkTypeDefined('Unknown');
+			}
+			return type;
+		}
+
 		var type:Expr;
 
 		switch (field.kind) {
-			case(FVar(TPath({name: a}))):
+			case(FVar(TPath({name: a, params: p}))):
 				checkTypeDefined(a);
-				type = macro graphql.GraphQLTypes.$a;
+				if(a == 'Array') {
+					var arrayOf = arrayType(p);
+					type = macro graphql.GraphQLTypes.$a($arrayOf);
+				} else {
+					type = macro graphql.GraphQLTypes.$a;
+				}
 			default:
 				checkTypeDefined('Unknown');
 				type = macro 'Unknown';

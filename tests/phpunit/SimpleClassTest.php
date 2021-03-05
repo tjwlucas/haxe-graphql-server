@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 use tests\cases\SimpleClass;
 use tests\Util;
 use graphql\GraphQLTypes;
+use GraphQL\Type\Definition\Type;
 
 class SimpleClassTest extends TestCase
 {
@@ -149,5 +150,57 @@ class SimpleClassTest extends TestCase
     function testGraphQLIntFieldTypeValue($int_field)
     {
         $this->assertEquals(GraphQLTypes::$Int, $int_field->type);
+    }
+
+    /**
+     * @depends testGraphQLFieldListExists
+     */
+    function testGraphQLFieldListDefinesIntArrayField($gql_fields)
+    {
+        $int_array_field = Util::getFieldDefinitionByName($gql_fields, 'int_array');
+        $this->assertNotNull($int_array_field);
+        return $int_array_field;
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesIntArrayField
+     */
+    function testGraphQLIntArrayFieldHasType($int_array_field)
+    {
+        $this->assertObjectHasAttribute('type', $int_array_field);
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesIntArrayField
+     */
+    function testGraphQLIntArrayFieldTypeValue($int_array_field)
+    {
+        $this->assertEquals(Type::listOf(Type::int()), $int_array_field->type);
+    }
+
+    /**
+     * @depends testGraphQLFieldListExists
+     */
+    function testGraphQLFieldListDefinesNestedIntArrayField($gql_fields)
+    {
+        $nested_int_array = Util::getFieldDefinitionByName($gql_fields, 'nested_int_array');
+        $this->assertNotNull($nested_int_array);
+        return $nested_int_array;
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesNestedIntArrayField
+     */
+    function testGraphQLNestedIntArrayFieldHasType($nested_int_array_field)
+    {
+        $this->assertObjectHasAttribute('type', $nested_int_array_field);
+    }
+
+    /**
+     * @depends testGraphQLFieldListDefinesNestedIntArrayField
+     */
+    function testGraphQLNestedIntArrayFieldTypeValue($nested_int_array_field)
+    {
+        $this->assertEquals(Type::listOf(Type::listOf(Type::listOf(Type::int()))), $nested_int_array_field->type);
     }
 }

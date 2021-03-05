@@ -23,4 +23,10 @@ class SimpleClass extends GraphQLObject {
     public var deprecated_string_field:String;
 
     public var int_field:Int;
+
+
+    public var int_array:Array<Int>;
+
+
+    public var nested_int_array:Array<Array<Array<Int>>>;
 }
