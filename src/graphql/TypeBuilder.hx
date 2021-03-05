@@ -7,6 +7,7 @@ import graphql.GraphQLField;
 import haxe.macro.Type;
 
 using StringTools;
+using graphql.TypeBuilder;
 
 class TypeBuilder {
 	static var metadata = {
@@ -58,6 +59,25 @@ class TypeBuilder {
 		}
 	}
 
+	static function fieldHasMeta(field : Field, name : String) {
+		var found = false;
+		for (meta in field.meta) {
+			if ([':$name', name].contains(meta.name)) {
+				if(found == true) {
+					trace('Warning: Both build and runtime metadata found for ${field.name}: $name');
+				}
+				found = true;
+			}
+		}
+		return found;
+	}
+
+	static function fieldGetMeta(field: Field, name : String) {
+		return field.meta.filter((meta) -> {
+			return [':$name', name].contains(meta.name);
+		})[0];
+	}
+
 	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
 		if (isVisible(f)) {
 			var deprecationReason = getDeprecationReason(f);
@@ -79,10 +99,8 @@ class TypeBuilder {
 		Determines if the field should be visible in the GraphQL Schema
 	**/
 	static function isVisible(field:Field) {
-		for (meta in field.meta) {
-			if ([':${metadata.hide_field}', metadata.hide_field].contains(meta.name)) {
-				return false;
-			}
+		if(field.fieldHasMeta(metadata.hide_field)) {
+			return false;
 		}
 		return field.access.contains(APublic);
 	}
@@ -92,10 +110,8 @@ class TypeBuilder {
 	**/
 	static function getDeprecationReason(field:Field):ExprOf<String> {
 		var deprecationReason = macro null;
-		for (meta in field.meta) {
-			if ([':${metadata.deprecated}', metadata.deprecated].contains(meta.name)) {
-				deprecationReason = meta.params[0];
-			}
+		if(field.fieldHasMeta(metadata.deprecated)) {
+			deprecationReason = field.fieldGetMeta(metadata.deprecated).params[0];
 		}
 		return deprecationReason;
 	}
