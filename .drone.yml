@@ -3,7 +3,7 @@ type: docker
 
 steps:
   - name: Build
-    image:  builtbyto.ml/tlucas/haxe
+    image: haxe:4.2.1
     commands:
       - haxelib install --always build.hxml
       - haxe build.hxml
