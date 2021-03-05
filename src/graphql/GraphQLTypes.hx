@@ -1,6 +1,8 @@
 package graphql;
 
+import graphql.externs.Type;
+
 class GraphQLTypes {
-    public static inline var Int = 'Integer';
-    public static inline var String = 'String';
+    public static var Int = Type.int();
+    public static var String = Type.string();
 }

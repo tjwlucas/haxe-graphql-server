@@ -58,7 +58,7 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLSimpleStringFieldTypeValue($simple_string_field)
     {
-        $this->assertEquals(GraphQLTypes::String, $simple_string_field->type);
+        $this->assertEquals(GraphQLTypes::$String, $simple_string_field->type);
     }
 
     /**
@@ -148,6 +148,6 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLIntFieldTypeValue($int_field)
     {
-        $this->assertEquals(GraphQLTypes::Int, $int_field->type);
+        $this->assertEquals(GraphQLTypes::$Int, $int_field->type);
     }
 }
