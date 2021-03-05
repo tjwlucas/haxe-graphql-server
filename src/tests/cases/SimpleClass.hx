@@ -1,7 +1,8 @@
 package tests.cases;
 
-@:graphql
-class SimpleClass {
+import graphql.GraphQLObject;
+
+class SimpleClass extends GraphQLObject {
 	/**
 		This is the `simple_string_field` documentation
 	**/

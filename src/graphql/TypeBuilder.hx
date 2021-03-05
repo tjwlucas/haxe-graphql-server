@@ -17,28 +17,14 @@ class TypeBuilder {
 		deprecated: 'deprecationReason'
 	}
 
-	macro static public function process():Void {
-		Compiler.addGlobalMetadata('', '@:build(graphql.TypeBuilder.build())', true, true, false);
-	}
-
 	macro static public function build():Array<Field> {
 		var fields = Context.getBuildFields();
-		switch Context.getLocalType() {
-			case null:
-				null;
-			case TInst(_.get() => c, _):
-				if ((c.meta.has(':${metadata.build}') || c.meta.has(metadata.build)) && !c.meta.has(':${metadata.built}')) {
-					buildClass(c, fields);
-					c.meta.add(':${metadata.built}', [], Context.currentPos());
-				}
-			default:
-				null;
-		}
+		buildClass(fields);
 		return fields;
 	}
 
 	#if macro
-	static function buildClass(cls:ClassType, fields:Array<Field>) {
+	static function buildClass(fields:Array<Field>) {
 		var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
 		for (f in fields) {
 			var new_field = buildFieldType(f);
