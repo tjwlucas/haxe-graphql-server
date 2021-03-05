@@ -9,6 +9,13 @@ import haxe.macro.Type;
 using StringTools;
 
 class TypeBuilder {
+	static var metadata = {
+		build: 'graphql',
+		built: 'graphql_built',
+		hide_field: 'GraphQLHide',
+		deprecated: 'deprecated'
+	}
+
 	macro static public function process():Void {
 		Compiler.addGlobalMetadata('', '@:build(graphql.TypeBuilder.build())', true, true, false);
 	}
@@ -19,9 +26,9 @@ class TypeBuilder {
 			case null:
 				null;
 			case TInst(_.get() => c, _):
-				if ( (c.meta.has(':graphql') || c.meta.has('graphql'))  && !c.meta.has(':graphql_built')) {
+				if ((c.meta.has(':${metadata.build}') || c.meta.has(metadata.build)) && !c.meta.has(':${metadata.built}')) {
 					buildClass(c, fields);
-					c.meta.add(':graphql_built', [], Context.currentPos());
+					c.meta.add(':${metadata.built}', [], Context.currentPos());
 				}
 			default:
 				null;
@@ -73,7 +80,7 @@ class TypeBuilder {
 	**/
 	static function isVisible(field:Field) {
 		for (meta in field.meta) {
-			if (meta.name == ':GraphQLHide') {
+			if ([':${metadata.hide_field}', metadata.hide_field].contains(meta.name)) {
 				return false;
 			}
 		}
@@ -86,7 +93,7 @@ class TypeBuilder {
 	static function getDeprecationReason(field:Field):ExprOf<String> {
 		var deprecationReason = macro null;
 		for (meta in field.meta) {
-			if (meta.name == ':deprecated') {
+			if ([':${metadata.deprecated}', metadata.deprecated].contains(meta.name)) {
 				deprecationReason = meta.params[0];
 			}
 		}
