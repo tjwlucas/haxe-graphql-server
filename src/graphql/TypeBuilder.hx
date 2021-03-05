@@ -71,7 +71,7 @@ class TypeBuilder {
 
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
-				type: graphql.GraphQLTypes.$type,
+				type: $type,
 				comment: $v{comment},
 				deprecationReason: $deprecationReason
 			}
@@ -116,19 +116,25 @@ class TypeBuilder {
 		Determine the type of a field in a macro
 	**/
 	static function getType(field:Field) {
-		var type:String;
-		switch (field.kind) {
-			case(FVar(TPath({name: a}))):
-				type = a;
-			default:
-				type = 'Unknown';
-		}
 
 		var types_class = Context.getType('graphql.GraphQLTypes');
 		var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
 
-		if( !static_field_name_list.contains(type) ) {
-			throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
+		function checkTypeDefined(type) {
+			if( !static_field_name_list.contains(type) ) {
+				throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
+			}
+		}
+
+		var type:Expr;
+
+		switch (field.kind) {
+			case(FVar(TPath({name: a}))):
+				checkTypeDefined(a);
+				type = macro graphql.GraphQLTypes.$a;
+			default:
+				checkTypeDefined('Unknown');
+				type = macro 'Unknown';
 		}
 
 		return type;
