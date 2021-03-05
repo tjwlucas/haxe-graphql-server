@@ -138,6 +138,11 @@ class TypeBuilder {
 			default:
 				type = 'Dynamic';
 		}
+
+		if( Reflect.field(GraphQLTypes, type) == null ) {
+			throw new Error('Type declaration not (yet) supported', field.pos); 
+		}
+
 		return type;
 	}
 	#end
