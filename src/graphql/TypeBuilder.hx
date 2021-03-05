@@ -14,7 +14,7 @@ class TypeBuilder {
 		build: 'graphql',
 		built: 'graphql_built',
 		hide_field: 'GraphQLHide',
-		deprecated: 'deprecated'
+		deprecated: 'deprecationReason'
 	}
 
 	macro static public function process():Void {

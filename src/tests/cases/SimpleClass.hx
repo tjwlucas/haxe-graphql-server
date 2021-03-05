@@ -17,7 +17,7 @@ class SimpleClass {
     /**
         This field is a deprecated `String`
     **/
-    @:deprecated('With a deprecation reason')
+    @:deprecationReason('With a deprecation reason')
 
     public var deprecated_string_field:String;
 

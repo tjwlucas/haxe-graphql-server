@@ -100,7 +100,7 @@ class SimpleClassTest extends TestCase
     /**
      * @depends testGraphQLFieldListDefinesSimpleStringField
      */
-    function testDeprecatedStringFieldHasNullDeprecationReason($simple_string_field)
+    function testNonDeprecatedStringFieldHasNullDeprecationReason($simple_string_field)
     {
         $this->assertObjectHasAttribute('deprecationReason', $simple_string_field);
         $this->assertNull($simple_string_field->deprecationReason);
