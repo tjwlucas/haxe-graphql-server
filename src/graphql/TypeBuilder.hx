@@ -64,7 +64,7 @@ class TypeBuilder {
 		for (meta in field.meta) {
 			if ([':$name', name].contains(meta.name)) {
 				if(found == true) {
-					trace('Warning: Both build and runtime metadata found for ${field.name}: $name');
+					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
 				}
 				found = true;
 			}
