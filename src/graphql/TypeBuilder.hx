@@ -8,14 +8,12 @@ import graphql.GraphQLField;
 using StringTools;
 using graphql.TypeBuilder;
 
-class TypeBuilder {
-	static var metadata = {
-		build: 'graphql',
-		built: 'graphql_built',
-		hide_field: 'GraphQLHide',
-		deprecated: 'deprecationReason'
-	}
+enum abstract FieldMetadata(String) {
+	var HideField = "GraphQLHide";
+	var Deprecated = "deprecationReason";
+}
 
+class TypeBuilder {
 	macro static public function build():Array<Field> {
 		var fields = Context.getBuildFields();
 		buildClass(fields);
@@ -44,10 +42,10 @@ class TypeBuilder {
 		}
 	}
 
-	static function fieldHasMeta(field : Field, name : String) {
+	static function fieldHasMeta(field : Field, name : FieldMetadata) {
 		var found = false;
 		for (meta in field.meta) {
-			if ([':$name', name].contains(meta.name)) {
+			if ([':$name', '$name'].contains(meta.name)) {
 				if(found == true) {
 					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
 				}
@@ -57,9 +55,9 @@ class TypeBuilder {
 		return found;
 	}
 
-	static function fieldGetMeta(field: Field, name : String) {
+	static function fieldGetMeta(field: Field, name : FieldMetadata) {
 		return field.meta.filter((meta) -> {
-			return [':$name', name].contains(meta.name);
+			return [':$name', '$name'].contains(meta.name);
 		})[0];
 	}
 
@@ -84,7 +82,7 @@ class TypeBuilder {
 		Determines if the field should be visible in the GraphQL Schema
 	**/
 	static function isVisible(field:Field) {
-		if(field.fieldHasMeta(metadata.hide_field)) {
+		if(field.fieldHasMeta(HideField)) {
 			return false;
 		}
 		return field.access.contains(APublic);
@@ -95,8 +93,8 @@ class TypeBuilder {
 	**/
 	static function getDeprecationReason(field:Field):ExprOf<String> {
 		var deprecationReason = macro null;
-		if(field.fieldHasMeta(metadata.deprecated)) {
-			deprecationReason = field.fieldGetMeta(metadata.deprecated).params[0];
+		if(field.fieldHasMeta(Deprecated)) {
+			deprecationReason = field.fieldGetMeta(Deprecated).params[0];
 		}
 		return deprecationReason;
 	}
