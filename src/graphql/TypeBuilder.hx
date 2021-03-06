@@ -8,7 +8,7 @@ import graphql.GraphQLField;
 using StringTools;
 using graphql.TypeBuilder;
 
-enum abstract FieldMetadata(String) {
+enum abstract FieldMetadata(String) from String to String {
 	var HideField = "GraphQLHide";
 	var Deprecated = "deprecationReason";
 }
@@ -45,7 +45,7 @@ class TypeBuilder {
 	static function fieldHasMeta(field : Field, name : FieldMetadata) {
 		var found = false;
 		for (meta in field.meta) {
-			if ([':$name', '$name'].contains(meta.name)) {
+			if ([':$name', name].contains(meta.name)) {
 				if(found == true) {
 					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
 				}
@@ -57,7 +57,7 @@ class TypeBuilder {
 
 	static function fieldGetMeta(field: Field, name : FieldMetadata) {
 		return field.meta.filter((meta) -> {
-			return [':$name', '$name'].contains(meta.name);
+			return [':$name', name].contains(meta.name);
 		})[0];
 	}
 
