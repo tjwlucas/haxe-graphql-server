@@ -9,7 +9,7 @@ using StringTools;
 using graphql.TypeBuilder;
 
 enum abstract FieldMetadata(String) from String to String {
-	var HideField = "GraphQLHide";
+	var Hide = "GraphQLHide";
 	var Deprecated = "deprecationReason";
 }
 
@@ -82,7 +82,7 @@ class TypeBuilder {
 		Determines if the field should be visible in the GraphQL Schema
 	**/
 	static function isVisible(field:Field) {
-		if(field.fieldHasMeta(HideField)) {
+		if(field.fieldHasMeta(Hide)) {
 			return false;
 		}
 		return field.access.contains(APublic);
