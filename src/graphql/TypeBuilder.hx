@@ -98,7 +98,7 @@ class TypeBuilder {
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
 				type: $type,
-				comment: $v{comment},
+				description: $v{comment},
 				deprecationReason: $deprecationReason
 			}
 			return field;

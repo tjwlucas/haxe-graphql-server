@@ -89,7 +89,7 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLSimpleStringFieldHasComment($simple_string_field)
     {
-        $this->assertObjectHasAttribute('comment', $simple_string_field);
+        $this->assertObjectHasAttribute('description', $simple_string_field);
     }
 
     /**
@@ -97,7 +97,7 @@ class SimpleClassTest extends TestCase
      */
     function testGraphQLSimpleStringFieldCommentValue($simple_string_field)
     {
-        $this->assertEquals('This is the `simple_string_field` documentation', $simple_string_field->comment);
+        $this->assertEquals('This is the `simple_string_field` documentation', $simple_string_field->description);
     }
 
     /**

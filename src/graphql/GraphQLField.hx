@@ -8,7 +8,7 @@ package graphql;
 class GraphQLField {
     public var name: String;
     public var type: Dynamic;
-    public var comment: Null<String>;
+    public var description: Null<String>;
     public var deprecationReason: Null<String>;
 
     #if php
