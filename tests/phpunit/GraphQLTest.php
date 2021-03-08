@@ -32,7 +32,7 @@ class GraphQLTest extends TestCase
         $schema = new Schema([
             'query' => $gql->type
         ]);
-        $result = (array) GraphQL::executeQuery($schema, 'query { string_field }');
+        $result = (array) GraphQL::executeQuery($schema, 'query { string_field }', new GraphQLInstanceTest());
         $this->assertArrayHasKey('errors', $result);
         $this->assertArrayHasKey('data', $result);
         $this->assertEmpty($result['errors']);
@@ -43,8 +43,9 @@ class GraphQLTest extends TestCase
     /**
      * @depends testSendBasicGraphQLQuery
      */
-    function testStringFieldReultExists($result)
+    function testStringFieldResult($result)
     {
         $this->assertArrayHasKey('string_field', $result['data']);
+        $this->assertEquals('This is an instance value', $result['data']['string_field']);
     }
 }
