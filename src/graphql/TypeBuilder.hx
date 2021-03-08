@@ -1,5 +1,6 @@
 package graphql;
 
+import haxe.macro.Type.ClassType;
 import haxe.macro.TypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -11,6 +12,7 @@ using graphql.TypeBuilder;
 enum abstract FieldMetadata(String) from String to String {
 	var Hide = "GraphQLHide";
 	var Deprecated = "deprecationReason";
+	var TypeName = "typeName";
 }
 
 class TypeBuilder {
@@ -30,16 +32,40 @@ class TypeBuilder {
 			}
 		}
 
+		var cls = Context.getLocalClass().get();
+
+		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
+
 		var tmp_class = macro class {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
 			public static var gql_fields:Array<graphql.GraphQLField> = $a{graphql_field_definitions};
+			public static var gql_type_name:String = $type_name;
 		}
 
 		for (field in tmp_class.fields) {
 			fields.push(field);
 		}
+	}
+
+	static function classHasMeta(cls : ClassType, name : FieldMetadata) {
+		var found = false;
+		for (meta in cls.meta.get()) {
+			if ([':$name', name].contains(meta.name)) {
+				if(found == true) {
+					throw new Error('Duplicate metadata found for $name on ${cls.name}', meta.pos);
+				}
+				found = true;
+			}
+		}
+		return found;
+	}
+
+	static function classGetMeta(cls: ClassType, name : FieldMetadata) {
+		return cls.meta.get().filter((meta) -> {
+			return [':$name', name].contains(meta.name);
+		})[0];
 	}
 
 	static function fieldHasMeta(field : Field, name : FieldMetadata) {
