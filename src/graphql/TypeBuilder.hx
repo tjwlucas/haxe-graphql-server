@@ -151,16 +151,15 @@ class TypeBuilder {
 		var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
 
 		function getBaseType(type) {
-			try {
-				if(static_field_name_list.contains(type)) {
-					return macro graphql.GraphQLTypes.$type;
-				} else {
-					var cls = Context.getType(type).getClass().name;
-					return macro $i{cls}.gql.type;
+			if(static_field_name_list.contains(type)) {
+				return macro graphql.GraphQLTypes.$type;
+			} else {
+				var cls = Context.getType(type).getClass();
+				if(cls.statics.get().filter((s) -> s.name == 'gql').length > 0) {
+					return macro $i{cls.name}.gql.type;
 				}
-			} catch (e) {
-				throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
 			}
+			throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
 		}
 
 		function arrayType(params: Array<TypeParam>) {
