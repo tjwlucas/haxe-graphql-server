@@ -1,6 +1,7 @@
 package tests;
 
 import tests.cases.SimpleClass;
+import tests.cases.RenamedClass;
 import tests.Util;
 
 class TestLoader {

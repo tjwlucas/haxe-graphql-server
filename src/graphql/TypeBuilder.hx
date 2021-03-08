@@ -40,8 +40,10 @@ class TypeBuilder {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
-			public static var gql_fields:Array<graphql.GraphQLField> = $a{graphql_field_definitions};
-			public static var gql_type_name:String = $type_name;
+			public static var gql : graphql.TypeObjectDefinition = {
+				 fields: $a{graphql_field_definitions},
+				 type_name: $type_name
+			 };
 		}
 
 		for (field in tmp_class.fields) {

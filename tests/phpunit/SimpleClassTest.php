@@ -4,14 +4,36 @@ use PHPUnit\Framework\TestCase;
 use tests\cases\SimpleClass;
 use tests\Util;
 use graphql\GraphQLTypes;
+use graphql\TypeObjectDefinition;
 use GraphQL\Type\Definition\Type;
 
 class SimpleClassTest extends TestCase
 {
-    function testGraphQLFieldListExists()
+    function testMagicGraphqlFieldExists()
     {
-        $this->assertClassHasStaticAttribute('gql_fields', SimpleClass::class);
-        return SimpleClass::$gql_fields;
+        $this->assertClassHasStaticAttribute('gql', SimpleClass::class);
+        return SimpleClass::$gql;
+    }
+    
+    /**
+     * @params TypeObjectDefinition $gql
+     * @depends testMagicGraphqlFieldExists
+     */
+    function testGraphQLFieldListExists(TypeObjectDefinition $gql)
+    {
+        $this->assertObjectHasAttribute('fields', $gql);
+        return $gql->fields;
+    }
+    
+    /**
+     * @params TypeObjectDefinition $gql
+     * @depends testMagicGraphqlFieldExists
+     */
+    function testGraphQLTypeName(TypeObjectDefinition $gql)
+    {
+        $this->assertObjectHasAttribute('type_name', $gql);
+        $this->assertIsString($gql->type_name);
+        $this->assertEquals('SimpleClass', $gql->type_name);
     }
 
     /**
