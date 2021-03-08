@@ -2,3 +2,4 @@ vendor
 bin
 *.cache
 dump
+manual_test.php
