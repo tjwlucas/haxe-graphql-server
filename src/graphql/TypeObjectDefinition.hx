@@ -9,7 +9,7 @@ class TypeObjectDefinition {
     var type_name: String;
     var fields: Array<graphql.GraphQLField>;
 
-    var type : ObjectType;
+    public var type : ObjectType;
 
     public function new(type_name:String, fields:Array<graphql.GraphQLField>) {
         this.type_name = type_name;

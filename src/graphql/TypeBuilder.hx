@@ -1,13 +1,13 @@
 package graphql;
 
 import haxe.macro.Type.ClassType;
-import haxe.macro.TypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import graphql.GraphQLField;
 
 using StringTools;
 using graphql.TypeBuilder;
+using haxe.macro.TypeTools;
 
 enum abstract FieldMetadata(String) from String to String {
 	var Hide = "GraphQLHide";
@@ -110,6 +110,10 @@ class TypeBuilder {
 		Determines if the field should be visible in the GraphQL Schema
 	**/
 	static function isVisible(field:Field) {
+		/** Always exclude constructors **/
+		if(field.name == 'new') {
+			return false;
+		}
 		if(field.fieldHasMeta(Hide)) {
 			return false;
 		}
@@ -146,8 +150,15 @@ class TypeBuilder {
 		var types_class = Context.getType('graphql.GraphQLTypes');
 		var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
 
-		function checkTypeDefined(type) {
-			if( !static_field_name_list.contains(type) ) {
+		function getBaseType(type) {
+			try {
+				if(static_field_name_list.contains(type)) {
+					return macro graphql.GraphQLTypes.$type;
+				} else {
+					var cls = Context.getType(type).getClass().name;
+					return macro $i{cls}.gql.type;
+				}
+			} catch (e) {
 				throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
 			}
 		}
@@ -156,15 +167,15 @@ class TypeBuilder {
 			var type : Expr;
 			switch(params[0]) {
 				case(TPType(TPath({name: a, params: p}))):
-					checkTypeDefined(a);
+					var base_type = getBaseType(a);
 					if(a == 'Array') {
 						var arrayOf = arrayType(p);
-						type = macro graphql.GraphQLTypes.$a($arrayOf);
+						type = macro $base_type($arrayOf);
 					} else {
-						type = macro graphql.GraphQLTypes.$a;
+						type = macro $base_type;
 					}
 				default:
-					checkTypeDefined('Unknown');
+					getBaseType('Unknown');
 			}
 			return type;
 		}
@@ -173,15 +184,16 @@ class TypeBuilder {
 
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
-				checkTypeDefined(a);
 				if(a == 'Array') {
+					var base_type = getBaseType(a);
 					var arrayOf = arrayType(p);
-					type = macro graphql.GraphQLTypes.$a($arrayOf);
+					type = macro $base_type($arrayOf);
 				} else {
-					type = macro graphql.GraphQLTypes.$a;
+					var base_type = getBaseType(a);
+					type = macro $base_type;
 				}
 			default:
-				checkTypeDefined('Unknown');
+				getBaseType('Unknown');
 				type = macro 'Unknown';
 		}
 
