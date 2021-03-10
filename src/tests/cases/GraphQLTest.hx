@@ -20,12 +20,19 @@ class GraphQLTest extends utest.Test {
             }.associativeArrayOfObject());
             var result = GraphQL.executeQuery(
                 schema,
-                '{string_field}',
+                '{
+                    string_field
+                    renamed:string_field
+                }',
                 new GraphQLInstanceTest()
             );
             result.errors == [].toPhpArray();
             Assert.notNull(result.data);
-            result.data['string_field'] == 'This is an instance value';
+            var expected_result : Map<String, Dynamic> = [
+                'string_field' => 'This is an instance value',
+                'renamed' => 'This is an instance value'
+            ];
+            result.data == expected_result.associativeArrayOfHash();
         }
 }
 
