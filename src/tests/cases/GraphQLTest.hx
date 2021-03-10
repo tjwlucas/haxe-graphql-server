@@ -5,8 +5,28 @@ import graphql.externs.GraphQL;
 import graphql.externs.Schema;
 import graphql.TypeObjectDefinition;
 import utest.Assert;
-import tests.types.GraphQLInstanceTest;
 using php.Lib;
+import graphql.GraphQLObject;
+
+@:typeName("Query")
+class GraphQLInstanceTest extends GraphQLObject {
+    public function new(){}
+    /**
+        String field comment
+    **/
+    public var string_field:String = 'This is an instance value';
+    /**
+        Object field comment
+    **/
+    public var object_field:OtherObject;
+}
+
+class OtherObject extends GraphQLObject {
+    /**
+        String field comment
+    **/
+    public var string_field:String = 'This is an instance value';
+}
 
 class GraphQLTest extends utest.Test {
         function specGraphQLInstanceClass() {
