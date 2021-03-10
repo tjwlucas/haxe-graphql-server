@@ -18,10 +18,7 @@ class GraphQLTest extends utest.Test {
             var schema = new Schema({
                 query: GraphQLInstanceTest.gql.type
             }.associativeArrayOfObject());
-            var result : {
-                errors: NativeArray,
-                data: NativeArray
-            } = GraphQL.executeQuery(
+            var result = GraphQL.executeQuery(
                 schema,
                 '{string_field}',
                 new GraphQLInstanceTest()

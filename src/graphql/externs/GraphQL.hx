@@ -4,5 +4,8 @@ import php.NativeArray;
 
 @:native('GraphQL\\GraphQL')
 extern class GraphQL {
-    public static function executeQuery(schema: Schema, query: String, rootValue : Dynamic) : Dynamic;
+    public static function executeQuery(schema: Schema, query: String, rootValue : Dynamic) : {
+        data: NativeArray,
+        errors: NativeArray
+    };
 }
