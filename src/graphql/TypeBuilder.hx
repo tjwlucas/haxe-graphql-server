@@ -154,10 +154,12 @@ class TypeBuilder {
 			if(static_field_name_list.contains(type)) {
 				return macro graphql.GraphQLTypes.$type;
 			} else {
-				var cls = Context.getType(type).getClass();
-				if(cls.statics.get().filter((s) -> s.name == 'gql').length > 0) {
-					return macro $i{cls.name}.gql.type;
-				}
+				try {
+					var cls = Context.getType(type).getClass();
+					if(cls.statics.get().filter((s) -> s.name == 'gql').length > 0) {
+						return macro $i{cls.name}.gql.type;
+					}
+				} catch (e) {} // Pass through to the error below, no need to throw it especially
 			}
 			throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
 		}
