@@ -1,7 +1,5 @@
 package tests.cases;
 
-import php.Syntax;
-import php.NativeArray;
 import graphql.externs.GraphQL;
 import graphql.externs.Schema;
 import graphql.TypeObjectDefinition;
