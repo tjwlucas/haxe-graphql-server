@@ -1,5 +1,6 @@
 package tests.cases;
 
+import graphql.externs.GraphQL;
 import graphql.GraphQLField;
 import graphql.TypeObjectDefinition;
 import utest.Assert;
@@ -19,6 +20,18 @@ class SimpleClassTests extends utest.Test {
 	function specTypes() {
         GraphQLTypes.String == graphql.externs.Type.string();
         GraphQLTypes.Int == graphql.externs.Type.int();
+        GraphQLTypes.Float == graphql.externs.Type.float();
+
+        // Test they output the expected Graphql types
+        Std.string(GraphQLTypes.String) == 'String';
+        Std.string(GraphQLTypes.Int) == 'Int';
+        Std.string(GraphQLTypes.Float) == 'Float';
+        Std.string(GraphQLTypes.Array(GraphQLTypes.String)) == '[String]';
+        Std.string(GraphQLTypes.Array(GraphQLTypes.Int)) == '[Int]';
+        Std.string(GraphQLTypes.Array(GraphQLTypes.Float)) == '[Float]';
+
+        // Arbitrary Nesting
+        Std.string(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.String)))) == '[[[String]]]';
     }
     
     function specGraphQLField() {
@@ -80,6 +93,14 @@ class SimpleClassTests extends utest.Test {
             Std.string(field.type) == '[[[Int]]]';
         }
     }
+
+    function specFloatField() {
+        var field = Util.getFieldDefinitionByName(fields, 'float_field');
+        Assert.notNull(field, 'float_field is missing');
+        if(field != null) {
+            field.type == GraphQLTypes.Float;
+        }
+    }
 }
 
 class SimpleClass extends GraphQLObject {
@@ -103,6 +124,7 @@ class SimpleClass extends GraphQLObject {
     public var deprecated_string_field:String;
 
     public var int_field:Int;
+    public var float_field:Float;
 
 
     public var int_array:Array<Int>;
