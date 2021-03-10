@@ -1,9 +1,10 @@
-package tests.cases;
+package tests.types;
 
 import graphql.GraphQLObject;
 
 @:typeName("Query")
 class GraphQLInstanceTest extends GraphQLObject {
+    public function new(){}
     /**
         String field comment
     **/

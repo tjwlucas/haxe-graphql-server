@@ -1,4 +1,4 @@
-package tests.cases;
+package tests.types;
 
 import graphql.GraphQLObject;
 

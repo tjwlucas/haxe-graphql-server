@@ -1,4 +1,6 @@
 -cp src
 -main tests.TestLoader
--D php-front=autoload.php
---php bin
+-lib utest
+-lib compiletime
+
+-php bin/tests
