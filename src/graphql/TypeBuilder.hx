@@ -181,6 +181,23 @@ class TypeBuilder {
 			return type;
 		}
 
+		function functionReturnType(ret: ComplexType) {
+			var type : Expr;
+			switch(ret) {
+				case(TPath({name: a, params: p})):
+					var base_type = getBaseType(a);
+					if(a == 'Array') {
+						var arrayOf = arrayType(p);
+						type = macro $base_type($arrayOf);
+					} else {
+						type = macro $base_type;
+					}
+				default:
+					getBaseType('Unknown');
+			}
+			return type;
+		}
+
 		var type:Expr;
 
 		switch (field.kind) {
@@ -193,7 +210,11 @@ class TypeBuilder {
 					var base_type = getBaseType(a);
 					type = macro $base_type;
 				}
+			case(FFun({ret: return_type, args: args})):
+				// TODO: add function arguments
+				type = functionReturnType(return_type);
 			default:
+				trace(field.kind);
 				getBaseType('Unknown');
 				type = macro 'Unknown';
 		}
