@@ -39,7 +39,12 @@ class FieldTypeBuilder {
         if(name == 'Array') {
             var arrayOf = arrayType(params);
 			var base_type = getBaseType(name);
-            return macro graphql.GraphQLTypes.NonNull($base_type($arrayOf));
+			var array_expr = macro $base_type($arrayOf);
+			if(nullable) {
+				return macro $array_expr;
+			} else {
+				return macro graphql.GraphQLTypes.NonNull($array_expr);
+			}
         } else if (name == 'Null') {
 			var base_type = nullableType(params);
 			return macro $base_type;
