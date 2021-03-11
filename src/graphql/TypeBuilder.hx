@@ -70,32 +70,12 @@ class TypeBuilder {
 		})[0];
 	}
 
-	static function fieldHasMeta(field : Field, name : FieldMetadata) {
-		var found = false;
-		for (meta in field.meta) {
-			if ([':$name', name].contains(meta.name)) {
-				if(found == true) {
-					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
-				}
-				found = true;
-			}
-		}
-		return found;
-	}
-
-	static function fieldGetMeta(field: Field, name : FieldMetadata) {
-		return field.meta.filter((meta) -> {
-			return [':$name', name].contains(meta.name);
-		})[0];
-	}
-
 	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
-		if (isVisible(f)) {
-			var deprecationReason = getDeprecationReason(f);
-			var comment = getComment(f);
-
-			var field = new FieldTypeBuilder(f);
+		var field = new FieldTypeBuilder(f);
+		if (field.isVisible()) {
 			var type = field.getType();
+			var comment = field.getComment();
+			var deprecationReason = field.getDeprecationReason();
 
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
@@ -106,42 +86,6 @@ class TypeBuilder {
 			return field;
 		}
 		return null;
-	}
-
-	/**
-		Determines if the field should be visible in the GraphQL Schema
-	**/
-	static function isVisible(field:Field) {
-		/** Always exclude constructors **/
-		if(field.name == 'new') {
-			return false;
-		}
-		if(field.fieldHasMeta(Hide)) {
-			return false;
-		}
-		return field.access.contains(APublic);
-	}
-
-	/**
-		Returns a string expression for the deprecation reason, if provided using the @:deprecated metadata
-	**/
-	static function getDeprecationReason(field:Field):ExprOf<String> {
-		var deprecationReason = macro null;
-		if(field.fieldHasMeta(Deprecated)) {
-			deprecationReason = field.fieldGetMeta(Deprecated).params[0];
-		}
-		return deprecationReason;
-	}
-
-	/**
-		Get the commment string from a field
-	**/
-	static function getComment(field:Field):Null<String> {
-		return if (field.doc != null) {
-			field.doc.trim();
-		} else {
-			null;
-		};
 	}
 	#end
 }

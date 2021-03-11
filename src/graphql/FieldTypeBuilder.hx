@@ -1,7 +1,10 @@
 package graphql;
+import graphql.TypeBuilder.FieldMetadata;
 #if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
+using haxe.macro.TypeTools;
+using StringTools;
 using haxe.macro.TypeTools;
 
 class FieldTypeBuilder {
@@ -78,5 +81,60 @@ class FieldTypeBuilder {
 				type = macro 'Unknown';
 		}
     }
+
+	/**
+		Get the commment string from the field
+	**/
+	public function getComment():Null<String> {
+		return if (this.field.doc != null) {
+			this.field.doc.trim();
+		} else {
+			null;
+		};
+    }
+    
+    /**
+		Returns a string expression for the deprecation reason, if provided using the @:deprecated metadata
+	**/
+	public function getDeprecationReason():ExprOf<String> {
+		var deprecationReason = macro null;
+		if(hasMeta(Deprecated)) {
+			deprecationReason = getMeta(Deprecated).params[0];
+		}
+		return deprecationReason;
+    }
+    
+    function hasMeta(name : FieldMetadata) {
+		var found = false;
+		for (meta in field.meta) {
+			if ([':$name', name].contains(meta.name)) {
+				if(found == true) {
+					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
+				}
+				found = true;
+			}
+		}
+		return found;
+	}
+
+	function getMeta(name : FieldMetadata) {
+		return field.meta.filter((meta) -> {
+			return [':$name', name].contains(meta.name);
+		})[0];
+	}
+
+	/**
+		Determines if the field should be visible in the GraphQL Schema
+	**/
+	public function isVisible() {
+		/** Always exclude constructors **/
+		if(field.name == 'new') {
+			return false;
+		}
+		if(hasMeta(Hide)) {
+			return false;
+		}
+		return field.access.contains(APublic);
+	}
 }
 #end
