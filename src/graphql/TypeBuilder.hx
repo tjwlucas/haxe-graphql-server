@@ -81,7 +81,8 @@ class TypeBuilder {
 				name: $v{f.name},
 				type: $type,
 				description: $v{comment},
-				deprecationReason: $deprecationReason
+				deprecationReason: $deprecationReason,
+				args: ${ field.args }
 			}
 			return field;
 		}

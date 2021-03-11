@@ -12,7 +12,8 @@ class FieldTypeBuilder {
 	static var types_class = Context.getType('graphql.GraphQLTypes');
     static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
     
-    var type : Expr;
+    public var type : Expr;
+    public var args : Expr = macro null;
 
 	public function new(field:Field) {
 		this.field = field;
@@ -75,6 +76,22 @@ class FieldTypeBuilder {
                 type = typeFromTPath(a, p);
 			case(FFun({ret: return_type, args: args})):
                 // TODO: add function arguments
+                var arg_list : Array<Expr> = [];
+                for(arg in args) {
+                    switch(arg.type) {
+                        case(TPath({name: a, params: p})):
+                            arg_list.push( macro {
+                                type: ${ typeFromTPath(a, p) },
+                                name: $v{ arg.name },
+                                description: null,
+                                deprecationReason: null,
+                                args: null
+                            });
+                        default:
+                            getBaseType('Unknown');
+                    }
+                }
+                this.args = macro $a{ arg_list };
 				type = functionReturnType(return_type);
 			default:
 				getBaseType('Unknown');

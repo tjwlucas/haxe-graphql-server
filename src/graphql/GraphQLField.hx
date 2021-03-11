@@ -10,6 +10,7 @@ class GraphQLField {
     public var type: Dynamic;
     public var description: Null<String>;
     public var deprecationReason: Null<String>;
+    public var args : Null<Array<GraphQLField>>;
 
     #if php
         public function toArray() {
