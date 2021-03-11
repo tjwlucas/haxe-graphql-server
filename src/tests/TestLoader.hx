@@ -9,8 +9,11 @@ class TestLoader {
 
 		var runner = new Runner();
 		new NoExitReport(runner);
-		for (c in testcases)
-			runner.addCase(Type.createInstance(c, []));
+		for (c in testcases) {
+			if(Type.getSuperClass(c) == utest.Test) {
+				runner.addCase(Type.createInstance(c, []));
+			}
+		}
 		runner.run();
 	}
 
