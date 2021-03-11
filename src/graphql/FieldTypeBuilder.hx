@@ -5,7 +5,6 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 using haxe.macro.TypeTools;
 using StringTools;
-using haxe.macro.TypeTools;
 
 class FieldTypeBuilder {
 	var field:Field;
@@ -102,19 +101,19 @@ class FieldTypeBuilder {
                 type = typeFromTPath(a, p);
             case(FFun({ret: return_type, args: args})):
                 is_function = true;
-                // TODO: add function arguments
-                var arg_list : Array<Expr> = [];
+                var arg_list : Array<ExprOf<Dynamic>> = [];
                 for(arg in args) {
                     switch(arg.type) {
                         case(TPath({name: a, params: p})):
-                            arg_names.push(arg.name);
-                            arg_list.push( macro php.Lib.associativeArrayOfObject({
-                                type: ${ typeFromTPath(a, p) },
+							arg_names.push(arg.name);
+							var defaultValue = arg.value != null ? arg.value : macro null;
+							var arg_field : ExprOf<GraphQLArgField> = macro {{
+                                type: ${ typeFromTPath(a, p, arg.opt) },
                                 name: $v{ arg.name },
-                                description: null,
-                                deprecationReason: null,
-                                args: null
-                            }));
+								description: null,
+								defaultValue: $defaultValue
+                            }};
+                            arg_list.push( macro php.Lib.associativeArrayOfObject($arg_field));
                         default:
                             getBaseType('Unknown');
                     }
