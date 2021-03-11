@@ -82,7 +82,7 @@ class TypeBuilder {
 				type: $type,
 				description: $v{comment},
 				deprecationReason: $deprecationReason,
-				args: ${ field.args }
+				args: php.Lib.toPhpArray( ${ field.args } )
 			}
 			return field;
 		}

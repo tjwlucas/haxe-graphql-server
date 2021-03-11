@@ -13,7 +13,7 @@ class FieldTypeBuilder {
     static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
     
     public var type : Expr;
-    public var args : Expr = macro null;
+    public var args : Expr = macro [];
 
 	public function new(field:Field) {
 		this.field = field;
@@ -80,13 +80,13 @@ class FieldTypeBuilder {
                 for(arg in args) {
                     switch(arg.type) {
                         case(TPath({name: a, params: p})):
-                            arg_list.push( macro {
+                            arg_list.push( macro php.Lib.associativeArrayOfObject({
                                 type: ${ typeFromTPath(a, p) },
                                 name: $v{ arg.name },
                                 description: null,
                                 deprecationReason: null,
                                 args: null
-                            });
+                            }));
                         default:
                             getBaseType('Unknown');
                     }
