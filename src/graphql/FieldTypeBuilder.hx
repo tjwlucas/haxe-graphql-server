@@ -1,5 +1,5 @@
 package graphql;
-
+#if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
 using haxe.macro.TypeTools;
@@ -24,19 +24,23 @@ class FieldTypeBuilder {
 			} catch (e) {} // Pass through to the error below, no need to throw it especially
 		}
 		throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
-	}
+    }
+    
+    function typeFromTPath(name: String, ?params: Array<TypeParam>) {
+        var base_type = getBaseType(name);
+        if(name == 'Array') {
+            var arrayOf = arrayType(params);
+            return macro $base_type($arrayOf);
+        } else {
+            return macro $base_type;
+        }        
+    }
 
 	function arrayType(params: Array<TypeParam>) {
 		var type : Expr;
 		switch(params[0]) {
-			case(TPType(TPath({name: a, params: p}))):
-				var base_type = getBaseType(a);
-				if(a == 'Array') {
-					var arrayOf = arrayType(p);
-					type = macro $base_type($arrayOf);
-				} else {
-					type = macro $base_type;
-				}
+            case(TPType(TPath({name: a, params: p}))):
+                type = typeFromTPath(a, p);
 			default:
 				getBaseType('Unknown');
 		}
@@ -47,13 +51,7 @@ class FieldTypeBuilder {
 		var type : Expr;
 		switch(ret) {
 			case(TPath({name: a, params: p})):
-				var base_type = getBaseType(a);
-				if(a == 'Array') {
-					var arrayOf = arrayType(p);
-					type = macro $base_type($arrayOf);
-				} else {
-					type = macro $base_type;
-				}
+                type = typeFromTPath(a, p);
 			default:
 				getBaseType('Unknown');
 		}
@@ -65,14 +63,7 @@ class FieldTypeBuilder {
 
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
-				if(a == 'Array') {
-					var base_type = getBaseType(a);
-					var arrayOf = arrayType(p);
-					type = macro $base_type($arrayOf);
-				} else {
-					var base_type = getBaseType(a);
-					type = macro $base_type;
-				}
+                type = typeFromTPath(a, p);
 			case(FFun({ret: return_type, args: args})):
 				// TODO: add function arguments
 				type = functionReturnType(return_type);
@@ -85,3 +76,4 @@ class FieldTypeBuilder {
 		return type;
     }
 }
+#end
