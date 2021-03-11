@@ -6,4 +6,5 @@ extern class Type {
     public static function int() : Dynamic;
     public static function float() : Dynamic;
     public static function listOf(type:Dynamic) : Dynamic;
+    public static function nonNull(type:Dynamic) : Dynamic;
 }

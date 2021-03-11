@@ -35,15 +35,34 @@ class FieldTypeBuilder {
 		throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
     }
     
-    function typeFromTPath(name: String, ?params: Array<TypeParam>) {
-        var base_type = getBaseType(name);
+    function typeFromTPath(name: String, ?params: Array<TypeParam>, nullable = false) {
         if(name == 'Array') {
             var arrayOf = arrayType(params);
-            return macro $base_type($arrayOf);
-        } else {
-            return macro $base_type;
+			var base_type = getBaseType(name);
+            return macro graphql.GraphQLTypes.NonNull($base_type($arrayOf));
+        } else if (name == 'Null') {
+			var base_type = nullableType(params);
+			return macro $base_type;
+		} else {
+			var base_type = getBaseType(name);
+			if(nullable) {
+				return macro $base_type;
+			} else {
+				return macro graphql.GraphQLTypes.NonNull($base_type);
+			}
         }        
-    }
+	}
+	
+	function nullableType(params: Array<TypeParam>) {
+		var type : Expr;
+		switch(params[0]) {
+            case(TPType(TPath({name: a, params: p}))):
+                type = typeFromTPath(a, p, true);
+			default:
+				getBaseType('Unknown');
+		}
+		return type;
+	}
 
 	function arrayType(params: Array<TypeParam>) {
 		var type : Expr;
