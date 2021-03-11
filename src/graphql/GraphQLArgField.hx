@@ -1,10 +1,9 @@
 package graphql;
 
-@:structInit
-class GraphQLArgField {
+typedef GraphQLArgField = {
     public var name: String;
     public var type: Dynamic;
     public var description: Null<String>;
-    public var defaultValue : Null<Dynamic>;
+    public var ?defaultValue : Null<Dynamic>;
 
 }
