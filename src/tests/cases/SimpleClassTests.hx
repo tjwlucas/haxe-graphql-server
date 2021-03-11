@@ -12,9 +12,11 @@ using Type;
 class SimpleClassTests extends utest.Test {
 
     var fields : Array<GraphQLField>;
+    var gql : TypeObjectDefinition;
 
     function setup() {
-        @:privateAccess fields = SimpleClass.gql.fields;
+        @:privateAccess fields = new SimpleClass().gql.fields;
+        gql = new SimpleClass().gql;
     }
 
 	function specTypes() {
@@ -35,8 +37,8 @@ class SimpleClassTests extends utest.Test {
     }
     
     function specGraphQLField() {
-        Assert.isOfType(SimpleClass.gql, TypeObjectDefinition);
-        @:privateAccess SimpleClass.gql.type_name == 'SimpleClass';
+        Assert.isOfType(gql, TypeObjectDefinition);
+        @:privateAccess gql.type_name == 'SimpleClass';
 
         Assert.isOfType(fields, Array);
         for (f in fields) {
@@ -104,6 +106,7 @@ class SimpleClassTests extends utest.Test {
 }
 
 class SimpleClass extends GraphQLObject {
+    public function new(){}
 	/**
 		This is the `simple_string_field` documentation
 	**/

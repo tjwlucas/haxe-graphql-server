@@ -37,14 +37,21 @@ class OtherObject extends GraphQLObject {
 }
 
 class GraphQLTest extends utest.Test {
+	var obj = new GraphQLInstanceTest();
+	var gql : TypeObjectDefinition;
+
+	function setup() {
+		gql = obj.gql;
+	}
+	
 	function specGraphQLInstanceClass() {
-		Assert.notNull(GraphQLInstanceTest.gql);
-		Assert.notNull(GraphQLInstanceTest.gql.type);
+		Assert.notNull(gql);
+		Assert.notNull(gql.type);
 	}
 
 	function specQuerying() {
 		var schema = new Schema({
-			query: GraphQLInstanceTest.gql.type
+			query: gql.type
 		}.associativeArrayOfObject());
 		var result = GraphQL.executeQuery(schema, '{
                     string_field

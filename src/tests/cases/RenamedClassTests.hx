@@ -9,11 +9,12 @@ import graphql.GraphQLObject;
 
 @:typeName('RenamedForGraphQL')
 class RenamedClass extends GraphQLObject {
+    public function new(){}
     public var string : String = "This is a string";
 }
 
 class RenamedClassTests extends Test {
-    var type = RenamedClass;
+    var type = new RenamedClass();
     function specTypeExists() {
         Assert.notNull(type.gql);
     }

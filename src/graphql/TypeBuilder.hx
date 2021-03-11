@@ -40,10 +40,12 @@ class TypeBuilder {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
-			public static var gql : graphql.TypeObjectDefinition = {
+			public static var _gql : graphql.TypeObjectDefinition = {
 				 fields: $a{graphql_field_definitions},
 				 type_name: $type_name
 			 };
+
+			 public var gql : graphql.TypeObjectDefinition = _gql;
 		}
 
 		for (field in tmp_class.fields) {
@@ -77,12 +79,24 @@ class TypeBuilder {
 			var comment = field.getComment();
 			var deprecationReason = field.getDeprecationReason();
 
+
+			var resolve = macro {};
+			if(!field.is_function) {
+				resolve = macro null;
+			} else {
+				var joined_arguments = [for(f in field.arg_names) macro args[$v{f}] ];
+				var name = f.name;
+				resolve = macro (obj, args : php.NativeArray) -> return Reflect.callMethod(obj, Reflect.field(obj, $v{ name }), $a{ joined_arguments });
+			}
+
+
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
 				type: $type,
 				description: $v{comment},
 				deprecationReason: $deprecationReason,
-				args: php.Lib.toPhpArray( ${ field.args } )
+				args: php.Lib.toPhpArray( ${ field.args } ),
+				resolve: $resolve
 			}
 			return field;
 		}

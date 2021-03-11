@@ -9,7 +9,7 @@ using tests.Util;
 class MethodTest extends utest.Test {
     var fields: Array<GraphQLField>;
     function setup() {
-        fields = @:privateAccess MethodTestObject.gql.fields;
+        fields = @:privateAccess new MethodTestObject().gql.fields;
     }
     function specMethodTestGreet() {
         var field = fields.getFieldDefinitionByName('greet');
@@ -50,6 +50,6 @@ class MethodTestObject extends GraphQLObject {
     }
 
     public function randomList(n:Int) : Array<Float> {
-        return [for (i in 1...n) Math.random()];
+        return [for (i in 1...(n+1)) Math.random()];
     }
 }

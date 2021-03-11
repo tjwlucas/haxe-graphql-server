@@ -14,6 +14,8 @@ class FieldTypeBuilder {
     
     public var type : Expr;
     public var args : Expr = macro [];
+    public var arg_names: Array<String> = [];
+    public var is_function = false;
 
 	public function new(field:Field) {
 		this.field = field;
@@ -25,8 +27,8 @@ class FieldTypeBuilder {
 		} else {
 			try {
 				var cls = Context.getType(type).getClass();
-				if(cls.statics.get().filter((s) -> s.name == 'gql').length > 0) {
-					return macro $i{cls.name}.gql.type;
+				if(cls.statics.get().filter((s) -> s.name == '_gql').length > 0) {
+					return macro $i{cls.name}._gql.type;
 				}
 			} catch (e) {} // Pass through to the error below, no need to throw it especially
 		}
@@ -74,12 +76,14 @@ class FieldTypeBuilder {
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
                 type = typeFromTPath(a, p);
-			case(FFun({ret: return_type, args: args})):
+            case(FFun({ret: return_type, args: args})):
+                is_function = true;
                 // TODO: add function arguments
                 var arg_list : Array<Expr> = [];
                 for(arg in args) {
                     switch(arg.type) {
                         case(TPath({name: a, params: p})):
+                            arg_names.push(arg.name);
                             arg_list.push( macro php.Lib.associativeArrayOfObject({
                                 type: ${ typeFromTPath(a, p) },
                                 name: $v{ arg.name },
