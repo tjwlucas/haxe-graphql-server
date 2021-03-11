@@ -28,9 +28,16 @@ class SimpleClassTests extends utest.Test {
         Std.string(GraphQLTypes.String) == 'String';
         Std.string(GraphQLTypes.Int) == 'Int';
         Std.string(GraphQLTypes.Float) == 'Float';
+
         Std.string(GraphQLTypes.Array(GraphQLTypes.String)) == '[String]';
         Std.string(GraphQLTypes.Array(GraphQLTypes.Int)) == '[Int]';
         Std.string(GraphQLTypes.Array(GraphQLTypes.Float)) == '[Float]';
+
+        Std.string(GraphQLTypes.NonNull(GraphQLTypes.Array(GraphQLTypes.String))) == '[String]!';
+        Std.string(GraphQLTypes.NonNull(GraphQLTypes.Array(GraphQLTypes.Int))) == '[Int]!';
+        Std.string(GraphQLTypes.NonNull(GraphQLTypes.Array(GraphQLTypes.Float))) == '[Float]!';
+
+        Std.string(GraphQLTypes.NonNull(GraphQLTypes.Array(GraphQLTypes.NonNull(GraphQLTypes.Int)))) == '[Int!]!';
 
         // Arbitrary Nesting
         Std.string(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.String)))) == '[[[String]]]';
@@ -54,7 +61,7 @@ class SimpleClassTests extends utest.Test {
     @:depends(specSimpleClassSimpleFieldString)
     function specSimpleClassSimpleFieldStringValues() {
         var field = Util.getFieldDefinitionByName(fields, 'simple_string_field');
-        field.type == GraphQLTypes.String;        
+        Std.string(field.type) == 'String!';
         field.description == 'This is the `simple_string_field` documentation';
         field.deprecationReason == null;
     }
@@ -75,7 +82,7 @@ class SimpleClassTests extends utest.Test {
         var field = Util.getFieldDefinitionByName(fields, 'int_field');
         Assert.notNull(field, 'int_field is missing');
         if(field != null) {
-            field.type == GraphQLTypes.Int;
+            Std.string(field.type) == 'Int!';
         }
     }
 
@@ -83,7 +90,7 @@ class SimpleClassTests extends utest.Test {
         var field = Util.getFieldDefinitionByName(fields, 'int_array');
         Assert.notNull(field);
         if(field != null) {
-            Std.string(field.type) == '[Int]';
+            Std.string(field.type) == '[Int!]!';
         }
     }
 
@@ -92,7 +99,7 @@ class SimpleClassTests extends utest.Test {
         Assert.notNull(field);
         if(field != null) {
             var field = Util.getFieldDefinitionByName(fields, 'nested_int_array');
-            Std.string(field.type) == '[[[Int]]]';
+            Std.string(field.type) == '[[[Int!]!]!]!';
         }
     }
 
@@ -100,7 +107,31 @@ class SimpleClassTests extends utest.Test {
         var field = Util.getFieldDefinitionByName(fields, 'float_field');
         Assert.notNull(field, 'float_field is missing');
         if(field != null) {
-            field.type == GraphQLTypes.Float;
+            Std.string(field.type) == 'Float!';
+        }
+    }
+
+    function specNullableString() {
+        var field = Util.getFieldDefinitionByName(fields, 'nullable_string');
+        Assert.notNull(field, 'nullable_string is missing');
+        if(field != null) {
+            Std.string(field.type) == 'String';
+        }
+    }
+
+    function specNullableArrayOfInts() {
+        var field = Util.getFieldDefinitionByName(fields, 'nullable_array_of_ints');
+        Assert.notNull(field, 'nullable_array_of_ints is missing');
+        if(field != null) {
+            Std.string(field.type) == '[Int!]';
+        }
+    }
+
+    function specNullableArrayOfNullableInts() {
+        var field = Util.getFieldDefinitionByName(fields, 'nullable_array_of_nullable_ints');
+        Assert.notNull(field, 'nullable_array_of_nullable_ints is missing');
+        if(field != null) {
+            Std.string(field.type) == '[Int]';
         }
     }
 }
@@ -134,4 +165,9 @@ class SimpleClass extends GraphQLObject {
 
 
     public var nested_int_array:Array<Array<Array<Int>>>;
+
+
+    public var nullable_string: Null<String>;
+    public var nullable_array_of_ints: Null<Array<Int>>;
+    public var nullable_array_of_nullable_ints : Null<Array<Null<Int>>>;
 }

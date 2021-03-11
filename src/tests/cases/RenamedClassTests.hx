@@ -28,7 +28,7 @@ class RenamedClassTests extends Test {
     function specFields() {
         var fields = @:privateAccess type.gql.fields;
         var field = Util.getFieldDefinitionByName(fields, 'string');
-        field.type == GraphQLTypes.String;
+        Std.string(field.type) == 'String!';
         field.deprecationReason == null;
         field.description == null;
         field.name == 'string';

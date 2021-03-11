@@ -13,28 +13,28 @@ class MethodTest extends utest.Test {
     }
     function specMethodTestGreet() {
         var field = fields.getFieldDefinitionByName('greet');
-        field.type == GraphQLTypes.String;
+        Std.string(field.type) == 'String!';
         var arg : php.NativeArray = field.args[0];
         arg['name'] == 'name';
-        arg['type'] == GraphQLTypes.String;
+        Std.string(arg['type']) == 'String!';
     } 
     function specMethodTestAdd() {
         var field = fields.getFieldDefinitionByName('add');
-        field.type == GraphQLTypes.Float;
+        Std.string(field.type) == 'Float!';
         var arg : php.NativeArray = field.args[0];
         arg['name'] == 'x';
-        arg['type'] == GraphQLTypes.Float;
+        Std.string(arg['type']) == 'Float!';
 
         var arg : php.NativeArray = field.args[1];
         arg['name'] == 'y';
-        arg['type'] == GraphQLTypes.Float;
+        Std.string(arg['type']) == 'Float!';
     } 
     function specMethodTestRandomList() {
         var field = fields.getFieldDefinitionByName('randomList');
-        Std.string(field.type) == '[Float]';
+        Std.string(field.type) == '[Float!]!';
         var arg : php.NativeArray = field.args[0];
         arg['name'] == 'n';
-        arg['type'] == GraphQLTypes.Int;
+        Std.string(arg['type']) == 'Int!';
     }    
 }
 

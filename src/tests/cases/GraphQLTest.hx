@@ -16,7 +16,7 @@ class GraphQLInstanceTest extends GraphQLObject {
 	/**
 		String field comment
 	**/
-	public var string_field:String = 'This is an instance value';
+	public var string_field:Null<String> = 'This is an instance value';
 
 	/**
 		Object field comment
