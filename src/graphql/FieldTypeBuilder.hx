@@ -109,7 +109,7 @@ class FieldTypeBuilder {
 							var defaultValue = arg.value != null ? arg.value : macro null;
 							var arg_field : ExprOf<GraphQLArgField> = macro {
 								var arg : graphql.GraphQLArgField = {
-									type: ${ typeFromTPath(a, p, arg.opt) },
+									type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
 									name: $v{ arg.name },
 									description: null
 								};
