@@ -27,8 +27,8 @@ class FieldTypeBuilder {
 		} else {
 			try {
 				var cls = Context.getType(type).getClass();
-				if(cls.statics.get().filter((s) -> s.name == '_gql').length > 0) {
-					return macro $i{cls.name}._gql.type;
+				if(cls.superClass.t.toString() == 'graphql.GraphQLObject') {
+					return macro () -> $i{cls.name}._gql.type;
 				}
 			} catch (e) {} // Pass through to the error below, no need to throw it especially
 		}
