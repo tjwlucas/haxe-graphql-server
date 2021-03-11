@@ -80,7 +80,12 @@ class GraphQLTest extends utest.Test {
 		var schema = new Schema({
 			query: gql.type
 		}.associativeArrayOfObject());
-		var result = GraphQL.executeQuery(schema, '{
+		var result = GraphQL.executeQuery(schema, "query(
+			$greet:String!, 
+			$person:String!,
+			$x:Int!,
+			$y:Int!
+			){
                     string_field
                     renamed:string_field
                     nested_int
@@ -88,12 +93,17 @@ class GraphQLTest extends utest.Test {
                         string_field
                     }
 					float
-					greet(name:"Unit tests")
-					person(name:"Herbert") {
+					greet(name:$greet)
+					person(name:$person) {
 						name
 					}
-					divide(x: 7, y: 2)
-                }', new GraphQLInstanceTest());
+					divide(x: $x, y: $y)
+                }", new GraphQLInstanceTest(), null, {
+					greet: "Unit tests",
+					person: "Herbert",
+					x: 7,
+					y: 2
+			}.associativeArrayOfObject());
 		result.errors == [].toPhpArray();
 		Assert.notNull(result.data);
 		if (result.data != null) {
