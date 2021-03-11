@@ -7,7 +7,10 @@ using haxe.macro.TypeTools;
 class FieldTypeBuilder {
 	var field:Field;
 	static var types_class = Context.getType('graphql.GraphQLTypes');
-	static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
+    static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
+    
+    var type : Expr;
+
 	public function new(field:Field) {
 		this.field = field;
 	}
@@ -59,21 +62,21 @@ class FieldTypeBuilder {
 	}
 
 	public function getType() {
-		var type:Expr;
+        if(type == null) buildFieldType();
+		return type;
+    }
 
+    public function buildFieldType() : Void {
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
                 type = typeFromTPath(a, p);
 			case(FFun({ret: return_type, args: args})):
-				// TODO: add function arguments
+                // TODO: add function arguments
 				type = functionReturnType(return_type);
 			default:
-				trace(field.kind);
 				getBaseType('Unknown');
 				type = macro 'Unknown';
 		}
-
-		return type;
     }
 }
 #end

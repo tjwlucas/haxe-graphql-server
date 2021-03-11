@@ -93,7 +93,9 @@ class TypeBuilder {
 		if (isVisible(f)) {
 			var deprecationReason = getDeprecationReason(f);
 			var comment = getComment(f);
-			var type = getType(f);
+
+			var field = new FieldTypeBuilder(f);
+			var type = field.getType();
 
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
@@ -140,14 +142,6 @@ class TypeBuilder {
 		} else {
 			null;
 		};
-	}
-
-	/**
-		Determine the type of a field in a macro
-	**/
-	static function getType(field:Field) {
-		var typeBuilder = new FieldTypeBuilder(field);
-		return typeBuilder.getType();
 	}
 	#end
 }
