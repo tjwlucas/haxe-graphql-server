@@ -190,10 +190,10 @@ class FieldTypeBuilder {
 		return field.access.contains(APublic);
 	}
 
-	public function getValidators() : Array<Expr> {
+	public function getValidators(meta : FieldMetadata = Validate) : Array<Expr> {
 		var checks : Array<Expr> = [];
-		if (hasMeta(Validate, true)) {
-			var validations = getMetas(Validate);
+		if (hasMeta(meta, true)) {
+			var validations = getMetas(meta);
 			for(v in validations) {
 				var check = v.params[0];
 				var message = v.params.length > 1 ? v.params[1] : macro "Validation failed";
