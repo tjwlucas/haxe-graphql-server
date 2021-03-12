@@ -185,5 +185,12 @@ class FieldTypeBuilder {
 		}
 		return field.access.contains(APublic);
 	}
+
+	public function getAccessControl() : Expr {
+		if(hasMeta(AccessControl)) {
+			return getMeta(AccessControl).params[0];
+		}
+		return macro true;
+	}
 }
 #end

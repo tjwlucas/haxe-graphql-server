@@ -13,6 +13,7 @@ enum abstract FieldMetadata(String) from String to String {
 	var Hide = "GraphQLHide";
 	var Deprecated = "deprecationReason";
 	var TypeName = "typeName";
+	var AccessControl = "control";
 }
 
 class TypeBuilder {
@@ -78,7 +79,7 @@ class TypeBuilder {
 			var type = field.getType();
 			var comment = field.getComment();
 			var deprecationReason = field.getDeprecationReason();
-
+			var control = field.getAccessControl();
 
 			var resolve = macro {};
 			if(!field.is_function) {
@@ -86,8 +87,15 @@ class TypeBuilder {
 			} else {
 				var joined_arguments = [for(f in field.arg_names) macro args[$v{f}] ];
 				var name = f.name;
-				resolve = macro (obj, args : php.NativeArray) -> {
-					return (php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments }));
+				resolve = macro (obj, args : php.NativeArray, ctx) -> {
+					function control() {
+						return $control;
+					}
+					return if(control()) {
+						return (php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments }));
+					} else {
+						throw new graphql.GraphQLError("Access denied", "access_control");
+					}
 				}
 			}
 
