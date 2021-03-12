@@ -86,7 +86,9 @@ class TypeBuilder {
 			} else {
 				var joined_arguments = [for(f in field.arg_names) macro args[$v{f}] ];
 				var name = f.name;
-				resolve = macro (obj, args : php.NativeArray) -> return Reflect.callMethod(obj, Reflect.field(obj, $v{ name }), $a{ joined_arguments });
+				resolve = macro (obj, args : php.NativeArray) -> {
+					return (php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments }));
+				}
 			}
 
 
