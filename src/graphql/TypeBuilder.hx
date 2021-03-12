@@ -76,6 +76,7 @@ class TypeBuilder {
 	}
 
 	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
+		var cls = Context.getLocalClass().get();
 		var field = new FieldTypeBuilder(f);
 		if (field.isVisible()) {
 			var type = field.getType();
@@ -94,7 +95,8 @@ class TypeBuilder {
 				validations = arg_var_defs.concat(validationContext).concat(validations);
 				postValidations = arg_var_defs.concat(validationContext).concat(postValidations);
 				var name = f.name;
-				resolve = macro (obj, args : graphql.NativeArrayAccessor, ctx) -> {
+				var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
+				resolve = macro (obj : $objectType, args : graphql.NativeArrayAccessor, ctx) -> {
 					$b{validations};
 					var result = php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments });
 					$b{postValidations};
