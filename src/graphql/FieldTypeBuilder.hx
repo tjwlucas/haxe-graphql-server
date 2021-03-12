@@ -153,11 +153,11 @@ class FieldTypeBuilder {
 		return deprecationReason;
     }
     
-    function hasMeta(name : FieldMetadata) {
+    function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;
 		for (meta in field.meta) {
 			if ([':$name', name].contains(meta.name)) {
-				if(found == true) {
+				if(allowMultiple == false && found == true) {
 					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
 				}
 				found = true;
@@ -167,9 +167,13 @@ class FieldTypeBuilder {
 	}
 
 	function getMeta(name : FieldMetadata) {
+		return getMetas(name)[0];
+	}
+
+	function getMetas(name : FieldMetadata) {
 		return field.meta.filter((meta) -> {
 			return [':$name', name].contains(meta.name);
-		})[0];
+		});
 	}
 
 	/**
@@ -186,11 +190,23 @@ class FieldTypeBuilder {
 		return field.access.contains(APublic);
 	}
 
-	public function getAccessControl() : Expr {
-		if(hasMeta(AccessControl)) {
-			return getMeta(AccessControl).params[0];
+	public function getValidators() : Array<Expr> {
+		var checks : Array<Expr> = [];
+		if (hasMeta(Validate, true)) {
+			var validations = getMetas(Validate);
+			for(v in validations) {
+				var check = v.params[0];
+				var message = v.params.length > 1 ? v.params[1] : macro "Validation failed";
+				var extension = v.params.length > 2 ? v.params[2] : macro "validation";
+				var expr = macro {
+					if(!$check) {
+						throw new graphql.GraphQLError($message, $extension);
+					}
+				}
+				checks.push(expr);
+			}
 		}
-		return macro true;
+		return checks;
 	}
 }
 #end
