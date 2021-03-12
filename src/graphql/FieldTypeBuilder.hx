@@ -198,9 +198,10 @@ class FieldTypeBuilder {
 				var check = v.params[0];
 				var message = v.params.length > 1 ? v.params[1] : macro "Validation failed";
 				var extension = v.params.length > 2 ? v.params[2] : macro "validation";
+				var clientSafe = v.params.length > 3 ? v.params[3] : macro null;
 				var expr = macro {
 					if(!$check) {
-						throw new graphql.GraphQLError($message, $extension);
+						throw new graphql.GraphQLError($message, $extension, $clientSafe);
 					}
 				}
 				checks.push(expr);
