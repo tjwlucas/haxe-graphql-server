@@ -27,7 +27,7 @@ class GraphQLInstanceTest extends GraphQLObject {
 	public var float: Float = 7.2;
 	
 
-    public function greet(name:String) : String {
+    public function greet(name:String = 'Bob') : String {
         return 'Hello, $name';
 	}
 	
@@ -49,6 +49,9 @@ class OtherObject extends GraphQLObject {
 	public var string_field:String = 'This is a value on the sub-object';
 }
 
+/**
+	Person class
+**/
 class Person extends GraphQLObject {
 	public function new(name:String) {
 		_name = name;
@@ -56,7 +59,7 @@ class Person extends GraphQLObject {
 
 	private var _name : String;
 	/**
-		String field comment
+		States the person's name
 	**/
 	public function name():String {
 		return 'This person has the name: $_name';

@@ -5,6 +5,7 @@ import graphql.GraphQLField;
 import graphql.GraphQLObject;
 
 using tests.Util;
+using php.Lib;
 
 class MethodTest extends utest.Test {
     var fields: Array<GraphQLField>;
@@ -35,6 +36,16 @@ class MethodTest extends utest.Test {
         var arg : php.NativeArray = field.args[0];
         arg['name'] == 'n';
         Std.string(arg['type']) == 'Int!';
+    } 
+    function specMethodTestRandomListWithDefault() {
+        var field = fields.getFieldDefinitionByName('randomListWithDefault');
+        Std.string(field.type) == '[Float!]!';
+        var args : php.NativeArray = field.args[0];
+        var arg_map : Map<String, Dynamic> = args.hashOfAssociativeArray();
+        arg_map['name'] == 'n';
+        Std.string(arg_map['type']) == 'Int';
+        arg_map.exists('defaultValue') == true;
+        arg_map['defaultValue'] == 5;
     }    
 }
 
@@ -50,6 +61,10 @@ class MethodTestObject extends GraphQLObject {
     }
 
     public function randomList(n:Int) : Array<Float> {
+        return [for (i in 1...(n+1)) Math.random()];
+    }
+
+    public function randomListWithDefault(n:Int = 5) : Array<Float> {
         return [for (i in 1...(n+1)) Math.random()];
     }
 }
