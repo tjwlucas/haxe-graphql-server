@@ -49,8 +49,25 @@ class ManualTest extends GraphQLObject implements GraphQLObjectInterface {
     @:validate(n >= 0, 'n must be non-negative ($n given)')
     @:validate(n <= nlimit, 'n must be <= $nlimit ($n given)')
     @:validate(min <= max, 'min ($min) cannot be greater than max ($max)')
-    @:validateResult( !result.contains(0), 'The result contains a 0 (${Std.string(result)})', "invalid_response" )
+    @:validateResult( !result.contains(0), 'The result contains a 0 (${Std.string(result)})', "invalid_response")
     public function randomInts(n : Int = 10, min : Int = 1, max : Int  = 10) : Null<Array<Int>> {
         return [for(i in 0...n) (Math.random() * (max - min + 1)).floor() + min];
+    }
+
+    public function person(name:String = "Me") : ManualPerson {
+        return new ManualPerson(name);
+    }
+}
+
+@:typeName("Person")
+class ManualPerson extends GraphQLObject {
+    var _name : String;
+    public function new (name:String) {
+        _name = name;
+    }
+
+    @:validate(name != obj._name, 'Both names are the same ($name), and that is arbitrarily disallowed')
+    public function greet(name : String = 'Sir') : String {
+        return 'Hello, $name, my name is $_name';
     }
 }
