@@ -87,10 +87,12 @@ class TypeBuilder {
 			if(!field.is_function) {
 				resolve = macro null;
 			} else {
-				var joined_arguments = [for(f in field.arg_names) macro php_args[$v{f}] ];
+				var joined_arguments = [for(f in field.arg_names) macro args[$v{f}] ];
+				var arg_var_defs = [for(f in field.arg_names) macro var $f = args[$v{f}] ];
+				validations = arg_var_defs.concat(validations);
+				postValidations = arg_var_defs.concat(postValidations);
 				var name = f.name;
-				resolve = macro (obj, php_args : php.NativeArray, ctx) -> {
-					var args = php.Lib.objectOfAssociativeArray(php_args);
+				resolve = macro (obj, args : php.NativeArray, ctx) -> {
 					$b{validations};
 					var result = php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments });
 					$b{postValidations};
