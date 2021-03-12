@@ -1,7 +1,8 @@
 -cp src
 -lib utest
 -lib compiletime
-
+-dce full
+-D analyzer-optimize
 --each
 -main tests.TestLoader
 -php bin/tests
