@@ -1,5 +1,6 @@
 package tests;
 
+import php.Lib;
 import graphql.GraphQLField;
 
 class Util {
@@ -10,5 +11,9 @@ class Util {
 			}
 		}
 		return null;
+	}
+
+	public static function getArgMaps(field : GraphQLField) : Array<Map<String, Dynamic>> {
+		return [for(arg in field.args) Lib.hashOfAssociativeArray(arg)];
 	}
 }

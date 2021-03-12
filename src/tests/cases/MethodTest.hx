@@ -15,37 +15,38 @@ class MethodTest extends utest.Test {
     function specMethodTestGreet() {
         var field = fields.getFieldDefinitionByName('greet');
         Std.string(field.type) == 'String!';
-        var arg : php.NativeArray = field.args[0];
+        var arg = field.getArgMaps()[0];
         arg['name'] == 'name';
         Std.string(arg['type']) == 'String!';
     } 
     function specMethodTestAdd() {
         var field = fields.getFieldDefinitionByName('add');
         Std.string(field.type) == 'Float!';
-        var arg : php.NativeArray = field.args[0];
+        var arg = field.getArgMaps()[0];
         arg['name'] == 'x';
         Std.string(arg['type']) == 'Float!';
 
-        var arg : php.NativeArray = field.args[1];
+        var arg = field.getArgMaps()[1];
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
     } 
     function specMethodTestRandomList() {
         var field = fields.getFieldDefinitionByName('randomList');
         Std.string(field.type) == '[Float!]!';
-        var arg : php.NativeArray = field.args[0];
+        var arg = field.getArgMaps()[0];
         arg['name'] == 'n';
         Std.string(arg['type']) == 'Int!';
+        arg.exists('defaultValue') == false;
     } 
     function specMethodTestRandomListWithDefault() {
         var field = fields.getFieldDefinitionByName('randomListWithDefault');
         Std.string(field.type) == '[Float!]!';
-        var args : php.NativeArray = field.args[0];
-        var arg_map : Map<String, Dynamic> = args.hashOfAssociativeArray();
-        arg_map['name'] == 'n';
-        Std.string(arg_map['type']) == 'Int';
-        arg_map.exists('defaultValue') == true;
-        arg_map['defaultValue'] == 5;
+        var args = field.getArgMaps();
+        var arg = args[0];
+        arg['name'] == 'n';
+        Std.string(arg['type']) == 'Int';
+        arg.exists('defaultValue') == true;
+        arg['defaultValue'] == 5;
     }    
 }
 
