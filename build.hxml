@@ -1,6 +1,11 @@
 -cp src
--main tests.TestLoader
 -lib utest
 -lib compiletime
 
+--each
+-main tests.TestLoader
 -php bin/tests
+
+--next
+-main tests.cases.Manual
+-php bin/manual

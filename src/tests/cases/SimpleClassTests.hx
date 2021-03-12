@@ -134,6 +134,14 @@ class SimpleClassTests extends utest.Test {
             Std.string(field.type) == '[Int]';
         }
     }
+
+    function specBoolField() {
+        var field = Util.getFieldDefinitionByName(fields, 'bool_field');
+        Assert.notNull(field, 'bool_field is missing');
+        if(field != null) {
+            Std.string(field.type) == 'Boolean!';
+        }
+    }
 }
 
 class SimpleClass extends GraphQLObject {
@@ -170,4 +178,5 @@ class SimpleClass extends GraphQLObject {
     public var nullable_string: Null<String>;
     public var nullable_array_of_ints: Null<Array<Int>>;
     public var nullable_array_of_nullable_ints : Null<Array<Null<Int>>>;
+    public var bool_field:Bool;
 }
