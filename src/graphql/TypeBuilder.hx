@@ -89,12 +89,12 @@ class TypeBuilder {
 			if(!field.is_function) {
 				resolve = macro null;
 			} else {
-				var joined_arguments = [for(f in field.arg_names) macro args[$v{f}] ];
-				var arg_var_defs = [for(f in field.arg_names) macro var $f = args[$v{f}] ];
+				var joined_arguments = [for(f in field.arg_names) macro args.$f ];
+				var arg_var_defs = [for(f in field.arg_names) macro var $f = args.$f ];
 				validations = arg_var_defs.concat(validationContext).concat(validations);
 				postValidations = arg_var_defs.concat(validationContext).concat(postValidations);
 				var name = f.name;
-				resolve = macro (obj, args : php.NativeArray, ctx) -> {
+				resolve = macro (obj, args : graphql.NativeArrayAccessor, ctx) -> {
 					$b{validations};
 					var result = php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments });
 					$b{postValidations};
