@@ -7,7 +7,7 @@ import graphql.GraphQLServer;
 class Manual {
     static function main() {
         var base_object = new ManualTest();
-        var server = new GraphQLServer(base_object, base_object);
+        var server = new GraphQLServer(base_object);
         server.run();
     }
 

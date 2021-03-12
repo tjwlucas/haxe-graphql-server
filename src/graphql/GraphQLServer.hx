@@ -12,11 +12,11 @@ class GraphQLServer {
     var mutation : Null<GraphQLObjectInterface>;
     var context : Null<Dynamic>;
     var root : Dynamic;
-    public function new(query : GraphQLObjectInterface, root: Dynamic, ?mutation:GraphQLObjectInterface, ?context:Dynamic) {
-        this.query = query;
+    public function new(base : GraphQLObjectInterface, ?mutation:GraphQLObjectInterface, ?context:Dynamic) {
+        this.query = base;
         this.mutation = mutation;
         this.context = context;
-        this.root = root;
+        this.root = base;
     }
 
     public function executeQuery(query_string:String, variables : NativeArray) {
