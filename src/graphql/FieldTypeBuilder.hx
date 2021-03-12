@@ -208,5 +208,17 @@ class FieldTypeBuilder {
 		}
 		return checks;
 	}
+
+	public function getValidationContext() : Array<Expr> {
+		var expressions : Array<Expr> = [];
+		if (hasMeta(ValidationContext, true)) {
+			var validations = getMetas(ValidationContext);
+			for(v in validations) {
+				var expr = v.params[0];
+				expressions.push(expr);
+			}
+		}
+		return expressions;
+	}
 }
 #end

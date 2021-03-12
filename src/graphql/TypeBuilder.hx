@@ -15,6 +15,7 @@ enum abstract FieldMetadata(String) from String to String {
 	var TypeName = "typeName";
 	var Validate = "validate";
 	var ValidateAfter = "validateResult";
+	var ValidationContext = "validationContext";
 }
 
 class TypeBuilder {
@@ -82,6 +83,7 @@ class TypeBuilder {
 			var deprecationReason = field.getDeprecationReason();
 			var validations = field.getValidators();
 			var postValidations = field.getValidators(ValidateAfter);
+			var validationContext = field.getValidationContext();
 
 			var resolve = macro {};
 			if(!field.is_function) {
@@ -89,8 +91,8 @@ class TypeBuilder {
 			} else {
 				var joined_arguments = [for(f in field.arg_names) macro args[$v{f}] ];
 				var arg_var_defs = [for(f in field.arg_names) macro var $f = args[$v{f}] ];
-				validations = arg_var_defs.concat(validations);
-				postValidations = arg_var_defs.concat(postValidations);
+				validations = arg_var_defs.concat(validationContext).concat(validations);
+				postValidations = arg_var_defs.concat(validationContext).concat(postValidations);
 				var name = f.name;
 				resolve = macro (obj, args : php.NativeArray, ctx) -> {
 					$b{validations};
