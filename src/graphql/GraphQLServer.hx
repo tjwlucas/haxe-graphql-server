@@ -1,5 +1,7 @@
 package graphql;
 
+import graphql.externs.ExecutionResult;
+import php.Exception;
 import php.NativeArray;
 import graphql.externs.GraphQL;
 import haxe.Json;
@@ -29,13 +31,26 @@ class GraphQLServer {
     }
 
     public function run() {
-        var raw_input = File.getContent('php://input');
-        var input = Json.parse(raw_input);
-        var query_string = input.query;
-        var variables = Lib.associativeArrayOfObject( input.variables != null ? input.variables : {} );
-
-        var result = executeQuery(query_string, variables);
-
-        Sys.print(Json.stringify(result));
+        try {
+            var query_string : String;
+            var variables : Dynamic;
+            try{
+                var raw_input = File.getContent('php://input');
+                var input = Json.parse(raw_input);
+                query_string = input.query;
+                variables = Lib.associativeArrayOfObject( input.variables != null ? input.variables : {} );
+            } catch (e : php.Exception) {
+                throw new Exception("No query provided");
+            }
+            var result = executeQuery(query_string, variables);
+            Sys.print(Json.stringify(result.toArray()));
+        } catch (e : php.Exception) {
+            var result = {
+                errors: {
+                    message: e.getMessage()
+                }
+            };
+            Sys.print(Json.stringify(result));
+        }
     }
 }
