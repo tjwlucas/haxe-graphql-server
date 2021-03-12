@@ -18,6 +18,7 @@ class MethodTest extends utest.Test {
         var arg = field.getArgMaps()[0];
         arg['name'] == 'name';
         Std.string(arg['type']) == 'String!';
+        arg.exists('defaultValue') == false;
     } 
     function specMethodTestAdd() {
         var field = fields.getFieldDefinitionByName('add');
@@ -25,10 +26,12 @@ class MethodTest extends utest.Test {
         var arg = field.getArgMaps()[0];
         arg['name'] == 'x';
         Std.string(arg['type']) == 'Float!';
+        arg.exists('defaultValue') == false;
 
         var arg = field.getArgMaps()[1];
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
+        arg.exists('defaultValue') == false;
     } 
     function specMethodTestRandomList() {
         var field = fields.getFieldDefinitionByName('randomList');
