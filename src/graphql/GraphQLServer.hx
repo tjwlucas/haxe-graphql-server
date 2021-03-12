@@ -32,7 +32,7 @@ class GraphQLServer {
         var raw_input = File.getContent('php://input');
         var input = Json.parse(raw_input);
         var query_string = input.query;
-        var variables = Lib.toPhpArray( input.variables != null ? input.variables : [] );
+        var variables = Lib.associativeArrayOfObject( input.variables != null ? input.variables : {} );
 
         var result = executeQuery(query_string, variables);
 

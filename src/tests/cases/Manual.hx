@@ -24,4 +24,8 @@ class ManualTest extends GraphQLObject implements GraphQLObjectInterface {
         Will always return true
     **/
     public var loaded:Bool = true;
+
+    public function greet(name : String = 'Sir') : String {
+        return 'Hello, $name';
+    }
 }
