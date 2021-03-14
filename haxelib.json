@@ -1,0 +1,13 @@
+{
+    "name": "graphql",
+    "url" : "",
+    "license": "",
+    "tags": ["graphql"],
+    "description": "",
+    "version": "",
+    "classPath": "src/",
+    "releasenote": "",
+    "contributors": [],
+    "dependencies": {},
+    "main": ""
+  }
