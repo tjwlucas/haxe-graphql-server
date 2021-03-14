@@ -86,16 +86,23 @@ class TypeBuilder {
 			var postValidations = field.getValidators(ValidateAfter);
 			var validationContext = field.getValidationContext();
 
+			var joined_arguments = [for(f in field.arg_names) macro args.$f ];
+			var arg_var_defs = [for(f in field.arg_names) macro var $f = args.$f ];
+			validations = arg_var_defs.concat(validationContext).concat(validations);
+			postValidations = arg_var_defs.concat(validationContext).concat(postValidations);
+			var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
+			var name = f.name;
+
 			var resolve = macro {};
 			if(!field.is_function) {
-				resolve = macro null;
+				resolve = macro (obj : $objectType, args : graphql.NativeArrayAccessor, ctx) -> {
+					$b{validations};
+					var result = obj.$name;
+					$b{postValidations};
+					return result;
+
+				}
 			} else {
-				var joined_arguments = [for(f in field.arg_names) macro args.$f ];
-				var arg_var_defs = [for(f in field.arg_names) macro var $f = args.$f ];
-				validations = arg_var_defs.concat(validationContext).concat(validations);
-				postValidations = arg_var_defs.concat(validationContext).concat(postValidations);
-				var name = f.name;
-				var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
 				resolve = macro (obj : $objectType, args : graphql.NativeArrayAccessor, ctx) -> {
 					$b{validations};
 					var result = php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments });
