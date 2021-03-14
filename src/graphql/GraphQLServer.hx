@@ -53,4 +53,8 @@ class GraphQLServer {
             Sys.print(Json.stringify(result));
         }
     }
+
+	static function __init__() {
+		php.Global.require_once('vendor/autoload.php');
+	}
 }
