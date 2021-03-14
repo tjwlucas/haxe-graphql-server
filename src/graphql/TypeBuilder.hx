@@ -94,7 +94,10 @@ class TypeBuilder {
 			var name = f.name;
 
 			var resolve = macro {};
-			if(!field.is_function) {
+			if(!field.is_function && validations.length == 0 && postValidations.length == 0) {
+				resolve = macro null;
+			}
+			else if (!field.is_function) {
 				resolve = macro (obj : $objectType, args : graphql.NativeArrayAccessor, ctx) -> {
 					$b{validations};
 					var result = obj.$name;
