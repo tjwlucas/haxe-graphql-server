@@ -69,6 +69,33 @@ class ResolverTest extends utest.Test {
         error.isClientSafe() == true;
     }
 
+    function specListMethod() {
+        // Using just the default values
+        var response = server.executeQuery("{list}");
+        
+        Assert.notNull(response.data);
+        Assert.equals(response.data['list'], [0,1,2,3,4,5,6,7,8,9,10].toPhpArray());
+
+        // Using valid provided values
+        var response = server.executeQuery("{list(min:3, max:8)}");
+        
+        Assert.notNull(response.data);
+        Assert.equals(response.data['list'], [3,4,5,6,7,8].toPhpArray());
+
+        // Using invalid provided values
+        var response = server.executeQuery("{list(min:13, max:8)}");
+        
+        Assert.isNull(response.data);
+
+        Assert.notNull(response.errors);
+        var errors = response.errors.toHaxeArray();
+        errors.length == 1;
+        var error : GraphQLError = errors[0];
+        @:privateAccess error.getMessage() == 'Minimum must be smaller than maximum!';
+        error.getCategory() == 'validation';
+        error.isClientSafe() == true;
+    }
+
     function specResultValidationMethod() {
         // Using valid provided values
         var response = server.executeQuery("query($input:String!){
