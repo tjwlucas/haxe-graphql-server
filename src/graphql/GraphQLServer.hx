@@ -10,11 +10,11 @@ import graphql.externs.Schema;
 using php.Lib;
 
 class GraphQLServer {
-    var query : GraphQLObjectInterface;
-    var mutation : Null<GraphQLObjectInterface>;
+    var query : GraphQLObject;
+    var mutation : Null<GraphQLObject>;
     var context : Null<Dynamic>;
     var root : Dynamic;
-    public function new(base : GraphQLObjectInterface, ?mutation:GraphQLObjectInterface, ?context:Dynamic) {
+    public function new(base : GraphQLObject, ?mutation:GraphQLObject, ?context:Dynamic) {
         this.query = base;
         this.mutation = mutation;
         this.context = context;

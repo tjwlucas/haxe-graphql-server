@@ -46,9 +46,11 @@ class TypeBuilder {
 			public static var _gql : graphql.TypeObjectDefinition = {
 				 fields: $a{graphql_field_definitions},
 				 type_name: $type_name
-			 };
+			};
 
-			 public var gql : graphql.TypeObjectDefinition = _gql;
+			override public function get_gql() : graphql.TypeObjectDefinition {
+				return _gql;
+			};
 		}
 
 		for (field in tmp_class.fields) {
