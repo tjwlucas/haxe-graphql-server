@@ -21,7 +21,10 @@ class GraphQLServer {
         this.root = base;
     }
 
-    public function executeQuery(query_string:String, variables : NativeArray) {
+    public function executeQuery(query_string:String, ?variables : NativeArray) {
+        if(variables == null) {
+            variables = [].toPhpArray();
+        }
 		var schema = new Schema({
             query: query.gql.type,
             mutation: mutation != null ? mutation.gql.type : null

@@ -5,7 +5,6 @@ import sys.io.File;
 import haxe.Json;
 import graphql.GraphQLError;
 import graphql.GraphQLObject;
-import graphql.GraphQLObjectInterface;
 import graphql.GraphQLServer;
 using Math;
 
@@ -30,7 +29,7 @@ class Manual {
 }
 
 @:typeName("Query")
-class ManualTest extends GraphQLObject implements GraphQLObjectInterface {
+class ManualTest extends GraphQLObject {
     public function new() {}
 
     /**
