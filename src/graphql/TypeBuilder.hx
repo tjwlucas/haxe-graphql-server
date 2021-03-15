@@ -18,6 +18,7 @@ enum abstract FieldMetadata(String) from String to String {
 	var ValidationContext = "validationContext";
 	var MutationField = "mutation";
 	var QueryField = "query";
+	var ClassValidationContext = "validationContext";
 }
 
 class TypeBuilder {
@@ -79,19 +80,34 @@ class TypeBuilder {
 		return found;
 	}
 
-	static function classGetMeta(cls: ClassType, name : FieldMetadata) {
+	static function classGetMetas(cls : ClassType, name : FieldMetadata) {
 		return cls.meta.get().filter((meta) -> {
 			return [':$name', name].contains(meta.name);
-		})[0];
+		});
+	}
+
+	static function classGetMeta(cls: ClassType, name : FieldMetadata) {
+		return classGetMetas(cls, name)[0];
 	}
 
 	static function buildFieldType(f:Field, type: GraphQLObjectType = Query):ExprOf<GraphQLField> {
 		var cls = Context.getLocalClass().get();
 		var field = new FieldTypeBuilder(f);
+
 		if(!field.includeOn(type)) {
 			return null;
 		}
 		if (field.isVisible()) {
+
+			var classValidationContext : Array<Expr> = [];
+			if (classHasMeta(cls, ClassValidationContext)) {
+				var validations = classGetMetas(cls, ClassValidationContext);
+				for(v in validations) {
+					var expr = v.params[0];
+					classValidationContext.push(expr);
+				}
+			}
+
 			var type = field.getType();
 			var comment = field.getComment();
 			var deprecationReason = field.getDeprecationReason();
@@ -101,8 +117,8 @@ class TypeBuilder {
 
 			var joined_arguments = [for(f in field.arg_names) macro args.$f ];
 			var arg_var_defs = [for(f in field.arg_names) macro var $f = args.$f ];
-			validations = arg_var_defs.concat(validationContext).concat(validations);
-			postValidations = arg_var_defs.concat(validationContext).concat(postValidations);
+			validations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(validations);
+			postValidations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(postValidations);
 			var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
 			var name = f.name;
 
