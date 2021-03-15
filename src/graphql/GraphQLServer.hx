@@ -20,7 +20,7 @@ class GraphQLServer {
         this.root = base;
     }
 
-    public function executeQuery(query_string:String, ?variables : NativeArray) {
+    public function executeQuery(query_string:String, ?variables : NativeArray, ?operationName:String) {
         if(variables == null) {
             variables = [].toPhpArray();
         }
@@ -29,22 +29,24 @@ class GraphQLServer {
             mutation: query.gql.mutation_type
         }.associativeArrayOfObject());
         
-        return GraphQL.executeQuery(schema, query_string, root, this.context, variables);
+        return GraphQL.executeQuery(schema, query_string, root, this.context, variables, operationName);
     }
 
     public function run() {
         try {
             var query_string : String;
-            var variables : Dynamic;
+            var variables : NativeArray;
+            var operationName : String;
             try{
                 var raw_input = File.getContent('php://input');
                 var input = Json.parse(raw_input);
                 query_string = input.query;
                 variables = Lib.associativeArrayOfObject( input.variables != null ? input.variables : {} );
+                operationName = input.operationName;
             } catch (e : php.Exception) {
                 throw new Exception("No query provided");
             }
-            var result = executeQuery(query_string, variables);
+            var result = executeQuery(query_string, variables, operationName);
             Sys.print(Json.stringify(result.toArray()));
         } catch (e : php.Exception) {
             var result = {
