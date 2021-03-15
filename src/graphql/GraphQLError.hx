@@ -1,6 +1,6 @@
 package graphql;
 
-import graphql.externs.Error.ClientAware;
+import graphql.externs.ClientAware;
 import haxe.Exception;
 
 @:keep class GraphQLError extends Exception implements ClientAware {
