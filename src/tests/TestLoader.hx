@@ -4,16 +4,9 @@ import utest.Runner;
 
 class TestLoader {
 	static function main() {
-		CompileTime.importPackage("tests.cases");
-		var testcases = CompileTime.getAllClasses('tests.cases');
-
 		var runner = new Runner();
 		new NoExitReport(runner);
-		for (c in testcases) {
-			if(Type.getSuperClass(c) == utest.Test) {
-				runner.addCase(Type.createInstance(c, []));
-			}
-		}
+		runner.addCases(tests.cases);
 		runner.run();
 	}
 
@@ -28,10 +21,7 @@ class NoExitReport extends utest.ui.text.PrintReport {
 
 		Sys.println(this.getResults());
 
-		if (result.stats.isOk) {
-			// Sys.println('Tests passed, continuing with build...');
-		} else {
-			// Sys.println('Tests failed, aborting build.');
+		if (!result.stats.isOk) {
 			Sys.exit(1);
 		}
 	}

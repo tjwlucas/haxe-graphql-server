@@ -1,4 +1,4 @@
-package tests.cases;
+package tests;
 
 import php.Session;
 import sys.io.File;

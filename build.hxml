@@ -1,6 +1,5 @@
 -cp src
 -lib utest
--lib compiletime
 -dce full
 -D analyzer-optimize
 --each
@@ -8,5 +7,5 @@
 -php bin/tests
 
 --next
--main tests.cases.Manual
+-main tests.Manual
 -php bin/manual
