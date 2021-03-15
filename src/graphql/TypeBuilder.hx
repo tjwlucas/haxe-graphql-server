@@ -16,6 +16,8 @@ enum abstract FieldMetadata(String) from String to String {
 	var Validate = "validate";
 	var ValidateAfter = "validateResult";
 	var ValidationContext = "validationContext";
+	var MutationField = "mutation";
+	var QueryField = "query";
 }
 
 class TypeBuilder {
@@ -28,10 +30,15 @@ class TypeBuilder {
 	#if macro
 	static function buildClass(fields:Array<Field>) {
 		var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
+		var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
 		for (f in fields) {
 			var new_field = buildFieldType(f);
 			if (new_field != null) {
 				graphql_field_definitions.push(new_field);
+			}
+			var new_field = buildFieldType(f, Mutation);
+			if (new_field != null) {
+				graphql_mutation_field_definitions.push(new_field);
 			}
 		}
 
@@ -45,6 +52,7 @@ class TypeBuilder {
 			**/
 			public static var _gql : graphql.TypeObjectDefinition = {
 				 fields: $a{graphql_field_definitions},
+				 mutation_fields: $a{graphql_mutation_field_definitions},
 				 type_name: $type_name
 			};
 
@@ -77,9 +85,12 @@ class TypeBuilder {
 		})[0];
 	}
 
-	static function buildFieldType(f:Field):ExprOf<GraphQLField> {
+	static function buildFieldType(f:Field, type: GraphQLObjectType = Query):ExprOf<GraphQLField> {
 		var cls = Context.getLocalClass().get();
 		var field = new FieldTypeBuilder(f);
+		if(!field.includeOn(type)) {
+			return null;
+		}
 		if (field.isVisible()) {
 			var type = field.getType();
 			var comment = field.getComment();

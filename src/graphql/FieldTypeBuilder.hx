@@ -221,5 +221,22 @@ class FieldTypeBuilder {
 		}
 		return expressions;
 	}
+
+	public function includeOn(type: GraphQLObjectType) {
+		switch(type) {
+			case Query:
+				if(hasMeta(MutationField) && !hasMeta(QueryField)) {
+					return false;
+				} else {
+					return true;
+				}
+			case Mutation:
+				if(hasMeta(MutationField)) {
+					return true;
+				} else {
+					return false;
+				}
+		}
+	}
 }
 #end

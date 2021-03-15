@@ -14,9 +14,8 @@ class GraphQLServer {
     var mutation : Null<GraphQLObject>;
     var context : Null<Dynamic>;
     var root : Dynamic;
-    public function new(base : GraphQLObject, ?mutation:GraphQLObject, ?context:Dynamic) {
+    public function new(base : GraphQLObject, ?context:Dynamic) {
         this.query = base;
-        this.mutation = mutation;
         this.context = context;
         this.root = base;
     }
@@ -27,7 +26,7 @@ class GraphQLServer {
         }
 		var schema = new Schema({
             query: query.gql.type,
-            mutation: mutation != null ? mutation.gql.type : null
+            mutation: query.gql.mutation_type
         }.associativeArrayOfObject());
         
         return GraphQL.executeQuery(schema, query_string, root, this.context, variables);

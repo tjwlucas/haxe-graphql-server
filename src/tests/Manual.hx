@@ -19,7 +19,7 @@ class Manual {
         }
 
         var base_object = new ManualTest();
-        var server = new GraphQLServer(base_object, null, variables);
+        var server = new GraphQLServer(base_object, variables);
         server.run();
     }
 
