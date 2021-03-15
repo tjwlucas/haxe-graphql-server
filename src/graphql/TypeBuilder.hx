@@ -98,7 +98,7 @@ class TypeBuilder {
 				resolve = macro null;
 			}
 			else if (!field.is_function) {
-				resolve = macro (obj : $objectType, args : graphql.NativeArrayAccessor, ctx) -> {
+				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{validations};
 					var result = obj.$name;
 					$b{postValidations};
@@ -106,7 +106,7 @@ class TypeBuilder {
 
 				}
 			} else {
-				resolve = macro (obj : $objectType, args : graphql.NativeArrayAccessor, ctx) -> {
+				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{validations};
 					var result = php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments });
 					$b{postValidations};
