@@ -16,8 +16,11 @@ class FieldTypeBuilder {
     public var arg_names: Array<String> = [];
     public var is_function = false;
 
-	public function new(field:Field) {
+	public var query_type : GraphQLObjectType;
+
+	public function new(field:Field, type: GraphQLObjectType = Query) {
 		this.field = field;
+		this.query_type = type;
 	}
 
 	function getBaseType(type) {
@@ -27,7 +30,10 @@ class FieldTypeBuilder {
 			try {
 				var cls = Context.getType(type).getClass();
 				if(cls.superClass.t.toString() == 'graphql.GraphQLObject') {
-					return macro () -> $i{cls.name}._gql.type;
+					switch(this.query_type) {
+						case (Query): return macro () -> $i{cls.name}._gql.type;
+						case (Mutation): return macro () -> $i{cls.name}._gql.mutation_type;
+					}
 				}
 			} catch (e) {} // Pass through to the error below, no need to throw it especially
 		}

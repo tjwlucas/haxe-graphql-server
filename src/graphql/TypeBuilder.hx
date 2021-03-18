@@ -92,7 +92,7 @@ class TypeBuilder {
 
 	static function buildFieldType(f:Field, type: GraphQLObjectType = Query):ExprOf<GraphQLField> {
 		var cls = Context.getLocalClass().get();
-		var field = new FieldTypeBuilder(f);
+		var field = new FieldTypeBuilder(f, type);
 
 		if(!field.includeOn(type)) {
 			return null;
