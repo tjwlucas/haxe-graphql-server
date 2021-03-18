@@ -158,6 +158,9 @@ class ResolverTest extends utest.Test {
         Assert.notNull(response.data);
         response.data['withContext'] == 'This is a value on the context';
 
+        var response = server.executeQuery("{withNamedContext}");
+        Assert.notNull(response.data);
+        response.data['withNamedContext'] == 'This is a value on the context';
     }
 }
 
@@ -203,6 +206,11 @@ class ResolverTestObject extends GraphQLObject {
 
     public function withContext(ctx : SomeContextClass) : String {
         return ctx.value;
+    }
+
+    @:context(custom)
+    public function withNamedContext(custom : SomeContextClass) : String {
+        return custom.value;
     }
 }
 

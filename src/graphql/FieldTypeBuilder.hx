@@ -5,6 +5,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 using haxe.macro.TypeTools;
 using StringTools;
+using haxe.macro.ExprTools;
 
 class FieldTypeBuilder {
 	var field:Field;
@@ -101,6 +102,16 @@ class FieldTypeBuilder {
 		return type;
     }
 
+	public function getContextVariableName() {
+		var expr : Expr;
+		if (hasMeta(ContextVar)) {
+			expr = getMeta(ContextVar).params[0];
+		} else {
+			expr = macro ctx;
+		}
+		return expr.toString();
+	}
+
     public function buildFieldType() : Void {
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
@@ -112,7 +123,8 @@ class FieldTypeBuilder {
                     switch(arg.type) {
                         case(TPath({name: a, params: p})):
 							arg_names.push(arg.name);
-							if(arg.name != 'ctx') {
+							var ctx_var_name = getContextVariableName();
+							if(arg.name != ctx_var_name) {
 								var defaultValue = arg.value != null ? arg.value : macro null;
 								var arg_field : ExprOf<GraphQLArgField> = macro {
 									var arg : graphql.GraphQLArgField = {
