@@ -72,7 +72,7 @@ class MutationTest extends utest.Test {
                 queryOnlyField
             }
         }');
-        var data = (response.data : NativeAssocArray<NativeAssocArray<Dynamic>>);
+        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
         data['dynamicMutationReturnTest']['queryOnlyField'] == "Query Only";
 
 
@@ -96,7 +96,7 @@ class MutationTest extends utest.Test {
                 mutationOnlyField
             }
         }');
-        var data = (response.data : NativeAssocArray<NativeAssocArray<Dynamic>>);
+        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
         data['dynamicMutationReturnTest']['mutationOnlyField'] == "Mutation Only";
 
 
