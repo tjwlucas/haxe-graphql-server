@@ -94,9 +94,6 @@ class TypeBuilder {
 		var cls = Context.getLocalClass().get();
 		var field = new FieldTypeBuilder(f, type);
 
-		if(!field.includeOn(type)) {
-			return null;
-		}
 		if (field.isVisible()) {
 
 			var classValidationContext : Array<Expr> = [];

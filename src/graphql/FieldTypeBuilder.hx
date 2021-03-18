@@ -186,14 +186,35 @@ class FieldTypeBuilder {
 		Determines if the field should be visible in the GraphQL Schema
 	**/
 	public function isVisible() {
-		/** Always exclude constructors **/
-		if(field.name == 'new') {
-			return false;
-		}
+		// Never show if flagged as hidden
 		if(hasMeta(Hide)) {
 			return false;
 		}
-		return field.access.contains(APublic);
+
+		/** Always exclude 'special methods' **/
+		if(['new', 'toString'].contains(field.name)) {
+			return false;
+		}
+
+		switch(query_type) {
+			// If not explicitly specified, for query or mutation, use public field access
+			// Otherwise, base purely on metadata
+			case Query:
+				if(hasMeta(MutationField) && !hasMeta(QueryField)) {
+					return false;
+				} else if (hasMeta(QueryField)) {
+					return true;
+				} else {
+					return field.access.contains(APublic);
+				}
+			// Show field on mutation iff has mutation metadata
+			case Mutation:
+				if(hasMeta(MutationField)) {
+					return true;
+				} else {
+					return false;
+				}
+		}
 	}
 
 	public function getValidators(meta : FieldMetadata = Validate) : Array<Expr> {
@@ -226,23 +247,6 @@ class FieldTypeBuilder {
 			}
 		}
 		return expressions;
-	}
-
-	public function includeOn(type: GraphQLObjectType) {
-		switch(type) {
-			case Query:
-				if(hasMeta(MutationField) && !hasMeta(QueryField)) {
-					return false;
-				} else {
-					return true;
-				}
-			case Mutation:
-				if(hasMeta(MutationField)) {
-					return true;
-				} else {
-					return false;
-				}
-		}
 	}
 }
 #end
