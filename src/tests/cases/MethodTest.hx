@@ -51,6 +51,41 @@ class MethodTest extends utest.Test {
         arg.exists('defaultValue') == true;
         arg['defaultValue'] == 5;
     }    
+
+    function specMethodWithPassedInContext() {
+        var field = fields.getFieldDefinitionByName('addWithPassedInContext');
+        Std.string(field.type) == 'Float!';
+        var args = field.getArgMaps();
+        args.length == 2;
+        var arg = args[0];
+        arg['name'] == 'x';
+        Std.string(arg['type']) == 'Float!';
+        var arg = args[1];
+        arg['name'] == 'y';
+        Std.string(arg['type']) == 'Float!';
+
+        var field = fields.getFieldDefinitionByName('addWithPassedInCustomContext');
+        Std.string(field.type) == 'Float!';
+        var args = field.getArgMaps();
+        args.length == 2;
+        var arg = args[0];
+        arg['name'] == 'x';
+        Std.string(arg['type']) == 'Float!';
+        var arg = args[1];
+        arg['name'] == 'y';
+        Std.string(arg['type']) == 'Float!';
+
+        var field = fields.getFieldDefinitionByName('addWithPassedInContextArbitraryOrder');
+        Std.string(field.type) == 'Float!';
+        var args = field.getArgMaps();
+        args.length == 2;
+        var arg = args[0];
+        arg['name'] == 'x';
+        Std.string(arg['type']) == 'Float!';
+        var arg = args[1];
+        arg['name'] == 'y';
+        Std.string(arg['type']) == 'Float!';
+    }
 }
 
 class MethodTestObject extends GraphQLObject {
@@ -70,5 +105,18 @@ class MethodTestObject extends GraphQLObject {
 
     public function randomListWithDefault(n:Int = 5) : Array<Float> {
         return [for (i in 1...(n+1)) Math.random()];
+    }
+
+    public function addWithPassedInContext(x:Float, y:Float, ctx:Dynamic) : Float {
+        return x + y;
+    }
+
+    @:context(customContext)
+    public function addWithPassedInCustomContext(x:Float, y:Float, customContext:Dynamic) : Float {
+        return x + y;
+    }
+
+    public function addWithPassedInContextArbitraryOrder(x:Float, ctx:Dynamic, y:Float) : Float {
+        return x + y;
     }
 }
