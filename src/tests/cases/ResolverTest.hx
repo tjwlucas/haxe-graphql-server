@@ -13,7 +13,8 @@ class ResolverTest extends utest.Test {
     var server : GraphQLServer;
     function setup() {
         var base = new ResolverTestObject();
-        this.server = new GraphQLServer(base);
+        var context = new SomeContextClass();
+        this.server = new GraphQLServer(base, context);
     }
 
     function specSimpleMethod() {
@@ -151,6 +152,13 @@ class ResolverTest extends utest.Test {
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
+
+    function specContext() {
+        var response = server.executeQuery("{withContext}");
+        Assert.notNull(response.data);
+        response.data['withContext'] == 'This is a value on the context';
+
+    }
 }
 
 
@@ -192,4 +200,13 @@ class ResolverTestObject extends GraphQLObject {
     public var unprotectedVariable : Int = 42;
 
     public var unvalidatedVariable : Int = 42;
+
+    public function withContext(ctx : SomeContextClass) : String {
+        return ctx.value;
+    }
+}
+
+class SomeContextClass {
+    public function new(){}
+    public var value = 'This is a value on the context';
 }

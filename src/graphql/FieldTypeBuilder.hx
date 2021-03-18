@@ -112,19 +112,21 @@ class FieldTypeBuilder {
                     switch(arg.type) {
                         case(TPath({name: a, params: p})):
 							arg_names.push(arg.name);
-							var defaultValue = arg.value != null ? arg.value : macro null;
-							var arg_field : ExprOf<GraphQLArgField> = macro {
-								var arg : graphql.GraphQLArgField = {
-									type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
-									name: $v{ arg.name },
-									description: null
+							if(arg.name != 'ctx') {
+								var defaultValue = arg.value != null ? arg.value : macro null;
+								var arg_field : ExprOf<GraphQLArgField> = macro {
+									var arg : graphql.GraphQLArgField = {
+										type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
+										name: $v{ arg.name },
+										description: null
+									};
+									if($defaultValue != null) {
+										arg.defaultValue = $defaultValue;
+									}
+									arg;
 								};
-								if($defaultValue != null) {
-									arg.defaultValue = $defaultValue;
-								}
-								arg;
-							};
-                            arg_list.push( macro php.Lib.associativeArrayOfObject($arg_field));
+								arg_list.push( macro php.Lib.associativeArrayOfObject($arg_field));
+							}
                         default:
                             getBaseType('Unknown');
                     }
