@@ -115,7 +115,7 @@ class TypeBuilder {
 			var ctx_var_name = field.getContextVariableName();
 
 			var joined_arguments = [for(f in field.arg_names) f == ctx_var_name ? macro ctx : macro args.$f ];
-			var arg_var_defs = [for(f in field.arg_names) macro var $f = args.$f ];
+			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = ctx : macro var $f = args.$f ];
 			validations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(validations);
 			postValidations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(postValidations);
 			var objectType = TPath({name: cls.name, params: [], pack: cls.pack});

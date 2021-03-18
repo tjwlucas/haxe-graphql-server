@@ -156,15 +156,32 @@ class ResolverTest extends utest.Test {
     function specContext() {
         var response = server.executeQuery("{withContext}");
         Assert.notNull(response.data);
-        response.data['withContext'] == 'This is a value on the context';
+        if(response.data != null) {
+            response.data['withContext'] == 'This is a value on the context';   
+        }
 
         var response = server.executeQuery("{withNamedContext}");
         Assert.notNull(response.data);
-        response.data['withNamedContext'] == 'This is a value on the context';
+        if(response.data != null) {
+            response.data['withNamedContext'] == 'This is a value on the context';
+        }
+
+        var response = server.executeQuery("{withContextAndValidation}");
+        Assert.notNull(response.data);
+        if(response.data != null) {
+            response.data['withContextAndValidation'] == 'This is a value on the context';
+        }        
+
+        var response = server.executeQuery("{withCustomContextAndValidation}");
+        Assert.notNull(response.data);
+        if(response.data != null) {
+            response.data['withCustomContextAndValidation'] == 'This is a value on the context';
+        }
     }
 }
 
 
+@:validationContext((ctx : SomeContextClass))
 class ResolverTestObject extends GraphQLObject {
     public function new() {}
 
@@ -212,9 +229,22 @@ class ResolverTestObject extends GraphQLObject {
     public function withNamedContext(custom : SomeContextClass) : String {
         return custom.value;
     }
+
+    // Catch a bug whereby context variable is trying to be read from arguments
+    @:validate(ctx.allowed == true)
+    public function withContextAndValidation(ctx : SomeContextClass) : String {
+        return ctx.value;
+    }
+
+    @:context(customContext)
+    @:validate(customContext.allowed == true)
+    public function withCustomContextAndValidation(customContext : SomeContextClass) : String {
+        return customContext.value;
+    }
 }
 
 class SomeContextClass {
     public function new(){}
     public var value = 'This is a value on the context';
+    public var allowed = true;
 }
