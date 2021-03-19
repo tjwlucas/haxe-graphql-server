@@ -89,6 +89,7 @@ class GraphQLTest extends utest.Test {
 			$x:Int!,
 			$y:Int!
 			){
+					__typename
                     string_field
                     renamed:string_field
                     nested_int
@@ -98,6 +99,7 @@ class GraphQLTest extends utest.Test {
 					float
 					greet(name:$greet)
 					person(name:$person) {
+						__typename
 						name
 					}
 					divide(x: $x, y: $y)
@@ -113,9 +115,10 @@ class GraphQLTest extends utest.Test {
 			var data:Map<String, Dynamic> = result.data.hashOfAssociativeArray();
 
 			var keys = [for (k in data.keys()) k];
-			var expected_keys = ['string_field', 'renamed', 'nested_int', 'object_field', 'float', 'greet', 'person', 'divide'];
+			var expected_keys = ['__typename', 'string_field', 'renamed', 'nested_int', 'object_field', 'float', 'greet', 'person', 'divide'];
 			Assert.same(keys, expected_keys, null, 'Key list mismatch. Got: $keys, expected: $expected_keys');
 
+			data['__typename'] == 'Query';
 			data['string_field'] == 'This is an instance value';
 			data['renamed'] == result.data['string_field'];
             data['nested_int'] == [[1].toPhpArray(), [5, 6].toPhpArray()].toPhpArray();
@@ -138,8 +141,9 @@ class GraphQLTest extends utest.Test {
 				var subobject = Lib.hashOfAssociativeArray(data['person']);
 				// Use same() assertion here instead of equality since haxe arrays are underlying objects which will be different instances
 				var keys = [for (k in subobject.keys()) k];
-				var expected_keys = ['name'];
+				var expected_keys = ['__typename', 'name'];
 				Assert.same(keys, expected_keys, null, 'Key list mismatch. Got: $keys, expected: $expected_keys');
+				subobject['__typename'] == 'Person';
 				subobject['name'] == 'This person has the name: Herbert';
 			}
 		}
