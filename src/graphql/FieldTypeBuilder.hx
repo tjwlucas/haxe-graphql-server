@@ -115,7 +115,7 @@ class FieldTypeBuilder {
     public function buildFieldType() : Void {
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
-                type = typeFromTPath(a, p);
+                type = typeFromTPath(a, p, hasMeta('optional'));
             case(FFun({ret: return_type, args: args})):
                 is_function = true;
                 var arg_list : Array<ExprOf<Dynamic>> = [];

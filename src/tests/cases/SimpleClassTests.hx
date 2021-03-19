@@ -142,6 +142,22 @@ class SimpleClassTests extends utest.Test {
             Std.string(field.type) == 'Boolean!';
         }
     }
+
+    function specOptionalString() {
+        var field = Util.getFieldDefinitionByName(fields, 'optional_string');
+        Assert.notNull(field, 'optional_string is missing');
+        if(field != null) {
+            Std.string(field.type) == 'String';
+        }
+    }
+
+    function specOptionalArrayOfInts() {
+        var field = Util.getFieldDefinitionByName(fields, 'optional_array_of_ints');
+        Assert.notNull(field, 'optional_array_of_ints is missing');
+        if(field != null) {
+            Std.string(field.type) == '[Int!]';
+        }
+    }
 }
 
 class SimpleClass extends GraphQLObject {
@@ -176,7 +192,11 @@ class SimpleClass extends GraphQLObject {
 
 
     public var nullable_string: Null<String>;
+    @:optional public var optional_string: String;
+
     public var nullable_array_of_ints: Null<Array<Int>>;
+    @:optional public var  optional_array_of_ints: Array<Int>;
     public var nullable_array_of_nullable_ints : Null<Array<Null<Int>>>;
     public var bool_field:Bool;
+
 }
