@@ -15,11 +15,20 @@ class TypeObjectDefinition {
     var mutation_fields: Null<Array<graphql.GraphQLField>>;
     public var mutation_type : Null<ObjectType>;
 
-    public function new(type_name:String, mutation_name:String, fields:Array<graphql.GraphQLField>, mutation_fields: Array<graphql.GraphQLField>) {
+    public var description: Null<String>;
+
+    public function new(
+        type_name:String, 
+        mutation_name:String, 
+        fields:Array<graphql.GraphQLField>, 
+        mutation_fields: Array<graphql.GraphQLField>,
+        description: String
+        ) {
         this.type_name = type_name;
         this.fields = fields;
         this.mutation_fields = mutation_fields;
         this.mutation_name = mutation_name;
+        this.description = description;
 
         var named_fields : Map<String, NativeArray> = [];
 
@@ -29,6 +38,7 @@ class TypeObjectDefinition {
 
         type  = new ObjectType({
             name: this.type_name,
+            description: this.description,
             fields: Lib.associativeArrayOfHash(named_fields)
         }.associativeArrayOfObject());
 
@@ -40,6 +50,7 @@ class TypeObjectDefinition {
             ];        
             mutation_type  = new ObjectType({
                 name: this.mutation_name,
+                description: this.description,
                 fields: Lib.associativeArrayOfHash(named_mutation_fields)
             }.associativeArrayOfObject());
         }

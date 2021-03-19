@@ -158,8 +158,15 @@ class SimpleClassTests extends utest.Test {
             Std.string(field.type) == '[Int!]';
         }
     }
+
+    function specObjectDescription() {
+        gql.description == 'This is a simple GraphQL class test';
+    }
 }
 
+/**
+    This is a simple GraphQL class test
+**/
 class SimpleClass extends GraphQLObject {
     public function new(){}
 	/**

@@ -9,6 +9,10 @@ using php.Lib;
 
 import graphql.GraphQLObject;
 
+
+/**
+	This is the Query description
+**/
 @:typeName("Query")
 class GraphQLInstanceTest extends GraphQLObject {
 	public function new() {}
@@ -87,9 +91,13 @@ class GraphQLTest extends utest.Test {
 			$greet:String!, 
 			$person:String!,
 			$x:Int!,
-			$y:Int!
+			$y:Int!,
+			$queryTypeName:String!
 			){
 					__typename
+					__type(name:$queryTypeName) {
+						description
+					}
                     string_field
                     renamed:string_field
                     nested_int
@@ -107,7 +115,8 @@ class GraphQLTest extends utest.Test {
 					greet: "Unit tests",
 					person: "Herbert",
 					x: 7,
-					y: 2
+					y: 2,
+					queryTypeName: 'Query'
 			}.associativeArrayOfObject());
 		result.errors == [].toPhpArray();
 		Assert.notNull(result.data);
@@ -115,7 +124,7 @@ class GraphQLTest extends utest.Test {
 			var data:Map<String, Dynamic> = result.data.hashOfAssociativeArray();
 
 			var keys = [for (k in data.keys()) k];
-			var expected_keys = ['__typename', 'string_field', 'renamed', 'nested_int', 'object_field', 'float', 'greet', 'person', 'divide'];
+			var expected_keys = ['__typename', '__type', 'string_field', 'renamed', 'nested_int', 'object_field', 'float', 'greet', 'person', 'divide'];
 			Assert.same(keys, expected_keys, null, 'Key list mismatch. Got: $keys, expected: $expected_keys');
 
 			data['__typename'] == 'Query';
@@ -145,6 +154,16 @@ class GraphQLTest extends utest.Test {
 				Assert.same(keys, expected_keys, null, 'Key list mismatch. Got: $keys, expected: $expected_keys');
 				subobject['__typename'] == 'Person';
 				subobject['name'] == 'This person has the name: Herbert';
+			}
+			
+			Assert.notNull(data['__type'], '__type is null');
+			if (data['__type'] != null) {
+				var subobject = Lib.hashOfAssociativeArray(data['__type']);
+				// Use same() assertion here instead of equality since haxe arrays are underlying objects which will be different instances
+				var keys = [for (k in subobject.keys()) k];
+				var expected_keys = ['description'];
+				Assert.same(keys, expected_keys, null, 'Key list mismatch. Got: $keys, expected: $expected_keys');
+				subobject['description'] == 'This is the Query description';
 			}
 		}
 	}

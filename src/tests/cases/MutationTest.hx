@@ -139,6 +139,20 @@ class MutationTest extends utest.Test {
         var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
         data['dynamicRenamedMutationReturnTest']['__typename'] == "RenamedDynamicMutationReturnTestObject";
     }
+
+    function specRenamedMutationDescription() {
+        // Mutation
+        var response = server.executeQuery('{
+            __type(name:"CustomMutationReturn") {
+                description
+            }
+        }');
+        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
+        Assert.notNull(data['__type']);
+        if(data['__type'] != null) {
+            data['__type']['description'] == 'This is a custom Mutation return object';
+        }
+    }
 }
 
 
@@ -164,6 +178,9 @@ class DynamicMutationReturnTestObject extends GraphQLObject {
     @:mutation public var mutationOnlyField : String = "Mutation Only";
 }
 
+/**
+    This is a custom Mutation return object
+**/
 @:mutationName('CustomMutationReturn')
 class RenamedDynamicMutationReturnTestObject extends GraphQLObject {
     public function new() {}

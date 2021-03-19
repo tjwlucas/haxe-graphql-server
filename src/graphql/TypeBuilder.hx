@@ -58,7 +58,8 @@ class TypeBuilder {
 				 fields: $a{graphql_field_definitions},
 				 mutation_fields: $a{graphql_mutation_field_definitions},
 				 type_name: $type_name,
-				 mutation_name: $mutation_name
+				 mutation_name: $mutation_name,
+				 description: $v{ cls.doc != null ? cls.doc.trim() : null  }
 			};
 
 			override public function get_gql() : graphql.TypeObjectDefinition {
