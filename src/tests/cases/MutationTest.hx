@@ -69,32 +69,6 @@ class MutationTest extends utest.Test {
         // Query
         var response = server.executeQuery('{
             dynamicMutationReturnTest {
-                queryOnlyField
-            }
-        }');
-        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
-        data['dynamicMutationReturnTest']['queryOnlyField'] == "Query Only";
-
-
-        var response = server.executeQuery('{
-            dynamicMutationReturnTest {
-                mutationOnlyField
-            }
-        }');
-        Assert.isNull(response.data);
-        Assert.notNull(response.errors);
-
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error = errors[0];
-        var error_message : String = @:privateAccess error.getMessage();
-        error_message.startsWith('Cannot query field "mutationOnlyField" on type "DynamicMutationReturnTestObject"') == true;
-
-
-    function specDynamicMutationReturn() {
-        // Query
-        var response = server.executeQuery('{
-            dynamicMutationReturnTest {
                 __typename
                 queryOnlyField
             }
@@ -143,7 +117,6 @@ class MutationTest extends utest.Test {
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "DynamicMutationReturnTestObjectMutation"') == true;
-    }
     }
 
     function specRenamedMutationReturn() {
