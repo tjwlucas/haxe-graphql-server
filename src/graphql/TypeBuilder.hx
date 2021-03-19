@@ -13,6 +13,7 @@ enum abstract FieldMetadata(String) from String to String {
 	var Hide = "GraphQLHide";
 	var Deprecated = "deprecationReason";
 	var TypeName = "typeName";
+	var MutationTypeName = "mutationName";
 	var Validate = "validate";
 	var ValidateAfter = "validateResult";
 	var ValidationContext = "validationContext";
@@ -47,6 +48,7 @@ class TypeBuilder {
 		var cls = Context.getLocalClass().get();
 
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
+		var mutation_name : ExprOf<String> = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
 
 		var tmp_class = macro class {
 			/**
@@ -55,7 +57,8 @@ class TypeBuilder {
 			public static var _gql : graphql.TypeObjectDefinition = {
 				 fields: $a{graphql_field_definitions},
 				 mutation_fields: $a{graphql_mutation_field_definitions},
-				 type_name: $type_name
+				 type_name: $type_name,
+				 mutation_name: $mutation_name
 			};
 
 			override public function get_gql() : graphql.TypeObjectDefinition {
