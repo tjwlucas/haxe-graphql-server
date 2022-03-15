@@ -15,7 +15,17 @@ steps:
     image: composer
     commands:
       - composer install
-  - name: Run Tests
-    image: php:cli-alpine
+  - name: Run Tests on PHP7
+    image: php:7-cli-alpine
+    depends_on:
+      - Composer install
+      - Build
+    commands:
+      - php ./bin/tests/index.php
+  - name: Run Tests on PHP8
+    image: php:8-cli-alpine
+    depends_on:
+      - Composer install
+      - Build
     commands:
       - php ./bin/tests/index.php
