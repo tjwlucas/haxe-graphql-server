@@ -10,16 +10,8 @@ using Math;
 
 class Manual {
     static function main() {
-        var variables : Dynamic;
-        try{
-            var input = Json.parse(File.getContent('php://input'));
-            variables = input.variables != null ? input.variables : {};
-        } catch (e) {
-            variables = {};
-        }
-
         var base_object = new ManualTest();
-        var server = new GraphQLServer(base_object, variables);
+        var server = new GraphQLServer(base_object);
         server.run();
     }
 
