@@ -7,7 +7,7 @@ platform:
 
 steps:
   - name: Build
-    image: haxe:4.2.1
+    image: haxe:4.2.4
     commands:
       - haxelib install --always build.hxml
       - haxe build.hxml
