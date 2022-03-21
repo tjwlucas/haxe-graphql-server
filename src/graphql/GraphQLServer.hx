@@ -1,5 +1,6 @@
 package graphql;
 
+import php.Global;
 import graphql.externs.ExecutionResult;
 import php.Exception;
 import php.NativeArray;
@@ -33,6 +34,7 @@ class GraphQLServer {
     }
 
     public function run() {
+        Global.header("Content-Type: application/json; charset=utf-8");
         try {
             var query_string : String;
             var variables : NativeArray;
