@@ -1,5 +1,5 @@
 package graphql;
-import graphql.TypeBuilder.FieldMetadata;
+import graphql.FieldMetadata;
 #if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
