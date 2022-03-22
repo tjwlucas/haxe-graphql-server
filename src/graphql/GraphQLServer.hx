@@ -33,6 +33,10 @@ class GraphQLServer {
         return GraphQL.executeQuery(schema, query_string, root, this.context, variables, operationName);
     }
 
+    /**
+        Take raw input (from `php://input`), run it through the graphql server, and print the output.
+        Expects a JSON in the body in form `{"query": "...", "variables": {}, "operationName": ""}`
+    **/
     public function run() {
         Global.header("Content-Type: application/json; charset=utf-8");
         try {

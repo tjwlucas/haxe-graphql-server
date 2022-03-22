@@ -9,6 +9,9 @@ using StringTools;
 using graphql.TypeBuilder;
 using haxe.macro.TypeTools;
 
+/**
+	Enum of the valid metadata values which have special meaning in the GraphQL schema generation
+**/
 enum abstract FieldMetadata(String) from String to String {
 	var Hide = "GraphQLHide";
 	var Deprecated = "deprecationReason";
@@ -24,6 +27,9 @@ enum abstract FieldMetadata(String) from String to String {
 }
 
 class TypeBuilder {
+	/**
+		Automatically build the GraphQL type definition based on the class
+	**/
 	macro static public function build():Array<Field> {
 		var fields = Context.getBuildFields();
 		buildClass(fields);
@@ -46,7 +52,7 @@ class TypeBuilder {
 		}
 
 		var cls = Context.getLocalClass().get();
-
+		
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
 		var mutation_name : ExprOf<String> = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
 
@@ -85,12 +91,19 @@ class TypeBuilder {
 		return found;
 	}
 
+
+	/**
+		Retrieves list of metadata with the given name (with or without preceding `:`)
+	**/
 	static function classGetMetas(cls : ClassType, name : FieldMetadata) {
 		return cls.meta.get().filter((meta) -> {
 			return [':$name', name].contains(meta.name);
 		});
 	}
 
+	/**
+		Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
+	**/
 	static function classGetMeta(cls: ClassType, name : FieldMetadata) {
 		return classGetMetas(cls, name)[0];
 	}

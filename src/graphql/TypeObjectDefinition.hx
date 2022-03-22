@@ -4,17 +4,45 @@ import php.NativeArray;
 import graphql.externs.ObjectType;
 using php.Lib;
 
+/**
+    Object holding GraphQL schema and resolver definition
+**/
 @:structInit
-class TypeObjectDefinition {    
+class TypeObjectDefinition {
+    /**
+        Name given to the type in GraphQL queries
+    **/ 
     var type_name: String;
+
+    /**
+        Name given to the type in GraphQL queries
+    **/
     var mutation_name : String;
+
+    /**
+        Array of fields, constructed from the class to be added to the GraphQL query type object
+    **/
     var fields: Array<graphql.GraphQLField>;
 
+    /**
+        GraphQL query object type definition, as passed to the `graphql-php` library
+    **/
     public var type : ObjectType;
     
+    /**
+        Array of fields, constructed from the class to be added to the GraphQL mutation type object
+    **/
     var mutation_fields: Null<Array<graphql.GraphQLField>>;
+
+
+    /**
+        GraphQL mutation object type definition, as passed to the `graphql-php` library
+    **/
     public var mutation_type : Null<ObjectType>;
 
+    /**
+        Description of the object, generated from the 'doc' style comment at build time
+    **/
     public var description: Null<String>;
 
     public function new(

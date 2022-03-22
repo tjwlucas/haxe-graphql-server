@@ -186,10 +186,16 @@ class FieldTypeBuilder {
 		return found;
 	}
 
+	/**
+		Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
+	**/
 	function getMeta(name : FieldMetadata) {
 		return getMetas(name)[0];
 	}
 
+	/**
+		Retrieves list of metadata with the given name (with or without preceding `:`)
+	**/
 	function getMetas(name : FieldMetadata) {
 		return field.meta.filter((meta) -> {
 			return [':$name', name].contains(meta.name);
@@ -231,6 +237,9 @@ class FieldTypeBuilder {
 		}
 	}
 
+	/**
+		Retrieves a list of all attached validate metadata entries and returns a list of validation expressions based on them
+	**/
 	public function getValidators(meta : FieldMetadata = Validate) : Array<Expr> {
 		var checks : Array<Expr> = [];
 		if (hasMeta(meta, true)) {
@@ -251,6 +260,9 @@ class FieldTypeBuilder {
 		return checks;
 	}
 
+	/**
+		Gets the validation context metadata, if present, and adds it to the validation expression list, before any of the validations are run.
+	**/
 	public function getValidationContext() : Array<Expr> {
 		var expressions : Array<Expr> = [];
 		if (hasMeta(ValidationContext, true)) {
