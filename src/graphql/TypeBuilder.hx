@@ -20,21 +20,33 @@ class TypeBuilder {
 	}
 
 	#if macro
+
+	/**
+		If `graphql-verbose` flag is set, prints the provided message at build-time
+	**/
+	static function debug(message:String) : Void {
+		if(Context.defined("graphql-verbose")) {
+			Sys.println('${Date.now()}> [graphql] $message');
+		}
+	}
 	static function buildClass(fields:Array<Field>) {
 		var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
 		var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
+
+		var cls = Context.getLocalClass().get();
+		debug('Building ${cls.name} object');
 		for (f in fields) {
 			var new_field = buildFieldType(f);
 			if (new_field != null) {
+				debug('Adding ${cls.name}.${f.name} query field');
 				graphql_field_definitions.push(new_field);
 			}
 			var new_field = buildFieldType(f, Mutation);
 			if (new_field != null) {
+				debug('Adding ${cls.name}.${f.name} mutation field');
 				graphql_mutation_field_definitions.push(new_field);
 			}
 		}
-
-		var cls = Context.getLocalClass().get();
 		
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
 		var mutation_name : ExprOf<String> = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
