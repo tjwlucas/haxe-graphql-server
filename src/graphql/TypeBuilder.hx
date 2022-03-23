@@ -114,6 +114,9 @@ class TypeBuilder {
 			var validationContext = field.getValidationContext();
 			var ctx_var_name = field.getContextVariableName();
 
+			var number_of_validations = validations.length;
+			var number_of_post_validations = postValidations.length;
+
 			var joined_arguments = [for(f in field.arg_names) f == ctx_var_name ? macro ctx : macro args.$f ];
 			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = ctx : macro var $f = args.$f ];
 			validations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(validations);
@@ -123,7 +126,7 @@ class TypeBuilder {
 
 			var resolve = macro {};
 			if (!field.is_function) {
-				if(validations.length == 0  && postValidations.length == 0) {
+				if(number_of_validations == 0 && number_of_post_validations == 0) {
 					resolve = macro null;
 				} else {
 					resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
