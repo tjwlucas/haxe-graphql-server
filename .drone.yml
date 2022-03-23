@@ -1,3 +1,4 @@
+---
 kind: pipeline
 type: docker
 
@@ -29,3 +30,8 @@ steps:
       - Build
     commands:
       - php ./bin/tests/index.php
+---
+kind: signature
+hmac: 4066b7533a0c55c96f7fbb90367756be34c5262e54b4df4090457501f2267cb3
+
+...
