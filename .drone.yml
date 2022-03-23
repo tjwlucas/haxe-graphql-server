@@ -1,6 +1,7 @@
 ---
 kind: pipeline
 type: docker
+name: tests
 
 platform:
   os: linux
@@ -30,8 +31,30 @@ steps:
       - Build
     commands:
       - php ./bin/tests/index.php
+
+---
+kind: pipeline
+name: release
+
+steps:
+  - name: Zip Library
+    image: alpine:3.15.2
+    commands:
+      - apk add zip
+      - zip -r library.zip src *.md *.json README
+  - name: Haxelib Publish
+    image: haxe:4.2.4
+    commands:
+      - haxelib submit library.zip $HAXELIB_PASSWORD --always
+
+when:
+  event:
+  - tag
+
+depends_on:
+- tests
 ---
 kind: signature
-hmac: 4066b7533a0c55c96f7fbb90367756be34c5262e54b4df4090457501f2267cb3
+hmac: b43e6fc6f662723c9528eb5626191d971f186e1f838429379b94e8632efb9f05
 
 ...

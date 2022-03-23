@@ -3,3 +3,4 @@ bin
 *.cache
 dump
 manual_test.php
+library.zip

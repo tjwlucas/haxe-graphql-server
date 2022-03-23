@@ -1,13 +1,13 @@
 {
     "name": "graphql-server-php",
     "url" : "",
-    "license": "",
+    "license": "MIT",
     "tags": ["graphql", "php", "web"],
     "description": "",
-    "version": "",
+    "version": "0.0.1-alpha.1",
     "classPath": "src/",
     "releasenote": "",
-    "contributors": [],
+    "contributors": ["tlucas"],
     "dependencies": {},
     "main": ""
   }
