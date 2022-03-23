@@ -45,3 +45,62 @@ class Query extends GraphQLObject {
     }
 }
 ```
+
+## Quickstart
+
+To set up and run a new GarphQL server, you will need to install this package:
+```
+haxelib install graphql-server-php
+```
+You will also need to install the `webonyx/graphql-php` using composer:
+```
+composer require webonyx/graphql-php
+```
+
+Then the following files:
+
+`src/Main.hx`
+```haxe
+import graphql.GraphQLServer;
+
+class Main {
+    static function main() {
+        var queryObject = new Query();
+        var rootValue = [
+            'prefix' => 'You said: '
+        ];
+        var server = new GraphQLServer(queryObject, rootValue);
+        server.run();
+    }
+}
+```
+`src/Query.hx`
+```haxe
+import graphql.GraphQLObject;
+class Query extends GraphQLObject {
+    public function new(){}    
+    public function echo(message:String, ctx: Map<String, String>) : Null<String> {
+        return ctx['prefix'] + message;
+    }
+}
+```
+`build.hxml`
+```hxml
+-cp src
+--main Main
+-lib graphql-server-php
+-php bin
+```
+
+### Note on autoloading
+By default, this configuration will include a 
+```php
+require_once('vendor/autoload.php');
+```
+Which will work in the case of running a development server like:
+```
+php -S 127.0.0.1:1234 ./bin/index.php
+```
+However, it is likely to need tailoring to your deployment. For that, there is a `vendor` build flag. For example: `-D vendor=../vendor/autoload.php` will change the require statement to `require_once('../vendor/autoload.php');`
+
+`-D vendor=0` or `-D vendor=false` will remove the require statement altogether, if you do not need it.
