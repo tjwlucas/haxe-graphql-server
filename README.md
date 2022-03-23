@@ -9,17 +9,13 @@ As the name implies, the library targets PHP. It does not implement the GraphQL 
 ## Why
 While existing libraries for building a GraphQL servers can yield great results, the syntax required is very verbose. This makes sense in languages like Javascript and PHP, since the required typing information is not necessarily present, but with Haxe's typing system, I thought this could be streamlined. This library is an attempt at doing just that.
 
-### Motivational Example
+### Motivational Example (Building an ObjectType)
 
 #### Plain PHP
-Take the first example given in the `webonyx/graphql-php` documentation:
+Take the first example given in the `webonyx/graphql-php` documentation, and focussing purely on building the main Query object type:
 
 ```php
 <?php
-require_once('vendor/autoload.php');
-use GraphQL\GraphQL;
-use GraphQL\Type\Schema;
-
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -35,49 +31,12 @@ $queryType = new ObjectType([
         ],
     ],
 ]);
-
-$schema = new Schema([
-    'query' => $queryType
-]);
-
-$rawInput = file_get_contents('php://input');
-$input = json_decode($rawInput, true);
-$query = $input['query'];
-$variableValues = isset($input['variables']) ? $input['variables'] : null;
-
-try {
-    $rootValue = ['prefix' => 'You said: '];
-    $result = GraphQL::executeQuery($schema, $query, $rootValue, null, $variableValues);
-    $output = $result->toArray();
-} catch (\Exception $e) {
-    $output = [
-        'errors' => [
-            [
-                'message' => $e->getMessage()
-            ]
-        ]
-    ];
-}
-header('Content-Type: application/json');
-echo json_encode($output);
 ```
 
 #### Equivalent Haxe using `haxe-graphql-php-server`
 
 ```haxe
 import graphql.GraphQLObject;
-import graphql.GraphQLServer;
-
-class Main {
-    static function main() {
-        var queryObject = new Query();
-        var rootValue = [
-            'prefix' => 'You said: '
-        ];
-        var server = new GraphQLServer(queryObject, rootValue);
-        server.run();
-    }
-}
 
 class Query extends GraphQLObject {
     public function new(){}
