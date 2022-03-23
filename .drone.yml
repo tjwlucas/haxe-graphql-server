@@ -44,7 +44,8 @@ steps:
   - name: Zip Library
     image: alpine:3.15.2
     commands:
-      - apk add zip
+      - apk add zip jq
+      - cat haxelib.json | jq ". += {\"version\":\"$DRONE_TAG\"}"
       - zip -r library.zip src *.md *.json README
   - name: Haxelib Publish
     image: haxe:4.2.4
@@ -62,6 +63,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 9f5ea56173d2132c2e013897b4412208e8e89e24ee25c154729748bc44b7810f
+hmac: 4f22c264fda8f5b8de563b6806f1d1b81620f2c717ac55ca633277ce8f6d9bbd
 
 ...
