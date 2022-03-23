@@ -123,12 +123,16 @@ class TypeBuilder {
 
 			var resolve = macro {};
 			if (!field.is_function) {
-				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
-					$b{validations};
-					var result = obj.$name;
-					$b{postValidations};
-					return result;
-
+				if(validations.length == 0  && postValidations.length == 0) {
+					resolve = macro null;
+				} else {
+					resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
+						$b{validations};
+						var result = obj.$name;
+						$b{postValidations};
+						return result;
+	
+					}
 				}
 			} else {
 				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
