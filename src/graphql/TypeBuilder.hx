@@ -126,7 +126,7 @@ class TypeBuilder {
 
 			var resolve = macro {};
 			var fieldPath = macro {};
-			
+
 			if(field.isStatic()) {
 				fieldPath = macro $i{cls.name}.$name;
 			} else {
@@ -141,8 +141,7 @@ class TypeBuilder {
 						$b{validations};
 						var result = $fieldPath;
 						$b{postValidations};
-						return result;
-	
+						return result;	
 					}
 				}
 			} else {
@@ -151,7 +150,6 @@ class TypeBuilder {
 					var result = php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
 					$b{postValidations};
 					return result;
-
 				}
 			}
 
