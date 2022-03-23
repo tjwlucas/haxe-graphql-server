@@ -133,23 +133,29 @@ class TypeBuilder {
 				fieldPath = macro obj.$name;
 			}
 
-			if (!field.is_function) {
-				if(number_of_validations == 0 && number_of_post_validations == 0 && !field.isStatic()) {
-					resolve = macro null;
-				} else {
-					resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
-						$b{validations};
-						var result = $fieldPath;
-						$b{postValidations};
-						return result;	
-					}
-				}
+			var getResult = macro {};
+
+			if(field.is_function) {
+				getResult = macro php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
+			} else {
+				getResult = macro $fieldPath;
+			}
+
+			if(
+				number_of_validations == 0 
+				&& number_of_post_validations == 0 
+				&& !field.isStatic() 
+				&& !field.is_function
+			) {
+				// Prevents creation of redundant anonymous function that simply returns the property value
+				// (This is already the behaviour of the server when no/null callback is provided)
+				resolve = macro null;
 			} else {
 				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{validations};
-					var result = php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
+					var result = $getResult;
 					$b{postValidations};
-					return result;
+					return result;	
 				}
 			}
 
