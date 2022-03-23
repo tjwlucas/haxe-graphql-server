@@ -3,7 +3,7 @@
     "url" : "",
     "license": "MIT",
     "tags": ["graphql", "php", "web"],
-    "description": "",
+    "description": "Macro library that uses traditional Haxe classes to generate a ready to use GraphQL server",
     "version": "0.0.1-alpha.1",
     "classPath": "src/",
     "releasenote": "",
