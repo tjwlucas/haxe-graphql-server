@@ -92,6 +92,8 @@ class Query extends GraphQLObject {
 -php bin
 ```
 
+Is all you need to get a basic GraphQL server up and running.
+
 ### Note on autoloading
 By default, this configuration will include a 
 ```php
