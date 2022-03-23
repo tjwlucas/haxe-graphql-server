@@ -4,6 +4,7 @@ import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import graphql.GraphQLField;
+import graphql.macro.Util;
 
 using StringTools;
 using graphql.TypeBuilder;
@@ -20,30 +21,21 @@ class TypeBuilder {
 	}
 
 	#if macro
-
-	/**
-		If `graphql-verbose` flag is set, prints the provided message at build-time
-	**/
-	static function debug(message:String) : Void {
-		if(Context.defined("graphql-verbose")) {
-			Sys.println('${Date.now()}> [graphql] $message');
-		}
-	}
 	static function buildClass(fields:Array<Field>) {
 		var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
 		var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
 
 		var cls = Context.getLocalClass().get();
-		debug('Building ${cls.name} object');
+		Util.debug('Building ${cls.name} object');
 		for (f in fields) {
 			var new_field = buildFieldType(f);
 			if (new_field != null) {
-				debug('Adding ${cls.name}.${f.name} query field');
+				Util.debug('Adding ${cls.name}.${f.name} query field');
 				graphql_field_definitions.push(new_field);
 			}
 			var new_field = buildFieldType(f, Mutation);
 			if (new_field != null) {
-				debug('Adding ${cls.name}.${f.name} mutation field');
+				Util.debug('Adding ${cls.name}.${f.name} mutation field');
 				graphql_mutation_field_definitions.push(new_field);
 			}
 		}

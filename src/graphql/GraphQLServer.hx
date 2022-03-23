@@ -1,5 +1,6 @@
 package graphql;
 
+import graphql.macro.Util;
 import php.Global;
 import graphql.externs.ExecutionResult;
 import php.Exception;
@@ -65,6 +66,6 @@ class GraphQLServer {
     }
 
 	static function __init__() {
-		php.Global.require_once('vendor/autoload.php');
+        Util.requireVendor();
 	}
 }
