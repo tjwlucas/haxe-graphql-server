@@ -172,6 +172,10 @@ class FieldTypeBuilder {
 		}
 		return deprecationReason;
     }
+
+	public function isStatic() : Bool {
+		return field.access.contains(AStatic);
+	}
     
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;

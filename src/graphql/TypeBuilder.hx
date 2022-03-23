@@ -125,13 +125,21 @@ class TypeBuilder {
 			var name = f.name;
 
 			var resolve = macro {};
+			var fieldPath = macro {};
+			
+			if(field.isStatic()) {
+				fieldPath = macro $i{cls.name}.$name;
+			} else {
+				fieldPath = macro obj.$name;
+			}
+
 			if (!field.is_function) {
-				if(number_of_validations == 0 && number_of_post_validations == 0) {
+				if(number_of_validations == 0 && number_of_post_validations == 0 && !field.isStatic()) {
 					resolve = macro null;
 				} else {
 					resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 						$b{validations};
-						var result = obj.$name;
+						var result = $fieldPath;
 						$b{postValidations};
 						return result;
 	
@@ -140,7 +148,7 @@ class TypeBuilder {
 			} else {
 				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{validations};
-					var result = php.Syntax.code('{0}(...{1})', obj.$name, $a{ joined_arguments });
+					var result = php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
 					$b{postValidations};
 					return result;
 

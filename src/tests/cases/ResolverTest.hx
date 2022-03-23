@@ -178,6 +178,20 @@ class ResolverTest extends utest.Test {
             response.data['withCustomContextAndValidation'] == 'This is a value on the context';
         }
     }
+
+    function specStatic() {
+        var response = server.executeQuery("{staticVar}");
+        Assert.notNull(response.data);
+        if(response.data != null) {
+            response.data['staticVar'] == 'This is a static variable';   
+        }
+
+        var response = server.executeQuery("{staticFunction}");
+        Assert.notNull(response.data);
+        if(response.data != null) {
+            response.data['staticFunction'] == 'This is a static function';   
+        }
+    }
 }
 
 
@@ -240,6 +254,12 @@ class ResolverTestObject extends GraphQLObject {
     @:validate(customContext.allowed == true)
     public function withCustomContextAndValidation(customContext : SomeContextClass) : String {
         return customContext.value;
+    }
+
+    static public var staticVar : String = "This is a static variable";
+
+    static public function staticFunction() : String {
+        return "This is a static function";
     }
 }
 
