@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: tests
+name: Run Tests
 
 platform:
   os: linux
@@ -34,7 +34,11 @@ steps:
 
 ---
 kind: pipeline
-name: release
+name: Release
+
+platform:
+  os: linux
+  arch: arm
 
 steps:
   - name: Zip Library
@@ -52,9 +56,9 @@ trigger:
   - tag
 
 depends_on:
-- tests
+- Run Tests
 ---
 kind: signature
-hmac: 1e99b61e0166b1a3e530db3fa3ec0a3081c510691b65bfe10d2ea846bb64f92a
+hmac: 7dfea8f3229fcf1ed5d9773c4c923fdf0630f92c616ac4ad0a5c30bf268e3003
 
 ...
