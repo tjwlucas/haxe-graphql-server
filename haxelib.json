@@ -1,13 +1,19 @@
 {
-    "name": "graphql-server-php",
-    "url" : "",
-    "license": "MIT",
-    "tags": ["graphql", "php", "web"],
-    "description": "Macro library that uses traditional Haxe classes to generate a ready to use GraphQL server",
-    "version": "",
-    "classPath": "src/",
-    "releasenote": "",
-    "contributors": ["tlucas"],
-    "dependencies": {},
-    "main": ""
-  }
+  "name": "graphql-server-php",
+  "url": "",
+  "license": "MIT",
+  "tags": [
+    "graphql",
+    "php",
+    "web"
+  ],
+  "description": "Macro library that uses traditional Haxe classes to generate a ready to use GraphQL server",
+  "version": "",
+  "classPath": "src/",
+  "releasenote": "",
+  "contributors": [
+    "tlucas"
+  ],
+  "dependencies": {},
+  "main": ""
+}
