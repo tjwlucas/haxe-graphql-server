@@ -50,6 +50,9 @@ steps:
     image: haxe:4.2.4
     commands:
       - haxelib submit library.zip $HAXELIB_PASSWORD --always
+    environment:
+      HAXELIB_PASSWORD:
+        from_secret: HAXELIB_PASSWORD
 
 trigger:
   event:
@@ -59,6 +62,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 7dfea8f3229fcf1ed5d9773c4c923fdf0630f92c616ac4ad0a5c30bf268e3003
+hmac: 9f5ea56173d2132c2e013897b4412208e8e89e24ee25c154729748bc44b7810f
 
 ...
