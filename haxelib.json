@@ -1,8 +1,8 @@
 {
-    "name": "graphql",
+    "name": "graphql-server-php",
     "url" : "",
     "license": "",
-    "tags": ["graphql"],
+    "tags": ["graphql", "php", "web"],
     "description": "",
     "version": "",
     "classPath": "src/",
