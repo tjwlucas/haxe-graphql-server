@@ -47,7 +47,7 @@ steps:
     commands:
       - haxelib submit library.zip $HAXELIB_PASSWORD --always
 
-when:
+trigger:
   event:
   - tag
 
@@ -55,6 +55,6 @@ depends_on:
 - tests
 ---
 kind: signature
-hmac: b2791cf6a989990561957115dfa191d827f02edc96d0f04389e741029f3e15f5
+hmac: 1e99b61e0166b1a3e530db3fa3ec0a3081c510691b65bfe10d2ea846bb64f92a
 
 ...
