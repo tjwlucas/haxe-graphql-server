@@ -185,6 +185,21 @@ class ResolverTest extends utest.Test {
         if(response.data != null) {
             response.data['staticVar'] == 'This is a static variable';   
         }
+        var response = server.executeQuery("{staticVarWithValidation}");
+        Assert.notNull(response.data);
+        if(response.data != null) {
+            response.data['staticVarWithValidation'] == 'This is a static variable (with arbitrary validation)';   
+        }
+        
+        var response = server.executeQuery("{staticVarWithFailingValidation}");
+        Assert.isNull(response.data);
+        Assert.notNull(response.errors);
+        var errors = response.errors.toHaxeArray();
+        errors.length == 1;
+        var error : GraphQLError = errors[0];
+        @:privateAccess error.getMessage() == 'Validation failed';
+        error.getCategory() == 'validation';
+        error.isClientSafe() == true;
 
         var response = server.executeQuery("{staticFunction}");
         Assert.notNull(response.data);
@@ -257,6 +272,12 @@ class ResolverTestObject extends GraphQLObject {
     }
 
     static public var staticVar : String = "This is a static variable";
+
+    @:validate(true)
+    static public var staticVarWithValidation : String = 'This is a static variable (with arbitrary validation)';
+    
+    @:validateResult(result != 'bad')
+    static public var staticVarWithFailingValidation : String = 'bad';
 
     static public function staticFunction() : String {
         return "This is a static function";
