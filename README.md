@@ -160,7 +160,9 @@ A couple of things to note:
 - These scalar types can be used as return values and input argument values.
 - Additionally, any class extending `GraphQLObject` can be used as a return type.
 - Complex *input* types are not currently supported.
-- By default, any property set as `public` will be added to the query type schema, and `private` properties ignored. This can be overwritten (See [metadata](#metadata))
+- By default, any property set as `public` will be added to the query type schema, and `private` properties ignored.
+    - Public properties you want to remove from the schema can be annotated with `@:GraphQLHide`
+    - Private properties can be added to the query schema by annotating with `@:query`
 
 ### Context
 The second parameter passed into the `GraphQLServer` constructor is a 'context' object. This is made available in resolved functions as an extra `ctx` argument. This argument will be ignored by the GraphQL typing macros and will automatically have the provided context passed to it when resolving. The object can be any type.
@@ -186,7 +188,45 @@ class Query extends GraphQLObject {
 }
 ```
 
-The value provided to the `GraphQLServer` at the start is made available via the `ctx` argument. The resultant GraphQL type will only include a `message` argument, the `ctx` is ignored. This `ctx` can be renamed from `ctx` on a per-field basis, using [metadata](#metadata)
+The value provided to the `GraphQLServer` at the start is made available via the `ctx` argument. The resultant GraphQL type will only include a `message` argument, the `ctx` is ignored. This `ctx` can be renamed from `ctx` on a per-field basis, using `@:context` metadata, e.g.:
 
-### Metadata
-TODO
+```haxe
+@:context(renamedContext)
+public function echo(message:String, renamedContext: Map<String, String>) : Null<String> {
+    return renamedContext['prefix'] + message;
+}
+```
+
+Would be functionally equivalent to the previous example.
+
+### Mutations
+
+Any field annotated with `@:mutation` will be added to a Mutation type corresponding to the `GraphQLObject` instead of a `Query` type. (it is permitted to use both `@:query` and `@:mutation`, in which which the property will appear on both Query and Mutation types). If (and only if) the root `GraphQLObject` contains at least one property annotated with `@:mutation`, a mutation root type will be generated. Mutation types follow all the same rules as Query types.
+
+Simple example:
+
+```haxe
+class Base extends GraphQLObject {
+    public function new(){}    
+    public function echo(message:String) : Null<String> {
+        return message;
+    }
+    @:mutation 
+    function login(user:String, password:String, ctx:SessionObject) : Bool {
+        return ctx.login();
+    }
+}
+```
+Would generate a schema following something like this:
+```gql
+type Base {
+    echo(message:String!) : String
+}
+type BaseMutation {
+    login(user:String!, password:String!) : Bool!
+}
+```
+
+### Type Names
+
+By default the types are named after the `ClassName` for the query type, and `ClassNameMutation` for mutation types. This can be modified by using the `@:typeName(MyCustomTypeName)` and `@:mutationName(MyCustomMutationTypeName)` metadata on the class.
