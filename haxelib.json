@@ -1,6 +1,6 @@
 {
   "name": "graphql-server-php",
-  "url": "",
+  "url": "https://github.com/tjwlucas/haxe-graphql-server-php",
   "license": "MIT",
   "tags": [
     "graphql",
