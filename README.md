@@ -271,3 +271,22 @@ class Base extends GraphQLObject {
 
 ### Deprecation
 Any field can be marked as deprecated by annotating with `@:deprecationReason("The deprecation message")`. The deprecation reason is required.
+
+### Description
+'Doc' style comments on both fields and classes will be included on the schema as the field/type description:
+
+```haxe
+/**
+    This comment will describe the type on the schema
+**/
+class Query extends GraphQLObject {
+    public function new(){}    
+
+    /**
+        This comment will describe the echo field on the schema
+    **/
+    public function echo(message:String) : String {
+        return message;
+    }
+}
+```
