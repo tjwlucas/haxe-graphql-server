@@ -251,7 +251,7 @@ class Base extends GraphQLObject {
     @:validate(n >= 0, 'n must be non-negative ($n given)')
     @:validate(n <= nlimit, 'n must be <= $nlimit ($n given)')
     @:validate(ctx.isLoggedIn())
-    public function randomInts(n : Int = 10) : Null<Array<Float>> {
+    public function random(n : Int = 10) : Null<Array<Float>> {
         return [for(i in 0...n) Math.random()];
     }
 }
