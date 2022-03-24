@@ -267,3 +267,7 @@ class Base extends GraphQLObject {
         ...
     }
 }
+```
+
+### Deprecation
+Any field can be marked as deprecated by annotating with `@:deprecationReason("The deprecation message")`. The deprecation reason is required.
