@@ -214,7 +214,7 @@ class Base extends GraphQLObject {
     }
     @:mutation 
     function login(user:String, password:String, ctx:SessionObject) : Bool {
-        return ctx.login();
+        return ctx.login(user, password);
     }
 }
 ```
