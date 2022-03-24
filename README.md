@@ -163,6 +163,7 @@ A couple of things to note:
 - By default, any property set as `public` will be added to the query type schema, and `private` properties ignored.
     - Public properties you want to remove from the schema can be annotated with `@:GraphQLHide`
     - Private properties can be added to the query schema by annotating with `@:query`
+- Default values for function arguments will also be passed into the schema
 
 ### Context
 The second parameter passed into the `GraphQLServer` constructor is a 'context' object. This is made available in resolved functions as an extra `ctx` argument. This argument will be ignored by the GraphQL typing macros and will automatically have the provided context passed to it when resolving. The object can be any type.
@@ -230,3 +231,39 @@ type BaseMutation {
 ### Type Names
 
 By default the types are named after the `ClassName` for the query type, and `ClassNameMutation` for mutation types. This can be modified by using the `@:typeName(MyCustomTypeName)` and `@:mutationName(MyCustomMutationTypeName)` metadata on the class.
+
+### Validation
+
+It is also simple to inject validation into resolvers using the `@:validation` metadata. It takes 3 parameters, only the first of which is required:
+1. A statement that is required to be `true`
+2. A message to return on failure (default `Validation failed`)
+3. A 'category' for the error (default `validation`)
+
+The statement passed in to the `@:validation` metadata can reference the arguments passed to the function, and the context object (using `ctx`). Extra statements can be added to the validation context using `@:validationContext`. This can be added either at the field level, or if added to the class, it will be included for every field on it. You can add as many validation statements as you like.
+
+Validation example:
+
+```haxe
+@:validationContext(var nlimit = 1000)
+class Base extends GraphQLObject {
+    public function new(){}    
+
+    @:validate(n >= 0, 'n must be non-negative ($n given)')
+    @:validate(n <= nlimit, 'n must be <= $nlimit ($n given)')
+    @:validate(ctx.isLoggedIn())
+    public function randomInts(n : Int = 10) : Null<Array<Float>> {
+        return [for(i in 0...n) Math.random()];
+    }
+}
+```
+It is also possible to validate *after* retrieving the value, based on the result, using `@:validateResult`. This works exactly the same, except that the resolver is run *first*, and the result is stored in a `result` variable on the validator context:
+
+```haxe
+class Base extends GraphQLObject {
+    public function new(){}    
+
+    @:validateResult(result != null, "That returned null!")
+    public function getSomeValue() : String {
+        ...
+    }
+}
