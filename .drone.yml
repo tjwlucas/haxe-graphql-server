@@ -46,7 +46,7 @@ steps:
     commands:
       - apk add zip jq
       - cat haxelib.json | jq -r ". += {\"version\":\"${DRONE_TAG}\"}" > tmp && mv tmp haxelib.json
-      - zip -r library.zip src *.md *.json README
+      - zip -r library.zip src *.md haxelib.json README
   - name: Haxelib Publish
     image: haxe:4.2.4
     commands:
@@ -63,6 +63,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 6f599f559e7263d38150f1f35e438628b5e2a5682adc3209ff09d6de769a70c0
+hmac: af3d05afa3c3d2ac0c06dc02a759b4d250116927de19515d24bc04b18a1730df
 
 ...
