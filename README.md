@@ -92,7 +92,7 @@ class Query extends GraphQLObject {
 -php bin
 ```
 
-Is all you need to get a basic GraphQL server up and running.
+Would be all you need to get a basic GraphQL server up and running.
 
 ### Note on autoloading
 By default, this configuration will include a 
@@ -106,3 +106,60 @@ php -S 127.0.0.1:1234 ./bin/index.php
 However, it is likely to need tailoring to your deployment. For that, there is a `vendor` build flag. For example: `-D vendor=../vendor/autoload.php` will change the require statement to `require_once('../vendor/autoload.php');`
 
 `-D vendor=0` or `-D vendor=false` will remove the require statement altogether, if you do not need it.
+
+## Basic functionality
+
+### GraphQLServer
+
+The `GraphqlServer` constructor takes 2 arguments, a `GraphQLObject` (Discussed in more detail, later) which defines the schema in its entirety (including resolvers), and an *optional* `context` object. This can be of *any* type, and is made available to all resolvers, throughout the schema (See [context](#context)) 
+
+### GraphQLObject
+
+The `GraphQLObject` is where the 'magic' happens. Any class that extends `GraphQLObject` will be processed at build time to generate an object type for the schema. For instance, from the earlier example:
+
+```haxe
+import graphql.GraphQLObject;
+
+class Query extends GraphQLObject {
+    public function new(){}    
+    public function echo(message:String) : Null<String> {
+        return message;
+    }
+    public function getObject() : OtherObject {
+        return new OtherObject();
+    }
+}
+
+class OtherObject extends GraphQLObject {
+    public function new(){}
+    public var property : String = "Value";
+    public var float : Float = 3.215;
+}
+```
+
+Will generate:
+```gql
+type Query {
+    echo(message:String!) : String
+    getObject : OtherObject!
+}
+type OtherObject {
+    property : String!
+    float : Float!
+}
+```
+A couple of things to note: 
+- Properties must be *explicitly* typed. (Both return values and function arguments)
+- Allowed scalar types:
+    - `String`
+    - `Int`
+    - `Float`
+    - `Bool`
+    - `Null<T>`
+    - `Array<T>`
+- These scalar types can be used as return values and input argument values.
+- Additionally, any class extending `GraphQLObject` can be used as a return type.
+- Complex *input* types are not currently supported.
+
+### Context
+TODO
