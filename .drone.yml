@@ -31,6 +31,12 @@ steps:
       - Build
     commands:
       - php ./bin/tests/index.php
+  - name: Run Tests on NodeJS
+    image: node:17-alpine3.14
+    depends_on:
+      - Build
+    commands:
+      - node ./bin/tests.js
 
 ---
 kind: pipeline
@@ -63,6 +69,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 1f0792e6547d55ac4ee99b5a67280d4db898b41a6a8d0ebfd2f9b25b1cea4873
+hmac: 4c5c12d36375cdfac7ebd44201a6dc5a65cb4c11c33142556f7b7ad2a70fc230
 
 ...
