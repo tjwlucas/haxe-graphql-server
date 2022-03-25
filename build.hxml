@@ -9,3 +9,8 @@
 --next
 -main tests.Manual
 -php bin/manual
+
+--next
+-main tests.TestLoader
+-lib hxnodejs
+-js bin/tests.js

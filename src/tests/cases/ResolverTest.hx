@@ -1,13 +1,15 @@
 package tests.cases;
 
 import graphql.GraphQLError;
-import php.Exception;
-import php.NativeArray;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
+import graphql.externs.NativeArray;
+using graphql.Util;
 
-using php.Lib;
+#if php
+    import php.Exception;
+#end
 
 class ResolverTest extends utest.Test {
     var server : GraphQLServer;
@@ -43,9 +45,9 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
         var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        // errors.length == 1;
         var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        error.message == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -63,9 +65,9 @@ class ResolverTest extends utest.Test {
 
         Assert.notNull(response.errors);
         var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        // errors.length == 1;
         var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        error.message == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -90,9 +92,9 @@ class ResolverTest extends utest.Test {
 
         Assert.notNull(response.errors);
         var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        // errors.length == 1;
         var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Minimum must be smaller than maximum!';
+        error.message == 'Minimum must be smaller than maximum!';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -119,9 +121,9 @@ class ResolverTest extends utest.Test {
 
         Assert.notNull(response.errors);
         var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        // errors.length == 1;
         var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        error.message == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -146,9 +148,9 @@ class ResolverTest extends utest.Test {
 
         Assert.notNull(response.errors);
         var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        // errors.length == 1;
         var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        error.message == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -195,9 +197,9 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
         var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        // errors.length == 1;
         var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        error.message == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
 

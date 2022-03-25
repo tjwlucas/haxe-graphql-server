@@ -137,7 +137,7 @@ class FieldTypeBuilder {
 									}
 									arg;
 								};
-								arg_list.push( macro php.Lib.associativeArrayOfObject($arg_field));
+								arg_list.push( macro graphql.Util.associativeArrayOfObject($arg_field));
 							}
                         default:
                             getBaseType('Unknown');

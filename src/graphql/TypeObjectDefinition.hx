@@ -1,8 +1,9 @@
 package graphql;
 
-import php.NativeArray;
 import graphql.externs.ObjectType;
-using php.Lib;
+import graphql.externs.NativeArray;
+
+using graphql.Util;
 
 /**
     Object holding GraphQL schema and resolver definition
@@ -67,7 +68,7 @@ class TypeObjectDefinition {
         type  = new ObjectType({
             name: this.type_name,
             description: this.description,
-            fields: Lib.associativeArrayOfHash(named_fields)
+            fields: Util.associativeArrayOfHash(named_fields)
         }.associativeArrayOfObject());
 
         if(mutation_fields.length > 0) {
@@ -79,7 +80,7 @@ class TypeObjectDefinition {
             mutation_type  = new ObjectType({
                 name: this.mutation_name,
                 description: this.description,
-                fields: Lib.associativeArrayOfHash(named_mutation_fields)
+                fields: Util.associativeArrayOfHash(named_mutation_fields)
             }.associativeArrayOfObject());
         }
     }

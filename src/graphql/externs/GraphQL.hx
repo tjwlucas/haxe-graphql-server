@@ -1,6 +1,6 @@
 package graphql.externs;
 
-import php.NativeArray;
+import graphql.externs.NativeArray;
 
 @:native('GraphQL\\GraphQL')
 extern class GraphQL {

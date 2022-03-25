@@ -1,7 +1,6 @@
 package graphql.externs;
 
-import php.NativeArray;
-
+import graphql.externs.NativeArray;
 @:native('GraphQL\\Executor\\ExecutionResult')
 extern class ExecutionResult {
     public function toArray(?debug : Int) : NativeArray;

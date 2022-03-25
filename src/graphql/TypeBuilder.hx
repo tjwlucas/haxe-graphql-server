@@ -140,7 +140,11 @@ class TypeBuilder {
 			var getResult = macro {};
 
 			if(field.is_function) {
-				getResult = macro php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
+				if(Context.defined("php")) {
+					getResult = macro php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
+				} else if(Context.defined("js")) {
+					getResult = macro js.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
+				}
 			} else {
 				getResult = macro $fieldPath;
 			}
@@ -169,7 +173,7 @@ class TypeBuilder {
 				type: $type,
 				description: $v{comment},
 				deprecationReason: $deprecationReason,
-				args: php.Lib.toPhpArray( ${ field.args } ),
+				args: graphql.Util.toPhpArray( ${ field.args } ),
 				resolve: $resolve
 			}
 			return field;

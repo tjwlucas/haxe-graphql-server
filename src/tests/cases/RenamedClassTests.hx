@@ -1,6 +1,6 @@
 package tests.cases;
 
-import php.NativeAssocArray;
+import graphql.externs.NativeArray;
 import graphql.GraphQLServer;
 import graphql.GraphQLTypes;
 import utest.Assert;
@@ -45,14 +45,14 @@ class RenamedClassTests extends Test {
 	    var base = new RenamedClass();
         var server = new GraphQLServer(base);
         var result = server.executeQuery('{__typename}');
-        var data : NativeAssocArray<Dynamic> = result.data;
-        data['__typename'] == 'RenamedForGraphQL';
+        var data : NativeArray = result.data;
+        data.__typename == 'RenamedForGraphQL';
 
 
 	    var base = new NotRenamedClass();
         var server = new GraphQLServer(base);
         var result = server.executeQuery('{__typename}');
-        var data : NativeAssocArray<Dynamic> = result.data;
-        data['__typename'] == 'NotRenamedClass';
+        var data : NativeArray = result.data;
+        data.__typename == 'NotRenamedClass';
     }
 }

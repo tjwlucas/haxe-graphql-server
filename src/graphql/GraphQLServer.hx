@@ -1,15 +1,17 @@
 package graphql;
 
-import graphql.macro.Util;
-import php.Global;
 import graphql.externs.ExecutionResult;
-import php.Exception;
-import php.NativeArray;
 import graphql.externs.GraphQL;
 import haxe.Json;
 import sys.io.File;
 import graphql.externs.Schema;
-using php.Lib;
+
+#if php 
+    import php.Global;
+    import php.Exception;
+#end
+using graphql.Util;
+import graphql.externs.NativeArray;
 
 class GraphQLServer {
     var query : GraphQLObject;
@@ -39,6 +41,7 @@ class GraphQLServer {
         Expects a JSON in the body in form `{"query": "...", "variables": {}, "operationName": ""}`
     **/
     public function run() {
+        #if php
         Global.header("Content-Type: application/json; charset=utf-8");
         try {
             var query_string : String;
@@ -48,7 +51,7 @@ class GraphQLServer {
                 var raw_input = File.getContent('php://input');
                 var input = Json.parse(raw_input);
                 query_string = input.query;
-                variables = Lib.associativeArrayOfObject( input.variables != null ? input.variables : {} );
+                variables = Util.associativeArrayOfObject( input.variables != null ? input.variables : {} );
                 operationName = input.operationName;
             } catch (e : php.Exception) {
                 throw new Exception("No query provided");
@@ -63,9 +66,14 @@ class GraphQLServer {
             };
             Sys.print(Json.stringify(result));
         }
+        #else
+            trace("Not implemented for anything except PHP");
+        #end
     }
 
 	static function __init__() {
-        Util.requireVendor();
+        #if php
+            graphql.macro.Util.requireVendor();
+        #end
 	}
 }

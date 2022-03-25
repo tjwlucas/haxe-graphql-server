@@ -1,6 +1,6 @@
 package graphql.externs;
 
-import php.NativeArray;
+import graphql.externs.NativeArray;
 
 @:native('GraphQL\\Type\\Schema')
 extern class Schema {

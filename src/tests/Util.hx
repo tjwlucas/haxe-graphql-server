@@ -1,6 +1,4 @@
 package tests;
-
-import php.Lib;
 import graphql.GraphQLField;
 
 class Util {
@@ -14,6 +12,10 @@ class Util {
 	}
 
 	public static function getArgMaps(field : GraphQLField) : Array<Map<String, Dynamic>> {
-		return [for(arg in field.args) Lib.hashOfAssociativeArray(arg)];
+		#if php
+			return [for(arg in field.args) graphql.Util.hashOfAssociativeArray(arg)];
+		#else
+			return [for(arg in field.args.toHaxeArray()) graphql.Util.hashOfAssociativeArray(arg)];
+		#end
 	}
 }
