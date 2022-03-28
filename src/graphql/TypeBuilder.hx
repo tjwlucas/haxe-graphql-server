@@ -150,6 +150,7 @@ class TypeBuilder {
 				&& number_of_post_validations == 0 
 				&& !field.isStatic() 
 				&& !field.is_function
+				&& !Context.defined("gql_explicit_resolvers")
 			) {
 				// Prevents creation of redundant anonymous function that simply returns the property value
 				// (This is already the behaviour of the server when no/null callback is provided)
