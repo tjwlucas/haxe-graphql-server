@@ -140,7 +140,7 @@ class TypeBuilder {
 			var getResult = macro {};
 
 			if(field.is_function) {
-				getResult = macro php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
+				getResult = macro php.Syntax.call(obj, $v{ name }, ...$a{ joined_arguments });
 			} else {
 				getResult = macro $fieldPath;
 			}
