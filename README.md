@@ -200,6 +200,9 @@ public function echo(message:String, renamedContext: Map<String, String>) : Null
 
 Would be functionally equivalent to the previous example.
 
+It can also be renamed per-project by defining the `gql_context_variable` build argument.
+e.g. `-D gql_context_variable=renamedContext`.
+
 ### Mutations
 
 Any field annotated with `@:mutation` will be added to a Mutation type corresponding to the `GraphQLObject` instead of a `Query` type. (it is permitted to use both `@:query` and `@:mutation`, in which which the property will appear on both Query and Mutation types). If (and only if) the root `GraphQLObject` contains at least one property annotated with `@:mutation`, a mutation root type will be generated. Mutation types follow all the same rules as Query types.
@@ -298,3 +301,4 @@ class Query extends GraphQLObject {
 |`gql_explicit_resolvers`|`none`|Always build a resolver function for a field (rather than leaving `null` for simple properties, as is default)|
 |`vendor`|`0`/`false`/`[path]`|Disable or set path for [vendor require](#note-on-autoloading)|
 |`graphql-verbose`|`none`|Generate verbose output at build time|
+|`gql_context_variable`|`ctx`|Renames the context variable used in resolvers (see [context](#context))|

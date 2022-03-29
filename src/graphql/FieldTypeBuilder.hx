@@ -107,7 +107,8 @@ class FieldTypeBuilder {
 		if (hasMeta(ContextVar)) {
 			expr = getMeta(ContextVar).params[0];
 		} else {
-			expr = macro ctx;
+			var context_variable_name = Context.defined("gql_context_variable") ? Context.definedValue("gql_context_variable") : 'ctx';
+			expr = macro $i{context_variable_name};
 		}
 		return expr.toString();
 	}

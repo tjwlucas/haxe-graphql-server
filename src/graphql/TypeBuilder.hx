@@ -121,7 +121,7 @@ class TypeBuilder {
 			var number_of_validations = validations.length;
 			var number_of_post_validations = postValidations.length;
 
-			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = ctx : macro var $f = args.$f ];
+			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = $i{ctx_var_name} : macro var $f = args.$f ];
 			validations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(validations);
 			var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
 			var name = f.name;
@@ -162,7 +162,7 @@ class TypeBuilder {
 				// (This is already the behaviour of the server when no/null callback is provided)
 				resolve = macro null;
 			} else {
-				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
+				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, $ctx_var_name) -> {
 					$b{ functionBody }
 				}
 			}
