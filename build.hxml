@@ -2,6 +2,7 @@
 -lib utest
 -dce full
 -D analyzer-optimize
+-D graphql-verbose
 --each
 -main tests.TestLoader
 -php bin/tests
