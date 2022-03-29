@@ -297,3 +297,4 @@ class Query extends GraphQLObject {
 |-|-|-|
 |`gql_explicit_resolvers`|`none`|Always build a resolver function for a field (rather than leaving `null` for simple properties, as is default)|
 |`vendor`|`0`/`false`/`[path]`|Disable or set path for [vendor require](#note-on-autoloading)|
+|`graphql-verbose`|`none`|Generate verbose output at build time|
