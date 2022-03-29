@@ -4,6 +4,10 @@ package graphql.externs;
 abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
     @:op([]) public function arrayRead(key:String) : Dynamic {    
         return this[key];
+    }      
+    
+    @:op([]) public function arrayReadInt(key:Int) : Dynamic {    
+        return this[key];
     }   
     
     @:op(a.b) public inline function fieldRead(name:String) : Dynamic {
@@ -22,6 +26,10 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
 abstract NativeArray(Dynamic) from Dynamic to Dynamic {
   @:op([]) public function arrayRead(key:String) : Dynamic {    
         return Reflect.getProperty(this, key);
+  }      
+    
+  @:op([]) public function arrayReadInt(key:Int) : Dynamic {    
+      return this[key];
   }  
     
   @:op(a.b) public inline function fieldRead(name:String) : Dynamic {

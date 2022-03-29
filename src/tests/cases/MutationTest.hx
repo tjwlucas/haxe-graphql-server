@@ -31,7 +31,7 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
@@ -49,7 +49,7 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
@@ -59,7 +59,7 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
@@ -75,8 +75,9 @@ class MutationTest extends utest.Test {
             }
         }');
         var data : NativeArray = response.data;
-        data.dynamicMutationReturnTest.queryOnlyField == "Query Only";
-        data.dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObject";
+        var dynamicMutationReturnTest : NativeArray = data.dynamicMutationReturnTest;
+        dynamicMutationReturnTest.queryOnlyField == "Query Only";
+        dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObject";
 
 
         var response = server.executeQuery('{
@@ -87,7 +88,7 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
@@ -101,8 +102,9 @@ class MutationTest extends utest.Test {
             }
         }');
         var data : NativeArray = response.data;
-        data.dynamicMutationReturnTest.mutationOnlyField == "Mutation Only";
-        data.dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObjectMutation";
+        var dynamicMutationReturnTest : NativeArray = data.dynamicMutationReturnTest;
+        dynamicMutationReturnTest.mutationOnlyField == "Mutation Only";
+        dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObjectMutation";
 
 
         var response = server.executeQuery('mutation {
@@ -113,7 +115,7 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
@@ -128,7 +130,8 @@ class MutationTest extends utest.Test {
             }
         }');
         var data : NativeArray = response.data;
-        data.dynamicRenamedMutationReturnTest.__typename == "CustomMutationReturn";
+        var dynamicRenamedMutationReturnTest : NativeArray = data.dynamicRenamedMutationReturnTest;
+        dynamicRenamedMutationReturnTest.__typename == "CustomMutationReturn";
 
 
         // Query
@@ -138,7 +141,8 @@ class MutationTest extends utest.Test {
             }
         }');
         var data : NativeArray = response.data;
-        data.dynamicRenamedMutationReturnTest.__typename == "RenamedDynamicMutationReturnTestObject";
+        var dynamicRenamedMutationReturnTest : NativeArray = data.dynamicRenamedMutationReturnTest;
+        dynamicRenamedMutationReturnTest.__typename == "RenamedDynamicMutationReturnTestObject";
     }
 
     function specRenamedMutationDescription() {
@@ -151,7 +155,8 @@ class MutationTest extends utest.Test {
         var data : NativeArray = response.data;
         Assert.notNull(data.__type);
         if(data.__type != null) {
-            data.__type.description == 'This is a custom Mutation return object';
+            var __type : NativeArray = data.__type;
+            __type.description == 'This is a custom Mutation return object';
         }
     }
 }

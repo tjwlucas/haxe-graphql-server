@@ -1,6 +1,5 @@
 package tests.cases;
 
-import graphql.GraphQLError;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
@@ -44,10 +43,10 @@ class ResolverTest extends utest.Test {
         
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
-        var error : GraphQLError = errors[0];
-        error.message == 'Validation failed';
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -64,10 +63,10 @@ class ResolverTest extends utest.Test {
         response.data['protectedNullableAdd'] == null;
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
-        var error : GraphQLError = errors[0];
-        error.message == 'Validation failed';
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -91,10 +90,10 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
-        var error : GraphQLError = errors[0];
-        error.message == 'Minimum must be smaller than maximum!';
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Minimum must be smaller than maximum!';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -120,10 +119,10 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
-        var error : GraphQLError = errors[0];
-        error.message == 'Validation failed';
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -147,10 +146,10 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
-        var error : GraphQLError = errors[0];
-        error.message == 'Validation failed';
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -196,10 +195,10 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{staticVarWithFailingValidation}");
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
+        var errors = response.errors;
         // errors.length == 1;
-        var error : GraphQLError = errors[0];
-        error.message == 'Validation failed';
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
 
