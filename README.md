@@ -94,6 +94,14 @@ class Query implements GraphQLObject {
 
 Would be all you need to get a basic GraphQL server up and running.
 
+### Printing the generated schema
+In order to retrieve the generated schema as a GraphQL Schema Language string, once the `server` object has been created, as above, `server.readSchema()` will return a string containing the schema definition. In this case:
+```gql
+type Query {
+  echo(message: String!): String
+}
+```
+
 ### Note on autoloading
 By default, this configuration will include a 
 ```php
