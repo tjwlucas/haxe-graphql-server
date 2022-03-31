@@ -162,6 +162,15 @@ class SimpleClassTests extends utest.Test {
     function specObjectDescription() {
         gql.description == 'This is a simple GraphQL class test';
     }
+
+    function specStructInitClass() {
+        var object : SimpleStructClass = {int_value: 32};
+        object.gql.description == 'A simple class using @:structInit instead of new()';
+        @:privateAccess var fields = object.gql.fields;
+        var field = Util.getFieldDefinitionByName(fields, 'int_value');
+        Assert.notNull(field);
+        field.resolve == null;
+    }
 }
 
 /**
@@ -206,4 +215,11 @@ class SimpleClass implements GraphQLObject {
     public var nullable_array_of_nullable_ints : Null<Array<Null<Int>>>;
     public var bool_field:Bool;
 
+}
+
+/**
+    A simple class using @:structInit instead of new()
+**/
+@:structInit class SimpleStructClass implements GraphQLObject {
+    public var int_value : Int = 32;
 }

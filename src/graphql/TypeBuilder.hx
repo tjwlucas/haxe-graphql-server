@@ -55,7 +55,7 @@ class TypeBuilder {
 				 description: $v{ cls.doc != null ? cls.doc.trim() : null  }
 			};
 
-			public var gql(get, null) : graphql.TypeObjectDefinition;
+			public var gql(get, null) : graphql.TypeObjectDefinition = null;
 			public function get_gql() : graphql.TypeObjectDefinition {
 				return _gql;
 			};
