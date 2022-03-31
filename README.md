@@ -38,7 +38,7 @@ $queryType = new ObjectType([
 ```haxe
 import graphql.GraphQLObject;
 
-class Query extends GraphQLObject {
+class Query implements GraphQLObject {
     public function new(){}
     public function echo(message:String, ctx:Map<String, String>) : String {
         return ctx['prefix'] + message;
@@ -77,7 +77,7 @@ class Main {
 `src/Query.hx`
 ```haxe
 import graphql.GraphQLObject;
-class Query extends GraphQLObject {
+class Query implements GraphQLObject {
     public function new(){}    
     public function echo(message:String, ctx: Map<String, String>) : Null<String> {
         return ctx['prefix'] + message;
@@ -120,7 +120,7 @@ The `GraphQLObject` is where the 'magic' happens. Any class that extends `GraphQ
 ```haxe
 import graphql.GraphQLObject;
 
-class Query extends GraphQLObject {
+class Query implements GraphQLObject {
     public function new(){}    
     public function echo(message:String) : Null<String> {
         return message;
@@ -130,7 +130,7 @@ class Query extends GraphQLObject {
     }
 }
 
-class OtherObject extends GraphQLObject {
+class OtherObject implements GraphQLObject {
     public function new(){}
     public var property : String = "Value";
     public var float : Float = 3.215;
@@ -181,7 +181,7 @@ class Main {
         server.run();
     }
 }
-class Query extends GraphQLObject {
+class Query implements GraphQLObject {
     public function new(){}    
     public function echo(message:String, ctx: Map<String, String>) : Null<String> {
         return ctx['prefix'] + message;
@@ -200,6 +200,9 @@ public function echo(message:String, renamedContext: Map<String, String>) : Null
 
 Would be functionally equivalent to the previous example.
 
+It can also be renamed per-project by defining the `gql_context_variable` build argument.
+e.g. `-D gql_context_variable=renamedContext`.
+
 ### Mutations
 
 Any field annotated with `@:mutation` will be added to a Mutation type corresponding to the `GraphQLObject` instead of a `Query` type. (it is permitted to use both `@:query` and `@:mutation`, in which which the property will appear on both Query and Mutation types). If (and only if) the root `GraphQLObject` contains at least one property annotated with `@:mutation`, a mutation root type will be generated. Mutation types follow all the same rules as Query types.
@@ -207,7 +210,7 @@ Any field annotated with `@:mutation` will be added to a Mutation type correspon
 Simple example:
 
 ```haxe
-class Base extends GraphQLObject {
+class Base implements GraphQLObject {
     public function new(){}    
     public function echo(message:String) : Null<String> {
         return message;
@@ -245,7 +248,7 @@ Validation example:
 
 ```haxe
 @:validationContext(var nlimit = 1000)
-class Base extends GraphQLObject {
+class Base implements GraphQLObject {
     public function new(){}    
 
     @:validate(n >= 0, 'n must be non-negative ($n given)')
@@ -259,7 +262,7 @@ class Base extends GraphQLObject {
 It is also possible to validate *after* retrieving the value, based on the result, using `@:validateResult`. This works exactly the same, except that the resolver is run *first*, and the result is stored in a `result` variable on the validator context:
 
 ```haxe
-class Base extends GraphQLObject {
+class Base implements GraphQLObject {
     public function new(){}    
 
     @:validateResult(result != null, "That returned null!")
@@ -279,7 +282,7 @@ Any field can be marked as deprecated by annotating with `@:deprecationReason("T
 /**
     This comment will describe the type on the schema
 **/
-class Query extends GraphQLObject {
+class Query implements GraphQLObject {
     public function new(){}    
 
     /**
@@ -290,3 +293,12 @@ class Query extends GraphQLObject {
     }
 }
 ```
+
+### Build flags
+
+|flag|Value|Purpose|
+|-|-|-|
+|`gql_explicit_resolvers`|`none`|Always build a resolver function for a field (rather than leaving `null` for simple properties, as is default)|
+|`vendor`|`0`/`false`/`[path]`|Disable or set path for [vendor require](#note-on-autoloading)|
+|`graphql-verbose`|`none`|Generate verbose output at build time|
+|`gql_context_variable`|`ctx`|Renames the context variable used in resolvers (see [context](#context))|

@@ -30,7 +30,7 @@ class FieldTypeBuilder {
 		} else {
 			try {
 				var cls = Context.getType(type).getClass();
-				if(cls.superClass.t.toString() == 'graphql.GraphQLObject') {
+				if(cls.interfaces.map(i -> i.t.toString()).contains('graphql.GraphQLObject')) {
 					switch(this.query_type) {
 						case (Query): return macro () -> $i{cls.name}._gql.type;
 						case (Mutation): return macro () -> $i{cls.name}._gql.mutation_type;
@@ -107,7 +107,8 @@ class FieldTypeBuilder {
 		if (hasMeta(ContextVar)) {
 			expr = getMeta(ContextVar).params[0];
 		} else {
-			expr = macro ctx;
+			var context_variable_name = Context.defined("gql_context_variable") ? Context.definedValue("gql_context_variable") : 'ctx';
+			expr = macro $i{context_variable_name};
 		}
 		return expr.toString();
 	}

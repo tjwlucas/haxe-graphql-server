@@ -55,7 +55,8 @@ class TypeBuilder {
 				 description: $v{ cls.doc != null ? cls.doc.trim() : null  }
 			};
 
-			override public function get_gql() : graphql.TypeObjectDefinition {
+			public var gql(get, null) : graphql.TypeObjectDefinition;
+			public function get_gql() : graphql.TypeObjectDefinition {
 				return _gql;
 			};
 		}
@@ -121,49 +122,53 @@ class TypeBuilder {
 			var number_of_validations = validations.length;
 			var number_of_post_validations = postValidations.length;
 
-			var joined_arguments = [for(f in field.arg_names) f == ctx_var_name ? macro ctx : macro args.$f ];
 			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = ctx : macro var $f = args.$f ];
-			validations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(validations);
-			postValidations = classValidationContext.concat(arg_var_defs).concat(validationContext).concat(postValidations);
+			// Add renamed context variable to context, even when not present in function argument list
+			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != 'ctx') {
+				var f = ctx_var_name;
+				arg_var_defs.insert(0, macro var $f = ctx);
+			}
+
+			validations = arg_var_defs.concat(classValidationContext).concat(validationContext).concat(validations);
 			var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
 			var name = f.name;
 
+			var fieldPathString = switch(field.isStatic()) {
+				case true: '${cls.name}.$name';
+				case false: 'obj.$name';
+			}
+			var fieldPath = Context.parse(fieldPathString, Context.currentPos());
+			
+			var args_string = field.arg_names.join(', ');
+
+			var getResult = switch(field.is_function) {
+				case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
+				case false: macro $fieldPath;
+			}
+
+			var functionBody = validations.concat([
+				macro var result = $getResult
+			]).concat(postValidations).concat([
+				macro return result
+			]);
+
 			var resolve = macro {};
-			var fieldPath = macro {};
-
-			if(field.isStatic()) {
-				fieldPath = macro $i{cls.name}.$name;
-			} else {
-				fieldPath = macro obj.$name;
-			}
-
-			var getResult = macro {};
-
-			if(field.is_function) {
-				if(Context.defined("php")) {
-					getResult = macro php.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
-				} else if(Context.defined("js")) {
-					getResult = macro js.Syntax.code('{0}(...{1})', $fieldPath, $a{ joined_arguments });
-				}
-			} else {
-				getResult = macro $fieldPath;
-			}
-
 			if(
 				number_of_validations == 0 
 				&& number_of_post_validations == 0 
 				&& !field.isStatic() 
 				&& !field.is_function
+				&& !Context.defined("gql_explicit_resolvers")
 			) {
 				// Prevents creation of redundant anonymous function that simply returns the property value
 				// (This is already the behaviour of the server when no/null callback is provided)
 				resolve = macro null;
+
+				// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
+				f.meta.push({name:':keep', pos: Context.currentPos()});
 			} else {
 				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
-					$b{validations};
-					var result = $getResult;
-					$b{postValidations};
-					return result;	
+					$b{ functionBody }
 				}
 			}
 

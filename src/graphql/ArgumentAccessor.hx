@@ -7,11 +7,7 @@ abstract ArgumentAccessor(NativeArray) from NativeArray to NativeArray {
         return arrayRead(name);
     }
 
-  @:op([]) public function arrayRead(key:String) : Dynamic {    
-    // try {
+  @:op([]) public inline function arrayRead(key:String) : Dynamic {    
       return this[key];
-    // } catch (e:php.ErrorException) {
-    //   return null;
-    // }
   }
 }

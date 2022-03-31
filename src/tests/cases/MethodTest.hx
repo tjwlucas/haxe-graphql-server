@@ -88,7 +88,7 @@ class MethodTest extends utest.Test {
     }
 }
 
-class MethodTestObject extends GraphQLObject {
+class MethodTestObject implements GraphQLObject {
     public function new(){}
 
     public function greet(name:String) : String {
