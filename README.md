@@ -48,7 +48,7 @@ class Query implements GraphQLObject {
 
 ## Quickstart
 
-To set up and run a new GarphQL server, you will need to install this package:
+To set up and run a new GraphQL server, you will need to install this package:
 ```
 haxelib install graphql-server-php
 ```
