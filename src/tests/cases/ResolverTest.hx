@@ -11,8 +11,9 @@ using php.Lib;
 
 class ResolverTest extends utest.Test {
     var server : GraphQLServer;
+    var base : ResolverTestObject;
     function setup() {
-        var base = new ResolverTestObject();
+        base = new ResolverTestObject();
         var context = new SomeContextClass();
         this.server = new GraphQLServer(base, context);
     }
@@ -126,6 +127,27 @@ class ResolverTest extends utest.Test {
         error.isClientSafe() == true;
     }
 
+    function specNullResolvers() {
+        var fields = @:privateAccess base.gql.fields;
+
+        var expect_resolvers = [
+            'unvalidatedVariable' => false,
+            'protectedVariable' => true,
+            'unprotectedVariable' => true,
+            'simpleMethod' => true,
+            'staticFunction' => true,
+            'staticVar' => true
+        ];
+
+        for(name => hasResolver in expect_resolvers) {
+            var field = Util.getFieldDefinitionByName(fields, name);
+            switch(hasResolver) {
+                case true: field.resolve != null;
+                case false: field.resolve == null;
+            }
+        }
+    }
+
     function specVariableResolver() {
         // Get plain unprotected variable
         var response = server.executeQuery("{unprotectedVariable}"); 
@@ -135,7 +157,7 @@ class ResolverTest extends utest.Test {
 
         // Get plain unprotected variable, with no validation metadata)
         var response = server.executeQuery("{unvalidatedVariable}");
-        
+
         Assert.notNull(response.data);
         Assert.equals(response.data['unvalidatedVariable'], 42);    
 
