@@ -142,9 +142,7 @@ class TypeBuilder {
 			var args_string = field.arg_names.join(', ');
 
 			var getResult = switch(field.is_function) {
-				case true: {
-					Context.parse('$fieldPathString($args_string);', Context.currentPos());
-				}
+				case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
 				case false: macro $fieldPath;
 			}
 
