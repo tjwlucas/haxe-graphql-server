@@ -10,12 +10,12 @@ import graphql.GraphQLObject;
 
 
 @:typeName('RenamedForGraphQL')
-class RenamedClass extends GraphQLObject {
+class RenamedClass implements GraphQLObject {
     public function new(){}
     public var string : String = "This is a string";
 }
 
-class NotRenamedClass extends GraphQLObject {
+class NotRenamedClass implements GraphQLObject {
     public function new(){}
     public var string : String = "This is a string";
 }

@@ -30,7 +30,7 @@ class FieldTypeBuilder {
 		} else {
 			try {
 				var cls = Context.getType(type).getClass();
-				if(cls.superClass.t.toString() == 'graphql.GraphQLObject') {
+				if(cls.interfaces.map(i -> i.t.toString()).contains('graphql.GraphQLObject')) {
 					switch(this.query_type) {
 						case (Query): return macro () -> $i{cls.name}._gql.type;
 						case (Mutation): return macro () -> $i{cls.name}._gql.mutation_type;

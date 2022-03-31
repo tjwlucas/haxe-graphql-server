@@ -23,7 +23,7 @@ class Manual {
 }
 
 @:typeName("Query")
-class ManualTest extends GraphQLObject {
+class ManualTest implements GraphQLObject {
     public function new() {}
 
     /**
@@ -53,7 +53,7 @@ class ManualTest extends GraphQLObject {
 }
 
 @:typeName("Person")
-class ManualPerson extends GraphQLObject {
+class ManualPerson implements GraphQLObject {
     var _name : String;
     public function new (name:String) {
         _name = name;

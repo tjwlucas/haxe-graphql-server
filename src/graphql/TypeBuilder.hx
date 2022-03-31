@@ -55,7 +55,8 @@ class TypeBuilder {
 				 description: $v{ cls.doc != null ? cls.doc.trim() : null  }
 			};
 
-			override public function get_gql() : graphql.TypeObjectDefinition {
+			public var gql(get, null) : graphql.TypeObjectDefinition;
+			public function get_gql() : graphql.TypeObjectDefinition {
 				return _gql;
 			};
 		}
@@ -167,6 +168,9 @@ class TypeBuilder {
 				// Prevents creation of redundant anonymous function that simply returns the property value
 				// (This is already the behaviour of the server when no/null callback is provided)
 				resolve = macro null;
+
+				// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
+				f.meta.push({name:':keep', pos: Context.currentPos()});
 			} else {
 				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{ functionBody }

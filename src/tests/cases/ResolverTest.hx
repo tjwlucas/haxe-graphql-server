@@ -211,7 +211,7 @@ class ResolverTest extends utest.Test {
 
 
 @:validationContext((ctx : SomeContextClass))
-class ResolverTestObject extends GraphQLObject {
+class ResolverTestObject implements GraphQLObject {
     public function new() {}
 
     public function simpleMethod() : String {

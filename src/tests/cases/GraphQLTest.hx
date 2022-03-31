@@ -14,7 +14,7 @@ import graphql.GraphQLObject;
 	This is the Query description
 **/
 @:typeName("Query")
-class GraphQLInstanceTest extends GraphQLObject {
+class GraphQLInstanceTest implements GraphQLObject {
 	public function new() {}
 
 	/**
@@ -44,7 +44,7 @@ class GraphQLInstanceTest extends GraphQLObject {
     }
 }
 
-class OtherObject extends GraphQLObject {
+class OtherObject implements GraphQLObject {
 	public function new() {}
 
 	/**
@@ -56,7 +56,7 @@ class OtherObject extends GraphQLObject {
 /**
 	Person class
 **/
-class Person extends GraphQLObject {
+class Person implements GraphQLObject {
 	public function new(name:String) {
 		_name = name;
 	}

@@ -167,7 +167,7 @@ class SimpleClassTests extends utest.Test {
 /**
     This is a simple GraphQL class test
 **/
-class SimpleClass extends GraphQLObject {
+class SimpleClass implements GraphQLObject {
     public function new(){}
 	/**
 		This is the `simple_string_field` documentation

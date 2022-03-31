@@ -156,7 +156,7 @@ class MutationTest extends utest.Test {
 }
 
 
-class MutationTestObject extends GraphQLObject {
+class MutationTestObject implements GraphQLObject {
     public function new() {}
 
     public var queryOnlyField : String = "Query Only";
@@ -172,7 +172,7 @@ class MutationTestObject extends GraphQLObject {
 
 }
 
-class DynamicMutationReturnTestObject extends GraphQLObject {
+class DynamicMutationReturnTestObject implements GraphQLObject {
     public function new() {}
     public var queryOnlyField : String = "Query Only";
     @:mutation public var mutationOnlyField : String = "Mutation Only";
@@ -182,7 +182,7 @@ class DynamicMutationReturnTestObject extends GraphQLObject {
     This is a custom Mutation return object
 **/
 @:mutationName('CustomMutationReturn')
-class RenamedDynamicMutationReturnTestObject extends GraphQLObject {
+class RenamedDynamicMutationReturnTestObject implements GraphQLObject {
     public function new() {}
     public var queryOnlyField : String = "Query Only";
     @:mutation public var mutationOnlyField : String = "Mutation Only";
