@@ -1,5 +1,6 @@
 package graphql;
 
+import graphql.externs.SchemaPrinter;
 import graphql.macro.Util;
 import php.Global;
 import graphql.externs.ExecutionResult;
@@ -16,20 +17,26 @@ class GraphQLServer {
     var mutation : Null<GraphQLObject>;
     var context : Null<Dynamic>;
     var root : Dynamic;
+    var schema : Schema;
+
     public function new(base : GraphQLObject, ?context:Dynamic) {
         this.query = base;
         this.context = context;
         this.root = base;
+        this.schema = new Schema({
+            query: query.gql.type,
+            mutation: query.gql.mutation_type
+        }.associativeArrayOfObject());
+    }
+
+    public function readSchema()  : String {
+        return SchemaPrinter.doPrint(schema);
     }
 
     public function executeQuery(query_string:String, ?variables : NativeArray, ?operationName:String) {
         if(variables == null) {
             variables = [].toPhpArray();
         }
-		var schema = new Schema({
-            query: query.gql.type,
-            mutation: query.gql.mutation_type
-        }.associativeArrayOfObject());
         
         return GraphQL.executeQuery(schema, query_string, root, this.context, variables, operationName);
     }
