@@ -302,6 +302,38 @@ class Query implements GraphQLObject {
 }
 ```
 
+Alternatively, `@:doc` metadata can be use, instead (This will take precedence over any comments, and including just `@:doc` with no argument will clear the doc, even if there is a comment):
+
+```haxe
+/**
+    This comment will describe the type on the schema
+**/
+@:doc("This is the base query")
+class Query implements GraphQLObject {
+    public function new(){}    
+
+    /**
+        This comment will not be included on the schema
+    **/
+    @:doc
+    public function echo(@:doc("What would you like to say?") message:String) : String {
+        return message;
+    }
+}
+```
+
+Results in:
+```gql
+"""This is the base query"""
+type Query {
+  echo(
+    """What would you like to say?"""
+    message: String!
+  ): String!
+}
+```
+
+
 ### Build flags
 
 |flag|Value|Purpose|

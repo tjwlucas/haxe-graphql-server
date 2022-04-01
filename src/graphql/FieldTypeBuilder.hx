@@ -131,7 +131,7 @@ class FieldTypeBuilder {
 									var arg : graphql.GraphQLArgField = {
 										type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
 										name: $v{ arg.name },
-										description: null
+										description: ${ getDoc(arg) }
 									};
 									if($defaultValue != null) {
 										arg.defaultValue = $defaultValue;
@@ -151,6 +151,19 @@ class FieldTypeBuilder {
 				type = macro 'Unknown';
 		}
     }
+
+	public function getDoc(?f:{meta:Metadata}) {
+		var docMeta = getMeta(DocMeta, f);
+		var description = macro null;
+		if(docMeta != null && docMeta.params != null) {
+			if(docMeta.params.length > 0) {
+				description = docMeta.params[0];
+			}
+		} else if (f == null) {
+			description = macro $v{ getComment() };
+		}
+		return description;
+	}
 
 	/**
 		Get the commment string from the field
@@ -194,14 +207,17 @@ class FieldTypeBuilder {
 	/**
 		Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
 	**/
-	function getMeta(name : FieldMetadata) {
-		return getMetas(name)[0];
+	function getMeta(name : FieldMetadata, ?field:{meta:Metadata}) {
+		return getMetas(name, field)[0];
 	}
 
 	/**
 		Retrieves list of metadata with the given name (with or without preceding `:`)
 	**/
-	function getMetas(name : FieldMetadata) {
+	function getMetas(name : FieldMetadata, ?field:{meta:Metadata}) {
+		if(field == null) {
+			field = this.field;
+		}
 		return field.meta.filter((meta) -> {
 			return [':$name', name].contains(meta.name);
 		});

@@ -43,6 +43,18 @@ class TypeBuilder {
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
 		var mutation_name : ExprOf<String> = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
 
+		var classDoc : ExprOf<String> = macro null;
+
+		if(cls.classHasMeta(DocMeta)) {
+			if(cls.classGetMeta(DocMeta).params.length > 0) {
+				classDoc = cls.classGetMeta(DocMeta).params[0];
+			}
+		} else {
+			if(cls.doc != null){
+				classDoc = macro $v{ cls.doc.trim() };
+			}
+		}
+
 		var tmp_class = macro class {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
@@ -52,7 +64,7 @@ class TypeBuilder {
 				 mutation_fields: $a{graphql_mutation_field_definitions},
 				 type_name: $type_name,
 				 mutation_name: $mutation_name,
-				 description: $v{ cls.doc != null ? cls.doc.trim() : null  }
+				 description: $classDoc
 			};
 
 			public var gql(get, null) : graphql.TypeObjectDefinition = null;
@@ -112,7 +124,7 @@ class TypeBuilder {
 			}
 
 			var type = field.getType();
-			var comment = field.getComment();
+			var comment = field.getDoc();
 			var deprecationReason = field.getDeprecationReason();
 			var validations = field.getValidators();
 			var postValidations = field.getValidators(ValidateAfter);
@@ -176,7 +188,7 @@ class TypeBuilder {
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
 				type: $type,
-				description: $v{comment},
+				description: $comment,
 				deprecationReason: $deprecationReason,
 				args: php.Lib.toPhpArray( ${ field.args } ),
 				resolve: $resolve
