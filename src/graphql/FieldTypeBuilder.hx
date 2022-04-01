@@ -86,7 +86,7 @@ class FieldTypeBuilder {
 		return type;
 	}
 
-	function functionReturnType(ret: ComplexType) {
+	function functionReturnType(?ret: ComplexType) {
 		var type : Expr;
 		switch(ret) {
 			case(TPath({name: a, params: p})):
