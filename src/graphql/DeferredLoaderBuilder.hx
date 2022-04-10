@@ -17,7 +17,7 @@ class DeferredLoaderBuilder {
             if(f.name == 'load') {
                 hasLoad = true;
                 if(!f.access.contains(AStatic)) {
-                    throw new Error("Load function must be static", Context.currentPos());
+                    throw new Error("Load function must be static", f.pos);
                 }
                 switch (f.kind) {
                     case(FFun({ret: ret})):
@@ -26,17 +26,17 @@ class DeferredLoaderBuilder {
                                 switch(p[0]) {
                                     case(TPType(t)):
                                         keyType = t;
-                                    default: throw new Error("Bad key type", Context.currentPos());
+                                    default: throw new Error("Bad key type", f.pos);
                                 }
                                 switch(p[1]) {
                                     case(TPType(t)):
                                         returnType = t;
-                                    default: throw new Error("Invalid loader return type", Context.currentPos());
+                                    default: throw new Error("Invalid loader return type", f.pos);
                                 }
                             default:
-                                throw new Error("Load function must return a Map", Context.currentPos());
+                                throw new Error("Load function must return a Map", f.pos);
                         }
-                    default: throw new Error("load property must be a function", Context.currentPos());
+                    default: throw new Error("load property must be a function", f.pos);
                 }
             }
         }
