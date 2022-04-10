@@ -352,7 +352,7 @@ class BlogStory implements GraphQLObject {
 class MyUserBuffer implements DeferredLoader {
     static function load() : Map<Int, UserObject> {
         // Backend code to populate `results` with a `Map<Int, UserObject>`
-        // e.g a sql call for `select * from users where id in ?`
+        // e.g a sql call for `select ... from user where id in ?`
         // with ? bound to the `keys` variable
         return results;
     }
