@@ -1,5 +1,6 @@
 package graphql;
 
+import haxe.macro.Expr.Error;
 import haxe.macro.Expr.ComplexType;
 import haxe.macro.Tools.TTypeTools;
 import haxe.macro.TypeTools;
@@ -11,8 +12,10 @@ class DeferredLoaderBuilder {
 		var fields = Context.getBuildFields();
         var keyType : ComplexType;
         var returnType : ComplexType;
+        var hasLoad = false;
         for(f in fields) {
             if(f.name == 'load') {
+                hasLoad = true;
                 switch (f.kind) {
                     case(FFun({ret: ret})):
                         switch(ret) {
@@ -20,19 +23,22 @@ class DeferredLoaderBuilder {
                                 switch(p[0]) {
                                     case(TPType(t)):
                                         keyType = t;
-                                    default: throw "Bad key type";
+                                    default: throw new Error("Bad key type", Context.currentPos());
                                 }
                                 switch(p[1]) {
                                     case(TPType(t)):
                                         returnType = t;
-                                    default: throw "Invalid loader return type";
+                                    default: throw new Error("Invalid loader return type", Context.currentPos());
                                 }
                             default:
-                                throw "Invalid function return type";
+                                throw new Error("Invalid function return type", Context.currentPos());
                         }
-                    default: throw "Invalid load() function";
+                    default: throw new Error("Invalid load() function", Context.currentPos());
                 }
             }
+        }
+        if(!hasLoad) {
+            throw new Error("DeferredLoader class must declare a load() function", Context.currentPos());
         }
 		var tmp_class = macro class {
             static var keys:Array<$keyType> = [];
