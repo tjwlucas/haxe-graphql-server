@@ -359,7 +359,10 @@ class MyUserBuffer implements DeferredLoader {
 }
 ```
 
-Every `get` call will add the key to the `keys` list, which will be available in the `load` function, which will finally be called only once, alowing for data to be fetched in aggregate.
+Every `get` call will add the key to the `keys` list, which will be available in the `load` function, which will finally be called only once, alowing for data to be fetched in aggregate. The return type of the `load` function must be of the form `Map<K,V>`. The generated `get` function will then have the signature:
+```haxe
+get(id:K) : Deferred<V>;
+```
 
 
 ### Build flags
