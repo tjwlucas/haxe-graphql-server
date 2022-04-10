@@ -19,25 +19,9 @@ class DeferredLoaderBuilder {
                 if(!f.access.contains(AStatic)) {
                     throw new Error("Load function must be static", f.pos);
                 }
-                switch (f.kind) {
-                    case(FFun({ret: ret})):
-                        switch(ret) {
-                            case TPath({name: 'Map', params: p}):
-                                switch(p[0]) {
-                                    case(TPType(t)):
-                                        keyType = t;
-                                    default: throw new Error("Bad key type", f.pos);
-                                }
-                                switch(p[1]) {
-                                    case(TPType(t)):
-                                        returnType = t;
-                                    default: throw new Error("Invalid loader return type", f.pos);
-                                }
-                            default:
-                                throw new Error("Load function must return a Map", f.pos);
-                        }
-                    default: throw new Error("load property must be a function", f.pos);
-                }
+                var types = getLoaderValueTypes(f);
+                keyType = types.key;
+                returnType = types.ret;
             }
         }
         if(!hasLoad) {
@@ -65,5 +49,33 @@ class DeferredLoaderBuilder {
 			fields.push(field);
 		}
 		return fields;
+    }
+
+    public static function getLoaderValueTypes(f:Field) {
+        var keyType : ComplexType;
+        var returnType : ComplexType;
+        switch (f.kind) {
+            case(FFun({ret: ret})):
+                switch(ret) {
+                    case TPath({name: 'Map', params: p}):
+                        switch(p[0]) {
+                            case(TPType(t)):
+                                keyType = t;
+                            default: throw new Error("Bad key type", f.pos);
+                        }
+                        switch(p[1]) {
+                            case(TPType(t)):
+                                returnType = t;
+                            default: throw new Error("Invalid loader return type", f.pos);
+                        }
+                    default:
+                        throw new Error("Load function must return a Map", f.pos);
+                }
+            default: throw new Error("load property must be a function", f.pos);
+        }
+        return {
+            key: keyType,
+            ret: returnType
+        };
     }
 }

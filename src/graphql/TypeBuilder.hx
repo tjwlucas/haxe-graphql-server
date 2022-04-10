@@ -177,12 +177,14 @@ class TypeBuilder {
 				if(field.arg_names.length != 1) {
 					throw new Error("Magic deferred loader must have exactly one argument", f.pos);
 				}
+				var returnType = field.getFunctionReturnType();
+				var argType = field.getFunctionArgType(0);
 				getResult = macro {
-					var id = $i{ arg };
+					var id : $argType = $i{ arg };
 					$loader.add(id);
 					return new graphql.externs.Deferred(() -> {
 						$loader.loadOnce();
-						var result = $loader.values[id];
+						var result : $returnType = $loader.values[id];
 						$b{postValidations};
 						return result;
 					});

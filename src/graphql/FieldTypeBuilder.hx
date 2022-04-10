@@ -212,6 +212,25 @@ class FieldTypeBuilder {
 				return throw new Error("Not a function", field.pos);
 		}
 	}
+
+	public function getFunctionReturnType() {
+		switch(field.kind) {
+			case FFun({ret: ret}):
+				return ret;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
+    
+
+	public function getFunctionArgType(i:Int = 0) {
+		switch(field.kind) {
+			case FFun({args: args}):
+				return args[0].type;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
     
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;
