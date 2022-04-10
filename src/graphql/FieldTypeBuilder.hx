@@ -195,6 +195,14 @@ class FieldTypeBuilder {
 	public function isStatic() : Bool {
 		return field.access.contains(AStatic);
 	}
+
+	public function isMagicDeferred() : Bool {
+		return hasMeta(Deferred);
+	}
+
+	public function getDeferredLoaderClass() {
+		return getMeta(Deferred).params[0];
+	}
     
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;

@@ -26,6 +26,7 @@ class TypeBuilder {
 		var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
 
 		var cls = Context.getLocalClass().get();
+		var toRemove = [];
 		Util.debug('Building ${cls.name} object');
 		for (f in fields) {
 			var new_field = buildFieldType(f);
@@ -38,6 +39,13 @@ class TypeBuilder {
 				Util.debug('Adding ${cls.name}.${f.name} mutation field');
 				graphql_mutation_field_definitions.push(new_field);
 			}
+			var fieldBuilder = new FieldTypeBuilder(f);
+			if(fieldBuilder.isMagicDeferred()) {
+				toRemove.push(f);
+			}
+		}
+		for(f in toRemove) {
+			fields.remove(f);
 		}
 		
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
@@ -157,12 +165,32 @@ class TypeBuilder {
 				case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
 				case false: macro $fieldPath;
 			}
+			var functionBody = validations;
 
-			var functionBody = validations.concat([
-				macro var result = $getResult
-			]).concat(postValidations).concat([
-				macro return result
-			]);
+			if(field.isMagicDeferred()) {
+				Util.debug('$name is deferred');
+				var loader = field.getDeferredLoaderClass();
+				var arg = field.arg_names[0];
+				getResult = macro {
+					var id = $i{ arg };
+					$loader.add(id);
+					return new graphql.externs.Deferred(() -> {
+						$loader.loadOnce();
+						var result = $loader.values[id];
+						$b{postValidations};
+						return result;
+					});
+				};
+				functionBody = functionBody.concat([
+					macro return $getResult
+				]);
+			} else {
+				functionBody = functionBody.concat([
+					macro var result = $getResult
+				]).concat(postValidations).concat([
+					macro return result
+				]);
+			}
 
 			var resolve = macro {};
 			if(

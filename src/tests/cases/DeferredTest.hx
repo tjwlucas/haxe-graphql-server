@@ -1,5 +1,6 @@
 package tests.cases;
 
+import graphql.GraphQLError;
 import php.NativeArray;
 import utest.Assert;
 import graphql.GraphQLServer;
@@ -26,10 +27,11 @@ class DeferredTest extends Test {
         );
         @:privateAccess Assert.isNull(DeferredTestLoader.values);
 
-        var result = server.executeQuery("query($id:Int!, $id2:Int!, $id3: Int!, $idString:String!){
+        var result = server.executeQuery("query($id:Int!, $id2:Int!, $id3: Int!, $idString:String!, $idStringError:String!){
             getValue(id: $id)
             another:getValue(id:$id2)
             getStaticValue(id:$idString)
+            staticError:getStaticValue(id:$idStringError)
             getSubObject {
                 getValue(id: $id)
                 value2:getValue(id: $id3)
@@ -38,7 +40,8 @@ class DeferredTest extends Test {
             id: 42,
             id2: 367,
             id3: 13,
-            idString: "valid"
+            idString: "valid",
+            idStringError: "alsoValid"
         }.associativeArrayOfObject());
 
         result.data['getValue'] == "This is the value for id 42, loaded";
@@ -59,18 +62,26 @@ class DeferredTest extends Test {
             367 => "This is the value for id 367, loaded",
             13 => "This is the value for id 13, loaded",
         ], DeferredTestLoader.values);
+
+        Assert.notNull(result.errors);
+        var errors = result.errors.toHaxeArray();
+        errors.length == 1;
+        var error : GraphQLError = errors[0];
+        @:privateAccess error.getMessage() == 'Validation failed';
+        error.getCategory() == 'validation';
+        error.isClientSafe() == true;
     }
 }
 
 class DeferredTestObject implements GraphQLObject {
     public function new() {}
 
-    public function getValue(id:Int) : Deferred<String> {
-        return DeferredTestLoader.get(id);
-    }
-    public function getStaticValue(id:String) : Deferred<Int> {
-        return DeferredStaticTestLoader.get(id);
-    }
+    @:deferred(tests.cases.DeferredTestLoader)
+    public function getValue(id:Int) : String;
+
+    @:deferred(tests.cases.DeferredStaticTestLoader)
+    @:validateResult(result != 98)
+    public function getStaticValue(id:String) : Null<Int>;
 
     public function getSubObject() : DeferredTestSubObject {
         return new DeferredTestSubObject();
@@ -80,9 +91,8 @@ class DeferredTestObject implements GraphQLObject {
 class DeferredTestSubObject implements GraphQLObject {
     public function new() {}
 
-    public function getValue(id:Int) : Deferred<String> {
-        return DeferredTestLoader.get(id);
-    }
+    @:deferred(tests.cases.DeferredTestLoader)
+    public function getValue(id:Int) : String;
 }
 
 class DeferredTestLoader extends DeferredLoader {

@@ -45,26 +45,19 @@ class DeferredLoaderBuilder {
         }
 		var tmp_class = macro class {
             static var keys:Array<$keyType> = [];
-            static var values : Null<Map<$keyType,$returnType>> = null;
+            public static var values : Null<Map<$keyType,$returnType>> = null;
             static var loaded = false;
 
-            static function add(key:$keyType) {
+            public static function add(key:$keyType) {
                 if(!keys.contains(key)) {
                     keys.push(key);
                 }
             }
-            static function loadOnce() : Void {
+            public static function loadOnce() : Void {
                 if(!loaded) {
                     values = load();
                     loaded = true;
                 }
-            }
-            public static function get(id:$keyType) : graphql.externs.Deferred<$returnType> {
-                add(id);
-                return new graphql.externs.Deferred(() -> {
-                    loadOnce();
-                    return values[id];
-                });
             }
         }
         
