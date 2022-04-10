@@ -344,12 +344,12 @@ class BlogStory implements GraphQLObject {
     ...
     var authorId : Int;
 
-    public function getAuthor() : Deferred<UserObject> {
+    public function getAuthor() : graphql.externs.Deferred<UserObject> {
         return MyUserBuffer.get(this.authorId);
     }
 }
 
-class MyUserBuffer implements DeferredLoader {
+class MyUserBuffer implements graphql.DeferredLoader {
     static function load() : Map<Int, UserObject> {
         // Backend code to populate `results` with a `Map<Int, UserObject>`
         // e.g a sql call for `select ... from user where id in ?`
@@ -362,6 +362,13 @@ class MyUserBuffer implements DeferredLoader {
 Every `get` call will add the key to the `keys` list, which will be available in the `load` function, which will finally be called only once, alowing for data to be fetched in aggregate. The return type of the `load` function must be of the form `Map<K,V>`. The generated `get` function will then have the signature:
 ```haxe
 get(id:K) : Deferred<V>;
+```
+
+For any more customised uses for the deferred resolver, the `Deferred` class is available as an extern:
+```haxe
+new graphql.externs.Deferred<String>(() -> {
+    return "Some String";
+});
 ```
 
 
