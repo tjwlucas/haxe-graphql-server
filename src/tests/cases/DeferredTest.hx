@@ -85,7 +85,7 @@ class DeferredTestSubObject implements GraphQLObject {
     }
 }
 
-class DeferredTestLoader implements DeferredLoader {
+class DeferredTestLoader extends DeferredLoader {
     static function load() : Map<Int, String> {
         if(loaded) {
             throw "Load function should not be called more than once";
@@ -102,7 +102,7 @@ class DeferredTestLoader implements DeferredLoader {
 /**
     Trivial example with different types
 **/
-class DeferredStaticTestLoader implements DeferredLoader {
+class DeferredStaticTestLoader extends DeferredLoader {
     static function load() : Map<String, Int> {
         return [
             "valid" => 42,

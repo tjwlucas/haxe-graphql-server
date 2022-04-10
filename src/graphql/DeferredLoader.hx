@@ -1,5 +1,5 @@
 package graphql;
 
 @:autoBuild(graphql.DeferredLoaderBuilder.build())
-interface DeferredLoader {
+abstract class DeferredLoader {
 }

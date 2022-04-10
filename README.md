@@ -349,7 +349,7 @@ class BlogStory implements GraphQLObject {
     }
 }
 
-class MyUserBuffer implements graphql.DeferredLoader {
+class MyUserBuffer extends graphql.DeferredLoader {
     static function load() : Map<Int, UserObject> {
         // Backend code to populate `results` with a `Map<Int, UserObject>`
         // e.g a sql call for `select ... from user where id in ?`
@@ -359,7 +359,7 @@ class MyUserBuffer implements graphql.DeferredLoader {
 }
 ```
 
-Every `get` call will add the key to the `keys` list, which will be available in the `load` function, which will finally be called only once, alowing for data to be fetched in aggregate. The return type of the `load` function must be of the form `Map<K,V>`. The generated `get` function will then have the signature:
+Every `get` call will add the key to the `keys` list, which will be available in the `load` function, which will finally be called only once, allowing for data to be fetched in aggregate. The return type of the `load` function must be of the form `Map<K,V>`. The generated `get` function will then have the signature:
 ```haxe
 get(id:K) : Deferred<V>;
 ```
