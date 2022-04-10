@@ -86,10 +86,23 @@ class MethodTest extends utest.Test {
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
     }
+    
+    function specMethodTestGetFromId() {
+        var field = fields.getFieldDefinitionByName('getFromId');
+        Std.string(field.type) == 'String!';
+        var arg = field.getArgMaps()[0];
+        arg['name'] == 'id';
+        Std.string(arg['type']) == 'ID!';
+        arg.exists('defaultValue') == false;
+    } 
 }
 
 class MethodTestObject implements GraphQLObject {
     public function new(){}
+
+    public function getFromId(id: graphql.IDType) : String {
+        return 'Returning result from provided id ($id)';
+    }
 
     public function greet(name:String) : String {
         return 'Hello, $name';

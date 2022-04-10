@@ -171,6 +171,13 @@ class SimpleClassTests extends utest.Test {
         Assert.notNull(field);
         field.resolve == null;
     }
+    function specIdField() {
+        var field = Util.getFieldDefinitionByName(fields, 'id');
+        Assert.notNull(field, 'id is missing');
+        if(field != null) {
+            Std.string(field.type) == 'ID!';
+        }
+    }
 }
 
 /**
@@ -178,6 +185,7 @@ class SimpleClassTests extends utest.Test {
 **/
 class SimpleClass implements GraphQLObject {
     public function new(){}
+    public var id:graphql.IDType;
 	/**
 		This is the `simple_string_field` documentation
 	**/
