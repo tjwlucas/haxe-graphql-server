@@ -165,6 +165,7 @@ A couple of things to note:
     - `Bool`
     - `Null<T>`
     - `Array<T>`
+- There is also the special scalar `ID`, which can be represented using the haxe type `graphql.IDType`. This will auto-cast between `Int` and `String` values as required.
 - These scalar types can be used as return values and input argument values.
 - Additionally, any class extending `GraphQLObject` can be used as a return type.
 - Complex *input* types are not currently supported.
