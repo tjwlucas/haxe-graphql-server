@@ -1,6 +1,6 @@
 package graphql.externs;
 
 @:native('GraphQL\\Deferred')
-extern class Deferred {
-    public function new(fn:Void->Dynamic);
+extern class Deferred<T> {
+    public function new(fn:Void->T);
 }
