@@ -25,16 +25,19 @@ class DeferredTest extends Test {
         );
         @:privateAccess Assert.isNull(DeferredTestLoader.values);
 
-        var result = server.executeQuery("query($id:Int!, $id2:Int!){
+        var result = server.executeQuery("query($id:Int!, $id2:Int!, $idString:String!){
             getValue(id: $id)
             another:getValue(id:$id2)
+            getStaticValue(id:$idString)
         }", {
             id: 42,
-            id2: 367
+            id2: 367,
+            idString: "valid"
         }.associativeArrayOfObject());
 
         result.data['getValue'] == "This is the value for id 42, loaded";
         result.data['another'] == "This is the value for id 367, loaded";
+        Assert.equals(42, result.data['getStaticValue']);
 
         @:privateAccess DeferredTestLoader.loaded == true;
         @:privateAccess Assert.same(
@@ -55,6 +58,9 @@ class DeferredTestObject implements GraphQLObject {
     public function getValue(id:Int) : Deferred<String> {
         return DeferredTestLoader.get(id);
     }
+    public function getStaticValue(id:String) : Deferred<Int> {
+        return DeferredStaticTestLoader.get(id);
+    }
 }
 
 class DeferredTestLoader implements DeferredLoader {
@@ -67,5 +73,18 @@ class DeferredTestLoader implements DeferredLoader {
             results[key] = 'This is the value for id $key, loaded';
         }
         return results;
+    }
+}
+
+
+/**
+    Trivial example with different types
+**/
+class DeferredStaticTestLoader implements DeferredLoader {
+    static function load() : Map<String, Int> {
+        return [
+            "valid" => 42,
+            "alsoValid" => 98
+        ];
     }
 }
