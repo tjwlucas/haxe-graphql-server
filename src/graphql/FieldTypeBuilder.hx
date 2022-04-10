@@ -203,6 +203,15 @@ class FieldTypeBuilder {
 	public function getDeferredLoaderClass() {
 		return getMeta(Deferred).params[0];
 	}
+
+	public function getFunctionBody() {
+		switch(field.kind) {
+			case FFun({expr: expr}):
+				return expr;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
     
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;

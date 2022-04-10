@@ -171,6 +171,9 @@ class TypeBuilder {
 				Util.debug('$name is deferred');
 				var loader = field.getDeferredLoaderClass();
 				var arg = field.arg_names[0];
+				if(field.getFunctionBody() != null) {
+					throw new Error("Magic deferred loader should not have a function body", f.pos);
+				}
 				if(field.arg_names.length != 1) {
 					throw new Error("Magic deferred loader must have exactly one argument", f.pos);
 				}
