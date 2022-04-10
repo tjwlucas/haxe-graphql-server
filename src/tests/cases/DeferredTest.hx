@@ -1,5 +1,6 @@
 package tests.cases;
 
+import php.NativeArray;
 import utest.Assert;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
@@ -25,29 +26,38 @@ class DeferredTest extends Test {
         );
         @:privateAccess Assert.isNull(DeferredTestLoader.values);
 
-        var result = server.executeQuery("query($id:Int!, $id2:Int!, $idString:String!){
+        var result = server.executeQuery("query($id:Int!, $id2:Int!, $id3: Int!, $idString:String!){
             getValue(id: $id)
             another:getValue(id:$id2)
             getStaticValue(id:$idString)
+            getSubObject {
+                getValue(id: $id)
+                value2:getValue(id: $id3)
+            }
         }", {
             id: 42,
             id2: 367,
+            id3: 13,
             idString: "valid"
         }.associativeArrayOfObject());
 
         result.data['getValue'] == "This is the value for id 42, loaded";
         result.data['another'] == "This is the value for id 367, loaded";
+        var subObject : NativeArray = result.data['getSubObject'];
+        subObject['getValue'] == "This is the value for id 42, loaded";
+        subObject['value2'] == "This is the value for id 13, loaded";
         Assert.equals(42, result.data['getStaticValue']);
 
         @:privateAccess DeferredTestLoader.loaded == true;
         @:privateAccess Assert.same(
-            [42, 367],
+            [42, 367, 13],
             DeferredTestLoader.keys
         );
         @:privateAccess Assert.notNull(DeferredTestLoader.values);
         @:privateAccess Assert.same([
             42 => "This is the value for id 42, loaded",
-            367 => "This is the value for id 367, loaded"
+            367 => "This is the value for id 367, loaded",
+            13 => "This is the value for id 13, loaded",
         ], DeferredTestLoader.values);
     }
 }
@@ -60,6 +70,18 @@ class DeferredTestObject implements GraphQLObject {
     }
     public function getStaticValue(id:String) : Deferred<Int> {
         return DeferredStaticTestLoader.get(id);
+    }
+
+    public function getSubObject() : DeferredTestSubObject {
+        return new DeferredTestSubObject();
+    }
+}
+
+class DeferredTestSubObject implements GraphQLObject {
+    public function new() {}
+
+    public function getValue(id:Int) : Deferred<String> {
+        return DeferredTestLoader.get(id);
     }
 }
 
