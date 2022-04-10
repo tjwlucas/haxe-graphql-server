@@ -54,6 +54,9 @@ class FieldTypeBuilder {
         } else if (name == 'Null') {
 			var base_type = nullableType(params);
 			return macro $base_type;
+		} else if (name == 'Deferred') {
+            var deferredOf = arrayType(params);
+			return macro $deferredOf;
 		} else {
 			var base_type = getBaseType(name);
 			if(nullable) {
