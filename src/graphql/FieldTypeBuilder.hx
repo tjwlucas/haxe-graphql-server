@@ -16,6 +16,7 @@ class FieldTypeBuilder {
     public var args : Expr = macro [];
     public var arg_names: Array<String> = [];
     public var is_function = false;
+	public var is_deferred = false;
 
 	public var query_type : GraphQLObjectType;
 
@@ -55,6 +56,7 @@ class FieldTypeBuilder {
 			var base_type = nullableType(params);
 			return macro $base_type;
 		} else if (name == 'Deferred') {
+			is_deferred = true;
             var deferredOf = arrayType(params);
 			return macro $deferredOf;
 		} else {
