@@ -384,6 +384,7 @@ new graphql.externs.Deferred<String>(() -> {
 #### Notes:
 - Returning a `Deferred` type directly will result in any post-validation seeing the `Deferred` object as the result, whereas the automatic method above will act on the final result, as expected.
 - Functions generated using the `@:deferred` method above will be removed from the class, and exist *only* directly on the resolver.
+- In the case of nested resolvers, the deferred resolver may need to run several times (e.g. if the keys for sub-calls depend on the results from parents). In this case, the load will still be deferred, and each successive call will add to the previous results list, so new data will still be batched and fetched only if it has not already been.
 
 
 ### Build flags
