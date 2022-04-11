@@ -123,7 +123,7 @@ The `GraphqlServer` constructor takes 2 arguments, a `GraphQLObject` (Discussed 
 
 ### GraphQLObject
 
-The `GraphQLObject` is where the 'magic' happens. Any class that extends `GraphQLObject` will be processed at build time to generate an object type for the schema. For instance, from the earlier example:
+The `GraphQLObject` is where the 'magic' happens. Any class that implements `GraphQLObject` will be processed at build time to generate an object type for the schema. For instance, from the earlier example:
 
 ```haxe
 import graphql.GraphQLObject;
@@ -167,7 +167,7 @@ A couple of things to note:
     - `Array<T>`
 - There is also the special scalar `ID`, which can be represented using the haxe type `graphql.IDType`. This will auto-cast between `Int` and `String` values as required.
 - These scalar types can be used as return values and input argument values.
-- Additionally, any class extending `GraphQLObject` can be used as a return type.
+- Additionally, any class implementing `GraphQLObject` can be used as a return type.
 - Complex *input* types are not currently supported.
 - By default, any property set as `public` will be added to the query type schema, and `private` properties ignored.
     - Public properties you want to remove from the schema can be annotated with `@:GraphQLHide`
