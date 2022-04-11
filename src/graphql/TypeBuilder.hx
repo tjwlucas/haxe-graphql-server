@@ -142,7 +142,15 @@ class TypeBuilder {
 			var number_of_validations = validations.length;
 			var number_of_post_validations = postValidations.length;
 
-			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = ctx : macro var $f = args.$f ];
+			var arg_var_defs = [];
+			for(i => f in field.arg_names) {
+				if(f == ctx_var_name) {
+					arg_var_defs.push(macro var $f = ctx);
+				} else {
+					var type = field.getFunctionArgType(i);
+					arg_var_defs.push(macro var $f : $type = args.$f);
+				}
+			}
 			// Add renamed context variable to context, even when not present in function argument list
 			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != 'ctx') {
 				var f = ctx_var_name;
@@ -180,8 +188,7 @@ class TypeBuilder {
 						throw new Error("Deferred loader without expression must have exactly one argument", f.pos);
 					}
 					var arg = field.arg_names[0];
-					var argType = field.getFunctionArgType(0);
-					idExpr = macro ( $i{ arg } : $argType );
+					idExpr = macro $i{ arg };
 				} else {
 					idExpr = loaderExpression;
 				}
