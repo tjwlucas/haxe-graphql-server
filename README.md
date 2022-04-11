@@ -172,6 +172,7 @@ A couple of things to note:
 - By default, any property set as `public` will be added to the query type schema, and `private` properties ignored.
     - Public properties you want to remove from the schema can be annotated with `@:GraphQLHide`
     - Private properties can be added to the query schema by annotating with `@:query`
+    - The `new()` constructor is a special case and will never be added to the schema
 - Default values for function arguments will also be passed into the schema
 
 ### Context
