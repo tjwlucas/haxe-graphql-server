@@ -71,6 +71,26 @@ class ResolverTest extends utest.Test {
         error.isClientSafe() == true;
     }
 
+    function specProtectedNullableAddObjectValueMethod() {
+        var response = server.executeQuery("query($x:Int!, $y:Int!){
+            protectedNullableAddObjectValue(x:$x, y:$y)
+        }", {
+            x: 5,
+            y: 12
+        }.associativeArrayOfObject());
+        
+        Assert.notNull(response.data);
+        response.data['protectedNullableAddObjectValue'] == null;
+
+        Assert.notNull(response.errors);
+        var errors = response.errors.toHaxeArray();
+        errors.length == 1;
+        var error : GraphQLError = errors[0];
+        @:privateAccess error.getMessage() == 'Validation failed';
+        error.getCategory() == 'validation';
+        error.isClientSafe() == true;
+    }
+
     function specListMethod() {
         // Using just the default values
         var response = server.executeQuery("{list}");
@@ -236,6 +256,8 @@ class ResolverTest extends utest.Test {
 class ResolverTestObject implements GraphQLObject {
     public function new() {}
 
+    var falseValue = false;
+
     public function simpleMethod() : String {
         return "This is a simple response";
     }
@@ -246,6 +268,11 @@ class ResolverTestObject implements GraphQLObject {
 
     @:validate(false)
     public function protectedAdd(x:Int, y:Int) : Int {
+        return x + y;
+    }
+
+    @:validate(obj.falseValue)
+    public function protectedNullableAddObjectValue(x:Int, y:Int) : Null<Int> {
         return x + y;
     }
 

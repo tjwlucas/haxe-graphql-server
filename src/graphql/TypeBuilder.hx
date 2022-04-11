@@ -170,17 +170,24 @@ class TypeBuilder {
 			if(field.isMagicDeferred()) {
 				Util.debug('$name is deferred');
 				var loader = field.getDeferredLoaderClass();
-				var arg = field.arg_names[0];
+				var loaderExpression = field.getDeferredLoaderExpresssion();
 				if(field.getFunctionBody() != null) {
 					throw new Error("Magic deferred loader should not have a function body", f.pos);
 				}
-				if(field.arg_names.length != 1) {
-					throw new Error("Magic deferred loader must have exactly one argument", f.pos);
+				var idExpr = macro {};
+				if(loaderExpression == null) {
+					if(field.arg_names.length != 1) {
+						throw new Error("Deferred loader without expression must have exactly one argument", f.pos);
+					}
+					var arg = field.arg_names[0];
+					var argType = field.getFunctionArgType(0);
+					idExpr = macro ( $i{ arg } : $argType );
+				} else {
+					idExpr = loaderExpression;
 				}
 				var returnType = field.getFunctionReturnType();
-				var argType = field.getFunctionArgType(0);
 				getResult = macro {
-					var id : $argType = $i{ arg };
+					var id = $idExpr;
 					$loader.add(id);
 					return new graphql.externs.Deferred(() -> {
 						$loader.loadOnce();

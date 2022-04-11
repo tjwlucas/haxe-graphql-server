@@ -204,6 +204,10 @@ class FieldTypeBuilder {
 		return getMeta(Deferred).params[0];
 	}
 
+	public function getDeferredLoaderExpresssion() {
+		return getMeta(Deferred).params[1];
+	}
+
 	public function getFunctionBody() {
 		switch(field.kind) {
 			case FFun({expr: expr}):

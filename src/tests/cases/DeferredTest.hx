@@ -35,6 +35,7 @@ class DeferredTest extends Test {
             getSubObject {
                 getValue(id: $id)
                 value2:getValue(id: $id3)
+                objectValue:getObjectValue
             }
         }", {
             id: 42,
@@ -49,6 +50,7 @@ class DeferredTest extends Test {
         var subObject : NativeArray = result.data['getSubObject'];
         subObject['getValue'] == "This is the value for id 42, loaded";
         subObject['value2'] == "This is the value for id 13, loaded";
+        subObject['objectValue'] == "This is the value for id 13, loaded";
         Assert.equals(42, result.data['getStaticValue']);
 
         @:privateAccess DeferredTestLoader.loaded == true;
@@ -91,8 +93,13 @@ class DeferredTestObject implements GraphQLObject {
 class DeferredTestSubObject implements GraphQLObject {
     public function new() {}
 
+    var objectProperty = 13;
+
     @:deferred(tests.cases.DeferredTestLoader)
     public function getValue(id:Int) : String;
+
+    @:deferred(tests.cases.DeferredTestLoader, obj.objectProperty)
+    public function getObjectValue() : String;
 }
 
 class DeferredTestLoader extends DeferredLoader {
