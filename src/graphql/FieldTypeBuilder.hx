@@ -230,7 +230,7 @@ class FieldTypeBuilder {
 	public function getFunctionArgType(i:Int = 0) {
 		switch(field.kind) {
 			case FFun({args: args}):
-				return args[0].type;
+				return args[i].type;
 			default:
 				return throw new Error("Not a function", field.pos);
 		}
