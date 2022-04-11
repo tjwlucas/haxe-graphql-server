@@ -144,12 +144,13 @@ class TypeBuilder {
 
 			var arg_var_defs = [];
 			for(i => f in field.arg_names) {
-				if(f == ctx_var_name) {
-					arg_var_defs.push(macro var $f = ctx);
+				var type = field.getFunctionArgType(i);
+				var defined = if(f == ctx_var_name) {
+					macro ctx;
 				} else {
-					var type = field.getFunctionArgType(i);
-					arg_var_defs.push(macro var $f : $type = args.$f);
+					macro args.$f;
 				}
+				arg_var_defs.push(macro var $f : $type = $defined);
 			}
 			// Add renamed context variable to context, even when not present in function argument list
 			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != 'ctx') {
