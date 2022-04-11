@@ -251,7 +251,7 @@ It is also simple to inject validation into resolvers using the `@:validation` m
 2. A message to return on failure (default `Validation failed`)
 3. A 'category' for the error (default `validation`)
 
-The statement passed in to the `@:validation` metadata can reference the arguments passed to the function, and the context object (using `ctx`). Extra statements can be added to the validation context using `@:validationContext`. This can be added either at the field level, or if added to the class, it will be included for every field on it. You can add as many validation statements as you like.
+The statement passed in to the `@:validation` metadata can reference the arguments passed to the function, the context object (using `ctx`), and the current object being resolved (using `obj`). Extra statements can be added to the validation context using `@:validationContext`. This can be added either at the field level, or if added to the class, it will be included for every field on it. You can add as many validation statements as you like.
 
 Validation example:
 
@@ -345,9 +345,11 @@ class BlogStory implements GraphQLObject {
     ...
     var authorId : Int;
 
-    public function getAuthor() : graphql.externs.Deferred<UserObject> {
-        return MyUserBuffer.get(this.authorId);
-    }
+    @:deferred(MyUserBuffer, obj.authorId)
+    public function getAuthor() : UserObject;
+
+    @:deferred(MyUserBuffer)
+    public function getUserById(id : Int) : UserObject;
 }
 
 class MyUserBuffer extends graphql.DeferredLoader {
@@ -360,9 +362,17 @@ class MyUserBuffer extends graphql.DeferredLoader {
 }
 ```
 
-Every `get` call will add the key to the `keys` list, which will be available in the `load` function, which will finally be called only once, allowing for data to be fetched in aggregate. The return type of the `load` function must be of the form `Map<K,V>`. The generated `get` function will then have the signature:
+The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions).
+
+e.g. 
 ```haxe
-get(id:K) : Deferred<V>;
+@:deferred(MyUserBuffer)
+public function getUserById(id : Int) : UserObject;
+```
+Is equivalent to
+```haxe
+@:deferred(MyUserBuffer, id)
+public function getUserById(id : Int) : UserObject;
 ```
 
 For any more customised uses for the deferred resolver, the `Deferred` class is available as an extern:
@@ -371,6 +381,9 @@ new graphql.externs.Deferred<String>(() -> {
     return "Some String";
 });
 ```
+#### Notes:
+- Returning a `Deferred` type directly will result in any post-validation seeing the `Deferred` object as the result, whereas the automatic method above will act on the final result, as expected.
+- Functions generated using the `@:deferred` method above will be removed from the class, and exist *only* directly on the resolver.
 
 
 ### Build flags

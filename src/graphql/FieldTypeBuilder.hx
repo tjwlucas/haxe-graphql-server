@@ -16,6 +16,7 @@ class FieldTypeBuilder {
     public var args : Expr = macro [];
     public var arg_names: Array<String> = [];
     public var is_function = false;
+	public var is_deferred = false;
 
 	public var query_type : GraphQLObjectType;
 
@@ -55,6 +56,7 @@ class FieldTypeBuilder {
 			var base_type = nullableType(params);
 			return macro $base_type;
 		} else if (name == 'Deferred') {
+			is_deferred = true;
             var deferredOf = arrayType(params);
 			return macro $deferredOf;
 		} else {
@@ -192,6 +194,46 @@ class FieldTypeBuilder {
 
 	public function isStatic() : Bool {
 		return field.access.contains(AStatic);
+	}
+
+	public function isMagicDeferred() : Bool {
+		return hasMeta(Deferred);
+	}
+
+	public function getDeferredLoaderClass() {
+		return getMeta(Deferred).params[0];
+	}
+
+	public function getDeferredLoaderExpresssion() {
+		return getMeta(Deferred).params[1];
+	}
+
+	public function getFunctionBody() {
+		switch(field.kind) {
+			case FFun({expr: expr}):
+				return expr;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
+
+	public function getFunctionReturnType() {
+		switch(field.kind) {
+			case FFun({ret: ret}):
+				return ret;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
+    
+
+	public function getFunctionArgType(i:Int = 0) {
+		switch(field.kind) {
+			case FFun({args: args}):
+				return args[0].type;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
 	}
     
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
