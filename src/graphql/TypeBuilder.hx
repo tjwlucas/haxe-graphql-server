@@ -188,9 +188,9 @@ class TypeBuilder {
 				var returnType = field.getFunctionReturnType();
 				getResult = macro {
 					var id = $idExpr;
-					$loader.add(id);
+					$loader.add(@:pos(f.pos) id);
 					return new graphql.externs.Deferred(() -> {
-						var result : $returnType = $loader.getValue(id);
+						var result : $returnType = $loader.getValue(@:pos(f.pos) id);
 						$b{postValidations};
 						return result;
 					});
