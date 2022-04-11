@@ -29,19 +29,26 @@ class DeferredLoaderBuilder {
         }
 		var tmp_class = macro class {
             static var keys:Array<$keyType> = [];
-            public static var values : Null<Map<$keyType,$returnType>> = null;
-            static var loaded = false;
+            public static var values : Map<$keyType,$returnType> = [];
+            static var runCount = 0;
 
             public static function add(key:$keyType) {
                 if(!keys.contains(key)) {
                     keys.push(key);
                 }
             }
-            public static function loadOnce() : Void {
-                if(!loaded) {
-                    values = load();
-                    loaded = true;
+
+            public static function getValue(key:$keyType) : $returnType {
+                var loadedKeys = [for (k in values.keys()) k];
+                if(!loadedKeys.contains(key)) {
+                    var newValues = load();
+                    for(k => v in newValues) {
+                        values[k] = v;
+                    }
+                    keys = [];
+                    runCount++;
                 }
+                return values[key];
             }
         }
         

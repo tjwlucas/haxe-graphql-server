@@ -20,12 +20,15 @@ class DeferredTest extends Test {
         var base = new DeferredTestObject();
         var server = new GraphQLServer(base);
 
-        @:privateAccess DeferredTestLoader.loaded == false;
+        @:privateAccess DeferredTestLoader.runCount == 0;
         @:privateAccess Assert.same(
             [],
             DeferredTestLoader.keys
         );
-        @:privateAccess Assert.isNull(DeferredTestLoader.values);
+        @:privateAccess Assert.same(
+            ([] : Map<Int, String>),
+            DeferredTestLoader.values
+        );
 
         var result = server.executeQuery("query($id:Int!, $id2:Int!, $id3: Int!, $idString:String!, $idStringError:String!){
             getValue(id: $id)
@@ -53,9 +56,9 @@ class DeferredTest extends Test {
         subObject['objectValue'] == "This is the value for id 13, loaded";
         Assert.equals(42, result.data['getStaticValue']);
 
-        @:privateAccess DeferredTestLoader.loaded == true;
+        @:privateAccess DeferredTestLoader.runCount == 1;
         @:privateAccess Assert.same(
-            [42, 367, 13],
+            [],
             DeferredTestLoader.keys
         );
         @:privateAccess Assert.notNull(DeferredTestLoader.values);
@@ -73,6 +76,39 @@ class DeferredTest extends Test {
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
+
+    function specNestedDeferredResolver() {
+        var base = new DeferredTestObject();
+        var server = new GraphQLServer(base);
+
+        var result = server.executeQuery("{
+            top1: getNested(id: 3) {
+              n
+              getNext {
+                n
+              }
+            }
+            top2: getNested {
+              n
+              getNext {
+                n
+                getNext {
+                  n
+                  getNext {
+                    n
+                  }
+                }
+                again: getNext {
+                  n
+                }
+              }
+            }
+          }
+          ");
+          var errors = result.errors.toHaxeArray();
+          errors.length == 0;
+          @:privateAccess NestedDeferredLoader.runCount == 3;
+    }
 }
 
 class DeferredTestObject implements GraphQLObject {
@@ -88,6 +124,9 @@ class DeferredTestObject implements GraphQLObject {
     public function getSubObject() : DeferredTestSubObject {
         return new DeferredTestSubObject();
     }
+
+    @:deferred(NestedDeferredLoader)
+    public function getNested(id:Int = 0) : NestedDeferredTestObject;
 }
 
 class DeferredTestSubObject implements GraphQLObject {
@@ -104,7 +143,7 @@ class DeferredTestSubObject implements GraphQLObject {
 
 class DeferredTestLoader extends DeferredLoader {
     static function load() : Map<Int, String> {
-        if(loaded) {
+        if(runCount > 0) {
             throw "Load function should not be called more than once";
         }
         var results : Map<Int, String> = [];
@@ -125,5 +164,26 @@ class DeferredStaticTestLoader extends DeferredLoader {
             "valid" => 42,
             "alsoValid" => 98
         ];
+    }
+}
+
+class NestedDeferredTestObject implements GraphQLObject {
+    public var n : Int;
+
+    public function new(n:Int) {
+        this.n = n ;
+    }
+
+    @:deferred(NestedDeferredLoader, obj.n)
+    public function getNext() : NestedDeferredTestObject;
+}
+
+class NestedDeferredLoader extends DeferredLoader {
+    static function load() : Map<Int, NestedDeferredTestObject> {
+        var results : Map<Int, NestedDeferredTestObject> = [];
+        for(key in keys) {
+            results[key] = new NestedDeferredTestObject(key+1);
+        }
+        return results;
     }
 }

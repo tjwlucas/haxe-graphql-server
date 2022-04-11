@@ -190,8 +190,7 @@ class TypeBuilder {
 					var id = $idExpr;
 					$loader.add(id);
 					return new graphql.externs.Deferred(() -> {
-						$loader.loadOnce();
-						var result : $returnType = $loader.values[id];
+						var result : $returnType = $loader.getValue(id);
 						$b{postValidations};
 						return result;
 					});
