@@ -1,5 +1,6 @@
 schema {
   query: SchemaPrintTestObject
+  mutation: SchemaPrintTestObjectMutation
 }
 
 """This is a simple GraphQL class test"""
@@ -17,4 +18,10 @@ type SchemaPrintTestObject {
   nested_int_array: [[[Int!]!]!]!
   nullable_array_of_nullable_ints: [Int]
   bool_field: Boolean!
+}
+
+"""This is a simple GraphQL class test"""
+type SchemaPrintTestObjectMutation {
+  doMutation(value: Boolean = true): Boolean!
+  nestedMutationObject: SchemaPrintTestObjectMutation!
 }

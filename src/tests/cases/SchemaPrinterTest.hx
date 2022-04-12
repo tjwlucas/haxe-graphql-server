@@ -47,4 +47,11 @@ class SchemaPrintTestObject implements GraphQLObject {
     public var nullable_array_of_nullable_ints : Null<Array<Null<Int>>>;
     public var bool_field:Bool;
 
+    @:mutation function doMutation(value : Bool = true) : Bool {
+        return value;
+    }
+
+    @:mutation function nestedMutationObject() : SchemaPrintTestObject {
+        return this;
+    }
 }
