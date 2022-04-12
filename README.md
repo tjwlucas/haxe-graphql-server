@@ -363,7 +363,7 @@ class MyUserBuffer extends graphql.DeferredLoader {
 }
 ```
 
-The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions).
+The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions). This loader class will have a static property called `keys`, with the type `Array<K>` (So in this example, `Array<Int>`), which will be available through `keys`/`this.keys`/`[[ Your Loader Class Name ]].keys` in your load function.
 
 e.g. 
 ```haxe
