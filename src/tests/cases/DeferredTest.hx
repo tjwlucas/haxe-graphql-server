@@ -96,6 +96,15 @@ class DeferredTest extends Test {
                   n
                   getNext {
                     n
+                    getNext {
+                        n
+                        getPrev {
+                            n
+                            getPrev {
+                                n
+                            }
+                        }
+                    }
                   }
                 }
                 again: getNext {
@@ -108,6 +117,11 @@ class DeferredTest extends Test {
           var errors = result.errors.toHaxeArray();
           errors.length == 0;
           @:privateAccess NestedDeferredLoader.runCount == 3;
+          Assert.same([
+            [3,0],
+            [4,1],
+            [2]
+          ], NestedDeferredLoader.runBatches);
     }
 }
 
@@ -174,15 +188,20 @@ class NestedDeferredTestObject implements GraphQLObject {
         this.n = n ;
     }
 
-    @:deferred(NestedDeferredLoader, obj.n)
+    @:deferred(NestedDeferredLoader, obj.n + 1)
     public function getNext() : NestedDeferredTestObject;
+
+    @:deferred(NestedDeferredLoader, obj.n - 1)
+    public function getPrev() : NestedDeferredTestObject;
 }
 
 class NestedDeferredLoader extends DeferredLoader {
+    public static var runBatches = [];
     static function load() : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
+        runBatches.push(keys);
         for(key in keys) {
-            results[key] = new NestedDeferredTestObject(key+1);
+            results[key] = new NestedDeferredTestObject(key);
         }
         return results;
     }
