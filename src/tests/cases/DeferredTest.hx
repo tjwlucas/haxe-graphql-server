@@ -152,7 +152,9 @@ class DeferredTestSubObject implements GraphQLObject {
     public function getValue(id:Int) : String;
 
     @:deferred(tests.cases.DeferredTestLoader, obj.objectProperty)
-    public function getObjectValue() : String;
+    public function getObjectValue() : String {
+        return "Hi";
+    }
 }
 
 class DeferredTestLoader extends DeferredLoader {

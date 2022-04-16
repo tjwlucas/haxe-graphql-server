@@ -40,7 +40,7 @@ class TypeBuilder {
 				graphql_mutation_field_definitions.push(new_field);
 			}
 			var fieldBuilder = new FieldTypeBuilder(f);
-			if(fieldBuilder.isMagicDeferred()) {
+			if(fieldBuilder.isMagicDeferred() && fieldBuilder.getFunctionBody() == null) {
 				toRemove.push(f);
 			}
 		}
@@ -181,7 +181,7 @@ class TypeBuilder {
 				var loader = field.getDeferredLoaderClass();
 				var loaderExpression = field.getDeferredLoaderExpresssion();
 				if(field.getFunctionBody() != null) {
-					throw new Error("Magic deferred loader should not have a function body", f.pos);
+					Context.warning("Function body will be totally ignored in GraphQL deferred loader", f.pos);
 				}
 				var idExpr = macro {};
 				if(loaderExpression == null) {
