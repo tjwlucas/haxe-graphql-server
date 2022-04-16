@@ -12,8 +12,9 @@ using graphql.Util;
 
 class ResolverTest extends utest.Test {
     var server : GraphQLServer;
+    var base : ResolverTestObject;
     function setup() {
-        var base = new ResolverTestObject();
+        base = new ResolverTestObject();
         var context = new SomeContextClass();
         this.server = new GraphQLServer(base, context);
     }
@@ -67,6 +68,26 @@ class ResolverTest extends utest.Test {
         // errors.length == 1;
         var error : graphql.externs.Error = errors[0];
         error.getMessage() == 'Validation failed';
+        error.getCategory() == 'validation';
+        error.isClientSafe() == true;
+    }
+
+    function specProtectedNullableAddObjectValueMethod() {
+        var response = server.executeQuery("query($x:Int!, $y:Int!){
+            protectedNullableAddObjectValue(x:$x, y:$y)
+        }", {
+            x: 5,
+            y: 12
+        }.associativeArrayOfObject());
+        
+        Assert.notNull(response.data);
+        response.data['protectedNullableAddObjectValue'] == null;
+
+        Assert.notNull(response.errors);
+        var errors = response.errors.toHaxeArray();
+        errors.length == 1;
+        var error : GraphQLError = errors[0];
+        @:privateAccess error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
     }
@@ -127,6 +148,27 @@ class ResolverTest extends utest.Test {
         error.isClientSafe() == true;
     }
 
+    function specNullResolvers() {
+        var fields = @:privateAccess base.gql.fields;
+
+        var expect_resolvers = [
+            'unvalidatedVariable' => false,
+            'protectedVariable' => true,
+            'unprotectedVariable' => true,
+            'simpleMethod' => true,
+            'staticFunction' => true,
+            'staticVar' => true
+        ];
+
+        for(name => hasResolver in expect_resolvers) {
+            var field = Util.getFieldDefinitionByName(fields, name);
+            switch(hasResolver) {
+                case true: field.resolve != null;
+                case false: field.resolve == null;
+            }
+        }
+    }
+
     function specVariableResolver() {
         // Get plain unprotected variable
         var response = server.executeQuery("{unprotectedVariable}"); 
@@ -136,7 +178,7 @@ class ResolverTest extends utest.Test {
 
         // Get plain unprotected variable, with no validation metadata)
         var response = server.executeQuery("{unvalidatedVariable}");
-        
+
         Assert.notNull(response.data);
         Assert.equals(response.data['unvalidatedVariable'], 42);    
 
@@ -215,6 +257,8 @@ class ResolverTest extends utest.Test {
 class ResolverTestObject implements GraphQLObject {
     public function new() {}
 
+    var falseValue = false;
+
     public function simpleMethod() : String {
         return "This is a simple response";
     }
@@ -225,6 +269,11 @@ class ResolverTestObject implements GraphQLObject {
 
     @:validate(false)
     public function protectedAdd(x:Int, y:Int) : Int {
+        return x + y;
+    }
+
+    @:validate(obj.falseValue)
+    public function protectedNullableAddObjectValue(x:Int, y:Int) : Null<Int> {
         return x + y;
     }
 

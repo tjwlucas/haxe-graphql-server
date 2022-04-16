@@ -7,9 +7,9 @@
 -main tests.TestLoader
 -php bin/tests
 
---next
--main tests.Manual
--php bin/manual
+# --next
+# -main tests.Manual
+# -php bin/manual
 
 --next
 -main tests.TestLoader

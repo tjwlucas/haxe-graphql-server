@@ -16,6 +16,7 @@ class FieldTypeBuilder {
     public var args : Expr = macro [];
     public var arg_names: Array<String> = [];
     public var is_function = false;
+	public var is_deferred = false;
 
 	public var query_type : GraphQLObjectType;
 
@@ -54,6 +55,10 @@ class FieldTypeBuilder {
         } else if (name == 'Null') {
 			var base_type = nullableType(params);
 			return macro $base_type;
+		} else if (name == 'Deferred') {
+			is_deferred = true;
+            var deferredOf = arrayType(params);
+			return macro $deferredOf;
 		} else {
 			var base_type = getBaseType(name);
 			if(nullable) {
@@ -86,7 +91,7 @@ class FieldTypeBuilder {
 		return type;
 	}
 
-	function functionReturnType(ret: ComplexType) {
+	function functionReturnType(?ret: ComplexType) {
 		var type : Expr;
 		switch(ret) {
 			case(TPath({name: a, params: p})):
@@ -131,7 +136,7 @@ class FieldTypeBuilder {
 									var arg : graphql.GraphQLArgField = {
 										type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
 										name: $v{ arg.name },
-										description: null
+										description: ${ getDoc(arg) }
 									};
 									if($defaultValue != null) {
 										arg.defaultValue = $defaultValue;
@@ -151,6 +156,19 @@ class FieldTypeBuilder {
 				type = macro 'Unknown';
 		}
     }
+
+	public function getDoc(?f:{meta:Metadata}) {
+		var docMeta = getMeta(DocMeta, f);
+		var description = macro null;
+		if(docMeta != null && docMeta.params != null) {
+			if(docMeta.params.length > 0) {
+				description = docMeta.params[0];
+			}
+		} else if (f == null) {
+			description = macro $v{ getComment() };
+		}
+		return description;
+	}
 
 	/**
 		Get the commment string from the field
@@ -177,6 +195,46 @@ class FieldTypeBuilder {
 	public function isStatic() : Bool {
 		return field.access.contains(AStatic);
 	}
+
+	public function isMagicDeferred() : Bool {
+		return hasMeta(Deferred);
+	}
+
+	public function getDeferredLoaderClass() {
+		return getMeta(Deferred).params[0];
+	}
+
+	public function getDeferredLoaderExpresssion() {
+		return getMeta(Deferred).params[1];
+	}
+
+	public function getFunctionBody() {
+		switch(field.kind) {
+			case FFun({expr: expr}):
+				return expr;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
+
+	public function getFunctionReturnType() {
+		switch(field.kind) {
+			case FFun({ret: ret}):
+				return ret;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
+    
+
+	public function getFunctionArgType(i:Int = 0) {
+		switch(field.kind) {
+			case FFun({args: args}):
+				return args[i].type;
+			default:
+				return throw new Error("Not a function", field.pos);
+		}
+	}
     
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;
@@ -194,14 +252,17 @@ class FieldTypeBuilder {
 	/**
 		Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
 	**/
-	function getMeta(name : FieldMetadata) {
-		return getMetas(name)[0];
+	function getMeta(name : FieldMetadata, ?field:{meta:Metadata}) {
+		return getMetas(name, field)[0];
 	}
 
 	/**
 		Retrieves list of metadata with the given name (with or without preceding `:`)
 	**/
-	function getMetas(name : FieldMetadata) {
+	function getMetas(name : FieldMetadata, ?field:{meta:Metadata}) {
+		if(field == null) {
+			field = this.field;
+		}
 		return field.meta.filter((meta) -> {
 			return [':$name', name].contains(meta.name);
 		});

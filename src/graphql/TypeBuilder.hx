@@ -26,6 +26,7 @@ class TypeBuilder {
 		var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
 
 		var cls = Context.getLocalClass().get();
+		var toRemove = [];
 		Util.debug('Building ${cls.name} object');
 		for (f in fields) {
 			var new_field = buildFieldType(f);
@@ -38,10 +39,29 @@ class TypeBuilder {
 				Util.debug('Adding ${cls.name}.${f.name} mutation field');
 				graphql_mutation_field_definitions.push(new_field);
 			}
+			var fieldBuilder = new FieldTypeBuilder(f);
+			if(fieldBuilder.isMagicDeferred() && fieldBuilder.getFunctionBody() == null) {
+				toRemove.push(f);
+			}
+		}
+		for(f in toRemove) {
+			fields.remove(f);
 		}
 		
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
 		var mutation_name : ExprOf<String> = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
+
+		var classDoc : ExprOf<String> = macro null;
+
+		if(cls.classHasMeta(DocMeta)) {
+			if(cls.classGetMeta(DocMeta).params.length > 0) {
+				classDoc = cls.classGetMeta(DocMeta).params[0];
+			}
+		} else {
+			if(cls.doc != null){
+				classDoc = macro $v{ cls.doc.trim() };
+			}
+		}
 
 		var tmp_class = macro class {
 			/**
@@ -52,10 +72,10 @@ class TypeBuilder {
 				 mutation_fields: $a{graphql_mutation_field_definitions},
 				 type_name: $type_name,
 				 mutation_name: $mutation_name,
-				 description: $v{ cls.doc != null ? cls.doc.trim() : null  }
+				 description: $classDoc
 			};
 
-			public var gql(get, null) : graphql.TypeObjectDefinition;
+			public var gql(get, null) : graphql.TypeObjectDefinition = null;
 			public function get_gql() : graphql.TypeObjectDefinition {
 				return _gql;
 			};
@@ -112,7 +132,7 @@ class TypeBuilder {
 			}
 
 			var type = field.getType();
-			var comment = field.getComment();
+			var comment = field.getDoc();
 			var deprecationReason = field.getDeprecationReason();
 			var validations = field.getValidators();
 			var postValidations = field.getValidators(ValidateAfter);
@@ -122,7 +142,16 @@ class TypeBuilder {
 			var number_of_validations = validations.length;
 			var number_of_post_validations = postValidations.length;
 
-			var arg_var_defs = [for(f in field.arg_names) f == ctx_var_name ? macro var $f = ctx : macro var $f = args.$f ];
+			var arg_var_defs = [];
+			for(i => f in field.arg_names) {
+				var type = field.getFunctionArgType(i);
+				var defined = if(f == ctx_var_name) {
+					macro ctx;
+				} else {
+					macro args.$f;
+				}
+				arg_var_defs.push(macro var $f : $type = $defined);
+			}
 			// Add renamed context variable to context, even when not present in function argument list
 			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != 'ctx') {
 				var f = ctx_var_name;
@@ -145,12 +174,45 @@ class TypeBuilder {
 				case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
 				case false: macro $fieldPath;
 			}
+			var functionBody = validations;
 
-			var functionBody = validations.concat([
-				macro var result = $getResult
-			]).concat(postValidations).concat([
-				macro return result
-			]);
+			if(field.isMagicDeferred()) {
+				Util.debug('$name is deferred');
+				var loader = field.getDeferredLoaderClass();
+				var loaderExpression = field.getDeferredLoaderExpresssion();
+				if(field.getFunctionBody() != null) {
+					Context.warning("Function body will be totally ignored in GraphQL deferred loader", f.pos);
+				}
+				var idExpr = macro {};
+				if(loaderExpression == null) {
+					if(field.arg_names.length != 1) {
+						throw new Error("Deferred loader without expression must have exactly one argument", f.pos);
+					}
+					var arg = field.arg_names[0];
+					idExpr = macro $i{ arg };
+				} else {
+					idExpr = loaderExpression;
+				}
+				var returnType = field.getFunctionReturnType();
+				getResult = macro {
+					var id = $idExpr;
+					$loader.add(@:pos(f.pos) id);
+					return new graphql.externs.Deferred(() -> {
+						var result : $returnType = $loader.getValue(@:pos(f.pos) id);
+						$b{postValidations};
+						return result;
+					});
+				};
+				functionBody = functionBody.concat([
+					macro return $getResult
+				]);
+			} else {
+				functionBody = functionBody.concat([
+					macro var result = $getResult
+				]).concat(postValidations).concat([
+					macro return result
+				]);
+			}
 
 			var resolve = macro {};
 			if(
@@ -176,7 +238,7 @@ class TypeBuilder {
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
 				type: $type,
-				description: $v{comment},
+				description: $comment,
 				deprecationReason: $deprecationReason,
 				args: graphql.Util.toPhpArray( ${ field.args } ),
 				resolve: $resolve

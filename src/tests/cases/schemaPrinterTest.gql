@@ -1,0 +1,27 @@
+schema {
+  query: SchemaPrintTestObject
+  mutation: SchemaPrintTestObjectMutation
+}
+
+"""This is a simple GraphQL class test"""
+type SchemaPrintTestObject {
+  id: ID!
+
+  """This is the `simple_string_field` documentation"""
+  simple_string_field: String!
+
+  """This field is a deprecated `String`"""
+  deprecated_string_field: String! @deprecated(reason: "With a deprecation reason")
+  int_field: Int!
+  float_field: Float!
+  int_array: [Int!]!
+  nested_int_array: [[[Int!]!]!]!
+  nullable_array_of_nullable_ints: [Int]
+  bool_field: Boolean!
+}
+
+"""This is a simple GraphQL class test"""
+type SchemaPrintTestObjectMutation {
+  doMutation(value: Boolean = true): Boolean!
+  nestedMutationObject: SchemaPrintTestObjectMutation!
+}
