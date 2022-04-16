@@ -21,6 +21,12 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
     public static inline function toHaxeArray(arr:php.NativeArray) : Array<Dynamic> {
         return php.Lib.toHaxeArray(arr);
     };
+
+    
+    public var length(get, never) : Int;
+    inline function get_length() : Int {
+        return toHaxeArray(this).length;
+    }
 }
 #else
 abstract NativeArray(Dynamic) from Dynamic to Dynamic {

@@ -1,15 +1,20 @@
 package tests.cases;
 
+import graphql.externs.Error;
 import graphql.GraphQLError;
-import php.NativeArray;
 import utest.Assert;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
 import graphql.GraphQLObject;
 import utest.Test;
 import graphql.externs.Deferred;
+using graphql.Util;
+import graphql.externs.NativeArray;
 
+#if php
 using php.Lib;
+import php.NativeArray;
+#end
 
 class DeferredTest extends Test {
     function setup() {
@@ -71,7 +76,7 @@ class DeferredTest extends Test {
         Assert.notNull(result.errors);
         var errors = result.errors.toHaxeArray();
         errors.length == 1;
-        var error : GraphQLError = errors[0];
+        var error : Error = errors[0];
         @:privateAccess error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;

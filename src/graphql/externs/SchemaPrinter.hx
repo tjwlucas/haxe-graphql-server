@@ -1,6 +1,8 @@
 package graphql.externs;
 
+#if php
 import php.NativeArray;
+#end
 
 @:native('GraphQL\\Utils\\SchemaPrinter')
 extern class SchemaPrinter {

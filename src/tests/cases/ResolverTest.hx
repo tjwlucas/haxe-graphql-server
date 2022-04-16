@@ -1,5 +1,7 @@
 package tests.cases;
 
+import graphql.externs.Error;
+import graphql.GraphQLError;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
@@ -84,9 +86,8 @@ class ResolverTest extends utest.Test {
         response.data['protectedNullableAddObjectValue'] == null;
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
+        Assert.equals(1, response.errors.length);
+        var error : Error = response.errors[0];
         @:privateAccess error.getMessage() == 'Validation failed';
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
