@@ -1,6 +1,8 @@
 package graphql.externs;
 
-@:native('GraphQL\\Deferred')
+#if php @:native('GraphQL\\Deferred')
+#elseif js @:native('Promise')
+#end
 extern class Deferred<T> {
     public function new(fn:Void->T);
 }

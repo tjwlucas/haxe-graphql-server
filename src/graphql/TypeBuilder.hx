@@ -67,13 +67,23 @@ class TypeBuilder {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
+			#if js
 			public static var _gql : graphql.TypeObjectDefinition = {
-				 fields: $a{graphql_field_definitions},
-				 mutation_fields: $a{graphql_mutation_field_definitions},
-				 type_name: $type_name,
-				 mutation_name: $mutation_name,
-				 description: $classDoc
+				fields: () -> $a{graphql_field_definitions},
+				mutation_fields: $a{graphql_mutation_field_definitions},
+				type_name: $type_name,
+				mutation_name: $mutation_name,
+				description: $classDoc
 			};
+			#else
+			public static var _gql : graphql.TypeObjectDefinition = {
+					fields: $a{graphql_field_definitions},
+					mutation_fields: $a{graphql_mutation_field_definitions},
+					type_name: $type_name,
+					mutation_name: $mutation_name,
+					description: $classDoc
+			};
+			#end
 
 			public var gql(get, null) : graphql.TypeObjectDefinition = null;
 			public function get_gql() : graphql.TypeObjectDefinition {

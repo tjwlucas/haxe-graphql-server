@@ -4,7 +4,14 @@ package graphql.externs;
 import php.NativeArray;
 #end
 
-@:native('GraphQL\\Utils\\SchemaPrinter')
-extern class SchemaPrinter {
-    public static function doPrint(schema:Schema, ?options:NativeArray) : String;
+#if php @:native('GraphQL\\Utils\\SchemaPrinter')
+extern
+#end
+class SchemaPrinter {
+    #if js inline #end public static function doPrint(schema:Schema) : String 
+    #if js
+    {
+        return JsUtilities.printSchema(schema);
+    }
+    #end;
 }

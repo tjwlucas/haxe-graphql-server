@@ -1,5 +1,7 @@
 package graphql.externs;
 
+#if php
+@:native('GraphQL\\Error\\ClientAware') extern
 
-@:native('GraphQL\\Error\\ClientAware')
-extern interface ClientAware {}
+#end
+interface ClientAware {}
