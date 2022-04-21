@@ -5,8 +5,12 @@ class Util {
 	public static inline function hashOfAssociativeArray(arr:Dynamic) : Map<String, Dynamic> {
 		#if php
 			return php.Lib.hashOfAssociativeArray(arr);
-		#else
-			return arr;
+		#else			
+			var returnMap : Map<String, Dynamic> = [];
+			for(key in Reflect.fields(arr)) {
+				returnMap[key] = Reflect.field(arr, key);
+			}
+			return returnMap;
 		#end
 	}
 

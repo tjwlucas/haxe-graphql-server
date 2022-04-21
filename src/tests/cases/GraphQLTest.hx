@@ -117,7 +117,11 @@ class GraphQLTest extends utest.Test {
 					y: 2,
 					queryTypeName: 'Query'
 			}.associativeArrayOfObject());
-		result.errors == [].toPhpArray();
+		#if php
+		Assert.same(result.errors, [].toPhpArray());
+		#elseif js
+		Assert.isNull(result.errors);
+		#end
 		Assert.notNull(result.data);
 		if (result.data != null) {
 			var data:Map<String, Dynamic> = result.data.hashOfAssociativeArray();
@@ -129,7 +133,7 @@ class GraphQLTest extends utest.Test {
 			data['__typename'] == 'Query';
 			data['string_field'] == 'This is an instance value';
 			data['renamed'] == result.data['string_field'];
-            data['nested_int'] == [[1].toPhpArray(), [5, 6].toPhpArray()].toPhpArray();
+            Assert.same([[1].toPhpArray(), [5, 6].toPhpArray()].toPhpArray(), data['nested_int']);
 			data['float'] == 7.2;
 			data['greet'] == 'Hello, Unit tests';
 			data['divide'] == 3.5;
