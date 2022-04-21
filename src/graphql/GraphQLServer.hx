@@ -4,10 +4,10 @@ import graphql.externs.SchemaPrinter;
 import graphql.externs.ExecutionResult;
 import graphql.externs.GraphQL;
 import haxe.Json;
-import sys.io.File;
 import graphql.externs.Schema;
 
 #if php 
+    import sys.io.File;
     import php.Global;
     import php.Exception;
 #end
@@ -31,11 +31,11 @@ class GraphQLServer {
         }.associativeArrayOfObject());
     }
 
-    public function readSchema()  : String {
+    @:keep public function readSchema()  : String {
         return SchemaPrinter.doPrint(schema);
     }
 
-    public function executeQuery(query_string:String, ?variables : NativeArray, ?operationName:String) {
+    @:keep public function executeQuery(query_string:String, ?variables : NativeArray, ?operationName:String) {
         if(variables == null) {
             variables = [].toPhpArray();
         }
@@ -73,7 +73,7 @@ class GraphQLServer {
             };
             Sys.print(Json.stringify(result));
         }
-        #elseif js
+        #elseif (js && sys)
             var app = new  graphql.externs.js.Express();
             app.use('/', new graphql.externs.js.GraphqlHTTP({
                 schema: this.schema,
