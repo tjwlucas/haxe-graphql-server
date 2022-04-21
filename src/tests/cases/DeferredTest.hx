@@ -78,8 +78,10 @@ class DeferredTest extends Test {
         errors.length == 1;
         var error : Error = errors[0];
         @:privateAccess error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specNestedDeferredResolver() {
