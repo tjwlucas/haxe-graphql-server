@@ -23,7 +23,7 @@ class TypeObjectDefinition {
     /**
         Array of fields, constructed from the class to be added to the GraphQL query type object
     **/
-    var fields: Array<graphql.GraphQLField>;
+    var fields: Void->Array<graphql.GraphQLField>;
 
     /**
         GraphQL query object type definition, as passed to the `graphql-php` library
@@ -33,7 +33,9 @@ class TypeObjectDefinition {
     /**
         Array of fields, constructed from the class to be added to the GraphQL mutation type object
     **/
-    var mutation_fields: Null<Array<graphql.GraphQLField>>;
+    var mutation_fields: Void->Null<Array<graphql.GraphQLField>>;
+
+    var has_mutation : Bool;
 
 
     /**
@@ -49,38 +51,43 @@ class TypeObjectDefinition {
     public function new(
         type_name:String, 
         mutation_name:String, 
-        fields:Array<graphql.GraphQLField>, 
-        mutation_fields: Array<graphql.GraphQLField>,
-        description: String
+        fields:Void->Array<graphql.GraphQLField>, 
+        mutation_fields: Void->Array<graphql.GraphQLField>,
+        description: String,
+        has_mutation: Bool
         ) {
         this.type_name = type_name;
         this.fields = fields;
         this.mutation_fields = mutation_fields;
         this.mutation_name = mutation_name;
         this.description = description;
-
-        var named_fields : Map<String, NativeArray> = [];
-
-        for(f in this.fields) [
-            named_fields[f.name] = f.associativeArrayOfObject()
-        ];
+        this.has_mutation = has_mutation;
 
         type  = new ObjectType({
             name: this.type_name,
             description: this.description,
-            fields: Util.associativeArrayOfHash(named_fields)
+            fields: () -> {
+                var named_fields : Map<String, NativeArray> = [];
+
+                for(f in this.fields()) [
+                    named_fields[f.name] = f.associativeArrayOfObject()
+                ];
+                return Util.associativeArrayOfHash(named_fields);
+            }
         }.associativeArrayOfObject());
 
-        if(mutation_fields.length > 0) {
-            var named_mutation_fields : Map<String, NativeArray> = [];
-
-            for(f in this.mutation_fields) [
-                named_mutation_fields[f.name] = f.associativeArrayOfObject()
-            ];        
+        if(this.has_mutation) {           
             mutation_type  = new ObjectType({
                 name: this.mutation_name,
                 description: this.description,
-                fields: Util.associativeArrayOfHash(named_mutation_fields)
+                fields: () -> {
+                    var named_mutation_fields : Map<String, NativeArray> = [];
+
+                    for(f in this.mutation_fields()) [
+                        named_mutation_fields[f.name] = f.associativeArrayOfObject()
+                    ];
+                    return Util.associativeArrayOfHash(named_mutation_fields);
+                }
             }.associativeArrayOfObject());
         }
     }

@@ -10,7 +10,7 @@ class DocTest extends utest.Test {
     var gql : TypeObjectDefinition;
 
     function setup() {
-        @:privateAccess fields = new DocTestObject().gql.fields;
+        @:privateAccess fields = new DocTestObject().gql.fields();
         gql = new DocTestObject().gql;
     }
 

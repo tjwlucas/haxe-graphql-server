@@ -62,28 +62,20 @@ class TypeBuilder {
 				classDoc = macro $v{ cls.doc.trim() };
 			}
 		}
+		var hasMutationFields = (graphql_mutation_field_definitions.length > 0);
 
 		var tmp_class = macro class {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
-			#if js
 			public static var _gql : graphql.TypeObjectDefinition = {
-				fields: () -> $a{graphql_field_definitions},
-				mutation_fields: $a{graphql_mutation_field_definitions},
-				type_name: $type_name,
-				mutation_name: $mutation_name,
-				description: $classDoc
-			};
-			#else
-			public static var _gql : graphql.TypeObjectDefinition = {
-					fields: $a{graphql_field_definitions},
-					mutation_fields: $a{graphql_mutation_field_definitions},
+					fields: () -> $a{graphql_field_definitions},
+					mutation_fields: () -> $a{graphql_mutation_field_definitions},
 					type_name: $type_name,
 					mutation_name: $mutation_name,
-					description: $classDoc
+					description: $classDoc,
+					has_mutation: $v{ hasMutationFields }
 			};
-			#end
 
 			public var gql(get, null) : graphql.TypeObjectDefinition = null;
 			public function get_gql() : graphql.TypeObjectDefinition {

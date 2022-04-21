@@ -33,7 +33,7 @@ class RenamedClassTests extends Test {
 
     @:depends(specTypeExists)
     function specFields() {
-        var fields = @:privateAccess type.gql.fields;
+        var fields = @:privateAccess type.gql.fields();
         var field = Util.getFieldDefinitionByName(fields, 'string');
         Std.string(field.type) == 'String!';
         field.deprecationReason == null;

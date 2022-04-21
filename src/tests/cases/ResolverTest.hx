@@ -150,7 +150,7 @@ class ResolverTest extends utest.Test {
     }
 
     function specNullResolvers() {
-        var fields = @:privateAccess base.gql.fields;
+        var fields = @:privateAccess base.gql.fields();
 
         var expect_resolvers = [
             'unvalidatedVariable' => false,

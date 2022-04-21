@@ -10,7 +10,7 @@ using graphql.Util;
 class MethodTest extends utest.Test {
     var fields: Array<GraphQLField>;
     function setup() {
-        fields = @:privateAccess new MethodTestObject().gql.fields;
+        fields = @:privateAccess new MethodTestObject().gql.fields();
     }
     function specMethodTestGreet() {
         var field = fields.getFieldDefinitionByName('greet');
