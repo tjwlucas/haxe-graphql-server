@@ -104,13 +104,23 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{list}");
         
         Assert.notNull(response.data);
-        Assert.same(response.data['list'], [0,1,2,3,4,5,6,7,8,9,10].toPhpArray());
+        var expected = [0,1,2,3,4,5,6,7,8,9,10].toPhpArray();
+        #if php
+        Assert.equals(expected, response.data['list']);
+        #else
+        Assert.same(expected, response.data['list']);
+        #end
 
         // Using valid provided values
         var response = server.executeQuery("{list(min:3, max:8)}");
         
         Assert.notNull(response.data);
-        Assert.same(response.data['list'], [3,4,5,6,7,8].toPhpArray());
+        var expected = [3,4,5,6,7,8].toPhpArray();
+        #if php
+        Assert.equals(expected, response.data['list']);
+        #else
+        Assert.same(expected, response.data['list']);
+        #end
 
         // Using invalid provided values
         var response = server.executeQuery("{list(min:13, max:8)}");
