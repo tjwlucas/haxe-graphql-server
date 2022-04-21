@@ -242,7 +242,7 @@ class TypeBuilder {
 				type: $type,
 				description: $comment,
 				deprecationReason: $deprecationReason,
-				args: graphql.Util.toPhpArray( ${ field.args } ),
+				args: graphql.Util.processArgs( ${ field.args } ),
 				resolve: $resolve
 			}
 			return field;

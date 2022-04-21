@@ -21,6 +21,12 @@ class Util {
     public static inline function associativeArrayOfHash(hash:Map<String, Dynamic>) {
 		#if php
             return php.Lib.associativeArrayOfHash(hash);
+		#elseif js
+			var obj : Dynamic = {};
+			for(k => v in hash) {
+				Reflect.setField(obj, k, v);
+			}
+			return obj;
         #else
             return hash;
         #end
@@ -31,6 +37,18 @@ class Util {
 			return php.Lib.toPhpArray(arr);
 		#else
 			return arr;
+		#end
+	}
+
+	public static inline function processArgs(arr:Array<NativeArray>) : NativeArray {
+		#if js
+		var argsObject : Dynamic = {};
+		for(arg in arr) {
+			Reflect.setField(argsObject, arg.name, arg);
+		}
+		return argsObject;
+		#else
+			return toPhpArray(arr);
 		#end
 	}
 }
