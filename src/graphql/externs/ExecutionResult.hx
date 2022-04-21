@@ -1,12 +1,20 @@
 package graphql.externs;
 
+import graphql.externs.Error;
 import graphql.externs.NativeArray;
+#if php
 @:native('GraphQL\\Executor\\ExecutionResult')
 extern class ExecutionResult {
     public function toArray(?debug : Int) : NativeArray;
-    public var errors : NativeArray;
-    public var data : NativeArray;
+    @:optional public var errors : NativeArray;
+    @:optional public var data : NativeArray;
 }
+#else
+typedef ExecutionResult = {
+    @:optional public var errors : Array<Error>;
+    @:optional public var data : NativeArray;
+}
+#end
 
 enum abstract DebugFlag(Int) from Int to Int {
     public var NONE                        = 0;

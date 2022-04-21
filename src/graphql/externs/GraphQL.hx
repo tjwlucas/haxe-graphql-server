@@ -10,14 +10,22 @@ extern class GraphQL {
     public static function executeQuery(schema: Schema, query: String, rootValue : Dynamic, ?contextValue : Dynamic, ?variables: NativeArray, ?operationName:String) : ExecutionResult
     #if js
     {
-        return execute({
-            schema: schema,
-            document: Language.parse(query),
-            rootValue: rootValue,
-            contextValue: contextValue,
-            variableValues: variables,
-            operationName: operationName
-        });
+        var ast = Language.parse(query);
+        var invalidErrors = validate(schema, ast);
+        if(invalidErrors.length > 0) {
+            return {
+                errors: invalidErrors
+            };
+        } else {
+            return execute({
+                schema: schema,
+                document: ast,
+                rootValue: rootValue,
+                contextValue: contextValue,
+                variableValues: variables,
+                operationName: operationName
+            });
+        }
     }
     #end;
 
@@ -25,6 +33,8 @@ extern class GraphQL {
     static function execute(parameters: {
         schema: Schema, document: JsDocument, ?rootValue:Dynamic, ?contextValue:Dynamic, ?variableValues: NativeArray, ?operationName: String
     }) : ExecutionResult;
+
+    static function validate(schema: Schema, document: JsDocument) : Array<Error>;
     #end
 }
 
