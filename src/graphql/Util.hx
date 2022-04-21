@@ -55,4 +55,10 @@ class Util {
 			return toPhpArray(arr);
 		#end
 	}
+
+	#if js
+	public static inline function toHaxeArray(a:Array<Dynamic>):Array<Dynamic> {
+		return a;
+	}
+	#end
 }
