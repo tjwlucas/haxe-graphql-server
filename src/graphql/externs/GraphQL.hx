@@ -15,7 +15,7 @@ extern class GraphQL {
             document: Language.parse(query),
             rootValue: rootValue,
             contextValue: contextValue,
-            variables: variables,
+            variableValues: variables,
             operationName: operationName
         });
     }
@@ -23,7 +23,7 @@ extern class GraphQL {
 
     #if js
     static function execute(parameters: {
-        schema: Schema, document: JsDocument, ?rootValue:Dynamic, ?contextValue:Dynamic, ?variables: NativeArray, ?operationName: String
+        schema: Schema, document: JsDocument, ?rootValue:Dynamic, ?contextValue:Dynamic, ?variableValues: NativeArray, ?operationName: String
     }) : ExecutionResult;
     #end
 }
