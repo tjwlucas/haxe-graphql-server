@@ -196,14 +196,25 @@ class TypeBuilder {
 					idExpr = loaderExpression;
 				}
 				var returnType = field.getFunctionReturnType();
-				getResult = macro {
-					var id = $idExpr;
-					$loader.add(@:pos(f.pos) id);
-					return new graphql.externs.Deferred(() -> {
+
+				var deferredObject = macro {};
+				if(Context.defined('php')) {
+					deferredObject = macro new graphql.externs.Deferred(() -> {
 						var result : $returnType = $loader.getValue(@:pos(f.pos) id);
 						$b{postValidations};
 						return result;
 					});
+				} else if (Context.defined('js')) {
+					deferredObject = macro new js.lib.Promise((resolve, reject) -> {
+						var result : $returnType = $loader.getValue(@:pos(f.pos) id);
+						$b{postValidations};
+						resolve(result);
+					});
+				}
+				getResult = macro {
+					var id = $idExpr;
+					$loader.add(@:pos(f.pos) id);
+					return $deferredObject;
 				};
 				functionBody = functionBody.concat([
 					macro return $getResult
