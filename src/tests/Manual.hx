@@ -1,6 +1,5 @@
 package tests;
 
-import php.Session;
 import sys.io.File;
 import haxe.Json;
 import graphql.GraphQLError;
@@ -16,8 +15,10 @@ class Manual {
     }
 
 	static function __init__() {
+        #if php
 		// PHP 8.1 compatibility workaround https://github.com/HaxeFoundation/haxe/issues/10502
 		untyped if (version_compare(PHP_VERSION, "8.1.0", ">=")) error_reporting(error_reporting() & ~E_DEPRECATED);
+        #end
 	}
 }
 
@@ -29,6 +30,12 @@ class ManualTest implements GraphQLObject {
         Will always return true
     **/
     public var loaded:Bool = true;
+
+    public function platform() : String {
+        #if php return "PHP";
+        #elseif js return "Javascript";
+        #end
+    }
 
     @:validationContext(var capName = (name:String).toUpperCase())
     @:validationContext(var disallowed = 'me'.toUpperCase())

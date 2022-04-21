@@ -73,8 +73,20 @@ class GraphQLServer {
             };
             Sys.print(Json.stringify(result));
         }
+        #elseif js
+            var app = new  graphql.externs.js.Express();
+            app.use('/', new graphql.externs.js.GraphqlHTTP({
+                schema: this.schema,
+                rootValue: this.root,
+                graphiql: true
+            }));
+            var portString = Sys.args()[0];
+            var port = Std.parseInt(portString);
+            port = port != null ? port : 4000;
+            app.listen(port);
+            Sys.println('Running server on port $port');
         #else
-            trace("Not implemented for anything except PHP");
+            trace("Not implemented for anything except PHP & JS");
         #end
     }
 

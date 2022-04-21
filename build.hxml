@@ -16,3 +16,8 @@
 -lib hxasync
 -lib hxnodejs
 -js bin/tests.js
+
+# --next
+# -main tests.Manual
+# -lib hxnodejs
+# -js bin/manual.js
