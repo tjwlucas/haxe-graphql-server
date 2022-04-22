@@ -37,7 +37,7 @@ $queryType = new ObjectType([
 ]);
 ```
 
-#### **Equivalent Haxe using `haxe-graphql-php-server`**
+#### **Equivalent Haxe**
 
 ```haxe
 import graphql.GraphQLObject;
