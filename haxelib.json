@@ -1,10 +1,12 @@
 {
-  "name": "graphql-server-php",
-  "url": "https://github.com/tjwlucas/haxe-graphql-server-php",
+  "name": "graphql-server",
+  "url": "https://github.com/tjwlucas/haxe-graphql-server",
   "license": "MIT",
   "tags": [
     "graphql",
     "php",
+    "js",
+    "nodejs",
     "web"
   ],
   "description": "Macro library that uses traditional Haxe classes to generate a ready to use GraphQL server",
