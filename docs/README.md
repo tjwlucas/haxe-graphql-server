@@ -371,7 +371,7 @@ class BlogStory implements GraphQLObject {
 #### **MyUserBuffer.hx**
 ```haxe
 class MyUserBuffer extends graphql.DeferredLoader {
-    static function load() : Map<Int, UserObject> {
+    static function load(keys:Array<Int>) : Map<Int, UserObject> {
         // Backend code to populate `results` with a `Map<Int, UserObject>`
         // e.g a sql call for `select ... from user where id in ?`
         // with ? bound to the `keys` variable
@@ -381,7 +381,7 @@ class MyUserBuffer extends graphql.DeferredLoader {
 ```
 <!-- tabs:end -->
 
-The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions). This loader class will have a static property called `keys`, with the type `Array<K>` (So in this example, `Array<Int>`), which will be available through `keys`/`this.keys`/`[[ Your Loader Class Name ]].keys` in your load function.
+The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions). This load function must take an argument with the type `Array<K>` (So in this example, `Array<Int>`), which represents the list of provided keys.
 
 e.g. 
 ```haxe

@@ -27,28 +27,49 @@ class DeferredLoaderBuilder {
         if(!hasLoad) {
             throw new Error("DeferredLoader class must declare a load() function", Context.currentPos());
         }
-		var tmp_class = macro class {
-            static var keys:Array<$keyType> = [];
-            public static var values : Map<$keyType,$returnType> = [];
-            static var runCount = 0;
+        var tmp_class = macro class {};
+        if(Context.defined('php')) {
+            tmp_class = macro class {
+                static var keys:Array<$keyType> = [];
+                public static var values : Map<$keyType,$returnType> = [];
+                static var runCount = 0;
 
-            public static function add(key:$keyType) {
-                if(!keys.contains(key)) {
-                    keys.push(key);
+                public static function add(key:$keyType) {
+                    if(!keys.contains(key)) {
+                        keys.push(key);
+                    }
+                }
+
+                public static function getValue(key:$keyType) : $returnType {
+                    var loadedKeys = [for (k in values.keys()) k];
+                    if(!loadedKeys.contains(key)) {
+                        var newValues = load(keys);
+                        for(k => v in newValues) {
+                            values[k] = v;
+                        }
+                        keys = [];
+                        runCount++;
+                    }
+                    return values[key];
                 }
             }
-
-            public static function getValue(key:$keyType) : $returnType {
-                var loadedKeys = [for (k in values.keys()) k];
-                if(!loadedKeys.contains(key)) {
-                    var newValues = load();
-                    for(k => v in newValues) {
-                        values[k] = v;
+        } else if (Context.defined('js')) {
+            tmp_class = macro class {
+                static var runCount = 0;
+                private static var _loader : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                public static var loader(get, never) : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                static public function get_loader() {
+                    if(_loader == null) {
+                        _loader = new graphql.externs.js.DataLoader<$keyType,$returnType>((keys:Array<$keyType>) -> {
+                            return new js.lib.Promise((resolve, reject) -> {
+                                runCount++;
+                                var values = load(keys);
+                                resolve([for(k in keys) values[k]]);
+                            });
+                        });
                     }
-                    keys = [];
-                    runCount++;
+                    return _loader;
                 }
-                return values[key];
             }
         }
         

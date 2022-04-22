@@ -73,7 +73,7 @@ class GraphQLServer {
             };
             Sys.print(Json.stringify(result));
         }
-        #elseif (js && sys)
+        #elseif js
             var app = new  graphql.externs.js.Express();
             app.use('/', new graphql.externs.js.GraphqlHTTP({
                 schema: this.schema,
