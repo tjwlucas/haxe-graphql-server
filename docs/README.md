@@ -44,7 +44,7 @@ import graphql.GraphQLObject;
 
 @:structInit class Query implements GraphQLObject {
     var prefix : String;
-    public function echo(message:String>) : String {
+    public function echo(message:String) : String {
         return prefix + message;
     }
 }
