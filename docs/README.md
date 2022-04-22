@@ -64,7 +64,7 @@ For a PHP target, you will also need to install the `webonyx/graphql-php` using 
 composer require webonyx/graphql-php
 ```
 
-### Javacript
+### Javascript
 For a javascript target, you will need to install `graphql` (and the express server, if wanting to run it as a nodejs server):
 ```
 npm install --save graphql express-graphql express
