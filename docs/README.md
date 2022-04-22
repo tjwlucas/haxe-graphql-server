@@ -56,7 +56,7 @@ import graphql.GraphQLObject;
 
 To set up and run a new GraphQL server, you will need to install this package:
 ```
-haxelib install graphql-server-php
+haxelib install graphql-server
 ```
 ### PHP
 For a PHP target, you will also need to install the `webonyx/graphql-php` using composer:
