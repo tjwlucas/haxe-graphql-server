@@ -5,6 +5,7 @@ import haxe.Json;
 import graphql.GraphQLError;
 import graphql.GraphQLObject;
 import graphql.GraphQLServer;
+import graphql.DeferredLoader;
 using Math;
 
 class Manual {
@@ -56,6 +57,9 @@ class ManualTest implements GraphQLObject {
     public function person(name:String = "Me") : ManualPerson {
         return new ManualPerson(name);
     }
+
+    @:deferred(NestedDeferredLoader)
+    public function getNested(id:Int = 0) : NestedDeferredTestObject;
 }
 
 @:typeName("Person")
@@ -68,5 +72,31 @@ class ManualPerson implements GraphQLObject {
     @:validate(name != obj._name, 'Both names are the same ($name), and that is arbitrarily disallowed')
     public function greet(name : String = 'Sir') : String {
         return 'Hello, $name, my name is $_name';
+    }
+}
+
+class NestedDeferredTestObject implements GraphQLObject {
+    public var n : Int;
+
+    public function new(n:Int) {
+        this.n = n ;
+    }
+
+    @:deferred(NestedDeferredLoader, obj.n + 1)
+    public function getNext() : NestedDeferredTestObject;
+
+    @:deferred(NestedDeferredLoader, obj.n - 1)
+    public function getPrev() : NestedDeferredTestObject;
+}
+
+class NestedDeferredLoader extends DeferredLoader {
+    public static var runBatches = [];
+    static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
+        var results : Map<Int, NestedDeferredTestObject> = [];
+        runBatches.push(keys);
+        for(key in keys) {
+            results[key] = new NestedDeferredTestObject(key);
+        }
+        return results;
     }
 }
