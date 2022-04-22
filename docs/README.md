@@ -71,7 +71,7 @@ npm install --save graphql express-graphql express
 ```
 (If all you want is the server object to execute queries against directly, you do not need the express packages).
 
-In order to use [Data Loaders](#deferred-resolvers-n+1-problem), the `dataloader` package will also be required:
+In order to use [Data Loaders](#deferred-resolvers-n1-problem), the `dataloader` package will also be required:
 ```
 npm install --save dataloader
 ```
