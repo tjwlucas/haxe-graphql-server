@@ -75,6 +75,12 @@ class GraphQLServer {
         }
         #elseif js
             var app = new  graphql.externs.js.Express();
+            app.use((req, res, next) -> {
+                var reqd = graphql.externs.js.Domain.create();
+                reqd.loaders = [];
+                reqd.requestValues = [];
+                reqd.run(next);
+              });
             app.use('/', new graphql.externs.js.GraphqlHTTP({
                 schema: this.schema,
                 rootValue: this.root,

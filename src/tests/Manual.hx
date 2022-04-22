@@ -1,5 +1,8 @@
 package tests;
 
+#if js
+import graphql.externs.js.Process;
+#end
 import sys.io.File;
 import haxe.Json;
 import graphql.GraphQLError;
@@ -26,6 +29,23 @@ class Manual {
 @:typeName("Query")
 class ManualTest implements GraphQLObject {
     public function new() {}
+
+    #if php
+    static var _calledCount : Int = 0;
+    #end
+
+    public static function calledCount() : Int {
+        #if js
+            var requestValues = Process.domain.requestValues;
+            if(!requestValues.exists("CALLED_COUNT")) {
+                requestValues["CALLED_COUNT"] = 1;
+            }
+            return Process.domain.requestValues["CALLED_COUNT"]++;
+        #end
+        #if php
+            return _calledCount++;
+        #end
+    }
 
     /**
         Will always return true

@@ -10,6 +10,7 @@ import haxe.macro.Context;
 class DeferredLoaderBuilder {
     public static macro function build() : Array<Field> {        
 		var fields = Context.getBuildFields();
+        var cls = Context.getLocalClass().get();
         var keyType : ComplexType;
         var returnType : ComplexType;
         var hasLoad = false;
@@ -56,7 +57,30 @@ class DeferredLoaderBuilder {
         } else if (Context.defined('js')) {
             tmp_class = macro class {
                 static var runCount = 0;
-                private static var _loader : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                private static var static_loader : graphql.externs.js.DataLoader<$keyType,$returnType>;
+
+                private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                public static function get__loader() {
+                    var loaders : Map<String, Dynamic>;
+                    if(graphql.externs.js.Process.domain == null) {
+                        loaders = [
+                            $v{cls.name} => static_loader
+                        ];
+                    } else {
+                        loaders = graphql.externs.js.Process.domain.loaders;
+                    }
+                    return loaders[ $v{cls.name} ];
+                }
+                public static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType,$returnType>) {
+                    if(graphql.externs.js.Process.domain == null) {
+                        return static_loader = new_value;
+                    } else {
+                        var loaders : Map<String, Dynamic>;
+                        loaders = graphql.externs.js.Process.domain.loaders;
+                        return loaders[ $v{cls.name} ] = new_value;
+                    }
+                }
+
                 public static var loader(get, never) : graphql.externs.js.DataLoader<$keyType,$returnType>;
                 static public function get_loader() {
                     if(_loader == null) {
