@@ -62,17 +62,19 @@ class TypeBuilder {
 				classDoc = macro $v{ cls.doc.trim() };
 			}
 		}
+		var hasMutationFields = (graphql_mutation_field_definitions.length > 0);
 
 		var tmp_class = macro class {
 			/**
 				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
 			**/
 			public static var _gql : graphql.TypeObjectDefinition = {
-				 fields: $a{graphql_field_definitions},
-				 mutation_fields: $a{graphql_mutation_field_definitions},
-				 type_name: $type_name,
-				 mutation_name: $mutation_name,
-				 description: $classDoc
+					fields: () -> $a{graphql_field_definitions},
+					mutation_fields: () -> $a{graphql_mutation_field_definitions},
+					type_name: $type_name,
+					mutation_name: $mutation_name,
+					description: $classDoc,
+					has_mutation: $v{ hasMutationFields }
 			};
 
 			public var gql(get, null) : graphql.TypeObjectDefinition = null;
@@ -194,15 +196,27 @@ class TypeBuilder {
 					idExpr = loaderExpression;
 				}
 				var returnType = field.getFunctionReturnType();
-				getResult = macro {
-					var id = $idExpr;
-					$loader.add(@:pos(f.pos) id);
-					return new graphql.externs.Deferred(() -> {
-						var result : $returnType = $loader.getValue(@:pos(f.pos) id);
-						$b{postValidations};
-						return result;
-					});
-				};
+
+				var getResult = macro {};
+				if(Context.defined('php')) {
+					getResult = macro {						
+						var id = $idExpr;
+						$loader.add(@:pos(f.pos) id);
+						return new graphql.externs.Deferred(() -> {
+							var result : $returnType = $loader.getValue(@:pos(f.pos) id);
+							$b{postValidations};
+							return result;
+						});
+					};
+				} else if (Context.defined('js')) {
+					getResult = macro {			
+						var id = $idExpr;
+						return $loader.loader.load(id).then((result) -> {
+							$b{postValidations};
+							return result;
+						});
+					}
+				}
 				functionBody = functionBody.concat([
 					macro return $getResult
 				]);
@@ -240,7 +254,7 @@ class TypeBuilder {
 				type: $type,
 				description: $comment,
 				deprecationReason: $deprecationReason,
-				args: php.Lib.toPhpArray( ${ field.args } ),
+				args: graphql.Util.processArgs( ${ field.args } ),
 				resolve: $resolve
 			}
 			return field;

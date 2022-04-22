@@ -6,6 +6,7 @@ import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 
 using Type;
+using StringTools;
 
 class SchemaPrinterTest extends utest.Test {
     var server : GraphQLServer;
@@ -15,7 +16,7 @@ class SchemaPrinterTest extends utest.Test {
     }
 
     function specPrintSimpleClassSchema() {
-        server.readSchema() == MacroUtil.fileInclude('src/tests/cases/schemaPrinterTest.gql');
+        server.readSchema().trim() == MacroUtil.fileInclude('src/tests/cases/schemaPrinterTest.gql').trim();
     }
 }
 

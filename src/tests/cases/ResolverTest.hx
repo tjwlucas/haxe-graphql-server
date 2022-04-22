@@ -1,13 +1,16 @@
 package tests.cases;
 
+import graphql.externs.Error;
 import graphql.GraphQLError;
-import php.Exception;
-import php.NativeArray;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
+import graphql.externs.NativeArray;
+using graphql.Util;
 
-using php.Lib;
+#if php
+    import php.Exception;
+#end
 
 class ResolverTest extends utest.Test {
     var server : GraphQLServer;
@@ -43,12 +46,14 @@ class ResolverTest extends utest.Test {
         
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        var errors = response.errors;
+        // errors.length == 1;
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specProtectedNullableAddMethod() {
@@ -63,12 +68,14 @@ class ResolverTest extends utest.Test {
         response.data['protectedNullableAdd'] == null;
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        var errors = response.errors;
+        // errors.length == 1;
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specProtectedNullableAddObjectValueMethod() {
@@ -83,12 +90,13 @@ class ResolverTest extends utest.Test {
         response.data['protectedNullableAddObjectValue'] == null;
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
+        Assert.equals(1, response.errors.length);
+        var error : Error = response.errors[0];
         @:privateAccess error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specListMethod() {
@@ -96,13 +104,23 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{list}");
         
         Assert.notNull(response.data);
-        Assert.equals(response.data['list'], [0,1,2,3,4,5,6,7,8,9,10].toPhpArray());
+        var expected = [0,1,2,3,4,5,6,7,8,9,10].toPhpArray();
+        #if php
+        Assert.equals(expected, response.data['list']);
+        #else
+        Assert.same(expected, response.data['list']);
+        #end
 
         // Using valid provided values
         var response = server.executeQuery("{list(min:3, max:8)}");
         
         Assert.notNull(response.data);
-        Assert.equals(response.data['list'], [3,4,5,6,7,8].toPhpArray());
+        var expected = [3,4,5,6,7,8].toPhpArray();
+        #if php
+        Assert.equals(expected, response.data['list']);
+        #else
+        Assert.same(expected, response.data['list']);
+        #end
 
         // Using invalid provided values
         var response = server.executeQuery("{list(min:13, max:8)}");
@@ -110,12 +128,14 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Minimum must be smaller than maximum!';
+        var errors = response.errors;
+        // errors.length == 1;
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Minimum must be smaller than maximum!';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specResultValidationMethod() {
@@ -139,16 +159,18 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        var errors = response.errors;
+        // errors.length == 1;
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specNullResolvers() {
-        var fields = @:privateAccess base.gql.fields;
+        var fields = @:privateAccess base.gql.fields();
 
         var expect_resolvers = [
             'unvalidatedVariable' => false,
@@ -187,12 +209,14 @@ class ResolverTest extends utest.Test {
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        var errors = response.errors;
+        // errors.length == 1;
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
     }
 
     function specContext() {
@@ -236,12 +260,14 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{staticVarWithFailingValidation}");
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
-        var error : GraphQLError = errors[0];
-        @:privateAccess error.getMessage() == 'Validation failed';
+        var errors = response.errors;
+        // errors.length == 1;
+        var error : graphql.externs.Error = errors[0];
+        error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
 
         var response = server.executeQuery("{staticFunction}");
         Assert.notNull(response.data);

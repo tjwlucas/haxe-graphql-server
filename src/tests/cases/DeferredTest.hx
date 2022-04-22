@@ -1,26 +1,36 @@
 package tests.cases;
 
+import sys.io.File;
+import graphql.externs.Error;
 import graphql.GraphQLError;
-import php.NativeArray;
 import utest.Assert;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
 import graphql.GraphQLObject;
 import utest.Test;
 import graphql.externs.Deferred;
+using graphql.Util;
+import graphql.externs.NativeArray;
 
+#if php
 using php.Lib;
+import php.NativeArray;
+#end
 
+#if js
+@:build(hxasync.AsyncMacro.build())
+#end
 class DeferredTest extends Test {
     function setup() {
 
     }
 
-    function specDeferredResolver() {
+    @async function specDeferredResolver(async:utest.Async) {
         var base = new DeferredTestObject();
         var server = new GraphQLServer(base);
 
         @:privateAccess DeferredTestLoader.runCount == 0;
+        #if php
         @:privateAccess Assert.same(
             [],
             DeferredTestLoader.keys
@@ -29,8 +39,9 @@ class DeferredTest extends Test {
             ([] : Map<Int, String>),
             DeferredTestLoader.values
         );
+        #end
 
-        var result = server.executeQuery("query($id:Int!, $id2:Int!, $id3: Int!, $idString:String!, $idStringError:String!){
+        var result = @await server.executeQuery("query($id:Int!, $id2:Int!, $id3: Int!, $idString:String!, $idStringError:String!){
             getValue(id: $id)
             another:getValue(id:$id2)
             getStaticValue(id:$idString)
@@ -55,44 +66,47 @@ class DeferredTest extends Test {
         subObject['value2'] == "This is the value for id 13, loaded";
         subObject['objectValue'] == "This is the value for id 13, loaded";
         Assert.equals(42, result.data['getStaticValue']);
-
         @:privateAccess DeferredTestLoader.runCount == 1;
+        #if php
         @:privateAccess Assert.same(
             [],
             DeferredTestLoader.keys
-        );
-        @:privateAccess Assert.notNull(DeferredTestLoader.values);
-        @:privateAccess Assert.same([
-            42 => "This is the value for id 42, loaded",
-            367 => "This is the value for id 367, loaded",
-            13 => "This is the value for id 13, loaded",
-        ], DeferredTestLoader.values);
+            );
+            @:privateAccess Assert.notNull(DeferredTestLoader.values);
+            @:privateAccess Assert.same([
+                42 => "This is the value for id 42, loaded",
+                367 => "This is the value for id 367, loaded",
+                13 => "This is the value for id 13, loaded",
+            ], DeferredTestLoader.values);
+        #end
 
         Assert.notNull(result.errors);
         var errors = result.errors.toHaxeArray();
         errors.length == 1;
-        var error : GraphQLError = errors[0];
+        var error : Error = errors[0];
         @:privateAccess error.getMessage() == 'Validation failed';
+        #if php
         error.getCategory() == 'validation';
         error.isClientSafe() == true;
+        #end
+        async.done();
     }
 
-    function specNestedDeferredResolver() {
+    @async function specNestedDeferredResolver(async:utest.Async) {
         var base = new DeferredTestObject();
         var server = new GraphQLServer(base);
-
-        var result = server.executeQuery("{
+        var result = @await server.executeQuery("{
             top1: getNested(id: 3) {
-              n
-              getNext {
-                n
-              }
-            }
-            top2: getNested {
-              n
-              getNext {
                 n
                 getNext {
+                    n
+                }
+            }
+            top2: getNested {
+                n
+                getNext {
+                    n
+                    getNext {
                   n
                   getNext {
                     n
@@ -105,32 +119,30 @@ class DeferredTest extends Test {
                             }
                         }
                     }
-                  }
+                }
                 }
                 again: getNext {
-                  n
+                    n
                 }
               }
             }
           }
           ");
-          var errors = result.errors.toHaxeArray();
-          errors.length == 0;
-          @:privateAccess NestedDeferredLoader.runCount == 3;
-          Assert.same([
+        Assert.same([
             [3,0],
             [4,1],
             [2]
-          ], NestedDeferredLoader.runBatches);
+        ], NestedDeferredLoader.runBatches);
+        async.done();
     }
 }
 
 class DeferredTestObject implements GraphQLObject {
     public function new() {}
-
+    
     @:deferred(tests.cases.DeferredTestLoader)
     public function getValue(id:Int) : String;
-
+    
     @:deferred(tests.cases.DeferredStaticTestLoader)
     @:validateResult(result != 98)
     public function getStaticValue(id:String) : Null<Int>;
@@ -156,10 +168,12 @@ class DeferredTestSubObject implements GraphQLObject {
 }
 
 class DeferredTestLoader extends DeferredLoader {
-    static function load() : Map<Int, String> {
+    static function load(keys:Array<Int>) : Map<Int, String> {
+        #if php
         if(runCount > 0) {
             throw "Load function should not be called more than once";
         }
+        #end
         var results : Map<Int, String> = [];
         for(key in keys) {
             results[key] = 'This is the value for id $key, loaded';
@@ -173,7 +187,7 @@ class DeferredTestLoader extends DeferredLoader {
     Trivial example with different types
 **/
 class DeferredStaticTestLoader extends DeferredLoader {
-    static function load() : Map<String, Int> {
+    static function load(keys:Array<String>) : Map<String, Int> {
         return [
             "valid" => 42,
             "alsoValid" => 98
@@ -197,7 +211,7 @@ class NestedDeferredTestObject implements GraphQLObject {
 
 class NestedDeferredLoader extends DeferredLoader {
     public static var runBatches = [];
-    static function load() : Map<Int, NestedDeferredTestObject> {
+    static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
         runBatches.push(keys);
         for(key in keys) {

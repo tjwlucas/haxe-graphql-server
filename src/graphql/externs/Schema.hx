@@ -1,8 +1,10 @@
 package graphql.externs;
 
-import php.NativeArray;
+import graphql.externs.NativeArray;
 
-@:native('GraphQL\\Type\\Schema')
+#if php @:native('GraphQL\\Type\\Schema')
+#elseif js @:jsRequire('graphql', 'GraphQLSchema')
+#end
 extern class Schema {
     public function new(definition:NativeArray);
 }

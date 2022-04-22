@@ -10,3 +10,14 @@
 # --next
 # -main tests.Manual
 # -php bin/manual
+
+--next
+-main tests.TestLoader
+-lib hxasync
+-lib hxnodejs
+-js bin/tests.js
+
+# --next
+# -main tests.Manual
+# -lib hxnodejs
+# -js bin/manual.js

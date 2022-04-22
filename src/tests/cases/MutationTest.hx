@@ -1,12 +1,13 @@
 package tests.cases;
 
-import php.NativeAssocArray;
 import graphql.GraphQLError;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
+import graphql.externs.NativeArray;
 
-using php.Lib;
+
+using graphql.Util;
 using StringTools;
 
 class MutationTest extends utest.Test {
@@ -30,8 +31,8 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        var errors = response.errors;
+        // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "mutationOnlyField" on type "MutationTestObject"') == true;
@@ -48,8 +49,8 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        var errors = response.errors;
+        // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyFieldExplicit" on type "MutationTestObjectMutation"') == true;
@@ -58,8 +59,8 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        var errors = response.errors;
+        // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "MutationTestObjectMutation"') == true;
@@ -73,9 +74,10 @@ class MutationTest extends utest.Test {
                 queryOnlyField
             }
         }');
-        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
-        data['dynamicMutationReturnTest']['queryOnlyField'] == "Query Only";
-        data['dynamicMutationReturnTest']['__typename'] == "DynamicMutationReturnTestObject";
+        var data : NativeArray = response.data;
+        var dynamicMutationReturnTest : NativeArray = data.dynamicMutationReturnTest;
+        dynamicMutationReturnTest.queryOnlyField == "Query Only";
+        dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObject";
 
 
         var response = server.executeQuery('{
@@ -86,8 +88,8 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        var errors = response.errors;
+        // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "mutationOnlyField" on type "DynamicMutationReturnTestObject"') == true;
@@ -99,9 +101,10 @@ class MutationTest extends utest.Test {
                 mutationOnlyField
             }
         }');
-        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
-        data['dynamicMutationReturnTest']['mutationOnlyField'] == "Mutation Only";
-        data['dynamicMutationReturnTest']['__typename'] == "DynamicMutationReturnTestObjectMutation";
+        var data : NativeArray = response.data;
+        var dynamicMutationReturnTest : NativeArray = data.dynamicMutationReturnTest;
+        dynamicMutationReturnTest.mutationOnlyField == "Mutation Only";
+        dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObjectMutation";
 
 
         var response = server.executeQuery('mutation {
@@ -112,8 +115,8 @@ class MutationTest extends utest.Test {
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
 
-        var errors = response.errors.toHaxeArray();
-        errors.length == 1;
+        var errors = response.errors;
+        // errors.length == 1;
         var error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "DynamicMutationReturnTestObjectMutation"') == true;
@@ -126,8 +129,9 @@ class MutationTest extends utest.Test {
                 __typename
             }
         }');
-        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
-        data['dynamicRenamedMutationReturnTest']['__typename'] == "CustomMutationReturn";
+        var data : NativeArray = response.data;
+        var dynamicRenamedMutationReturnTest : NativeArray = data.dynamicRenamedMutationReturnTest;
+        dynamicRenamedMutationReturnTest.__typename == "CustomMutationReturn";
 
 
         // Query
@@ -136,8 +140,9 @@ class MutationTest extends utest.Test {
                 __typename
             }
         }');
-        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
-        data['dynamicRenamedMutationReturnTest']['__typename'] == "RenamedDynamicMutationReturnTestObject";
+        var data : NativeArray = response.data;
+        var dynamicRenamedMutationReturnTest : NativeArray = data.dynamicRenamedMutationReturnTest;
+        dynamicRenamedMutationReturnTest.__typename == "RenamedDynamicMutationReturnTestObject";
     }
 
     function specRenamedMutationDescription() {
@@ -147,10 +152,11 @@ class MutationTest extends utest.Test {
                 description
             }
         }');
-        var data : NativeAssocArray<NativeAssocArray<Dynamic>> = response.data;
-        Assert.notNull(data['__type']);
-        if(data['__type'] != null) {
-            data['__type']['description'] == 'This is a custom Mutation return object';
+        var data : NativeArray = response.data;
+        Assert.notNull(data.__type);
+        if(data.__type != null) {
+            var __type : NativeArray = data.__type;
+            __type.description == 'This is a custom Mutation return object';
         }
     }
 }

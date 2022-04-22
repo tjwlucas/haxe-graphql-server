@@ -5,8 +5,7 @@ import graphql.externs.Schema;
 import graphql.TypeObjectDefinition;
 import utest.Assert;
 
-using php.Lib;
-
+using graphql.Util;
 import graphql.GraphQLObject;
 
 
@@ -118,7 +117,11 @@ class GraphQLTest extends utest.Test {
 					y: 2,
 					queryTypeName: 'Query'
 			}.associativeArrayOfObject());
-		result.errors == [].toPhpArray();
+		#if php
+		Assert.equals(result.errors, [].toPhpArray());
+		#elseif js
+		Assert.isNull(result.errors);
+		#end
 		Assert.notNull(result.data);
 		if (result.data != null) {
 			var data:Map<String, Dynamic> = result.data.hashOfAssociativeArray();
@@ -130,14 +133,19 @@ class GraphQLTest extends utest.Test {
 			data['__typename'] == 'Query';
 			data['string_field'] == 'This is an instance value';
 			data['renamed'] == result.data['string_field'];
-            data['nested_int'] == [[1].toPhpArray(), [5, 6].toPhpArray()].toPhpArray();
+			var expected = [[1].toPhpArray(), [5, 6].toPhpArray()].toPhpArray();
+            #if php
+			Assert.equals(expected, data['nested_int']);
+			#else
+			Assert.same(expected, data['nested_int']);
+			#end
 			data['float'] == 7.2;
 			data['greet'] == 'Hello, Unit tests';
 			data['divide'] == 3.5;
 
 			Assert.notNull(data['object_field'], 'object_field is null');
 			if (data['object_field'] != null) {
-				var subobject = Lib.hashOfAssociativeArray(data['object_field']);
+				var subobject = Util.hashOfAssociativeArray(data['object_field']);
 				// Use same() assertion here instead of equality since haxe arrays are underlying objects which will be different instances
 				var keys = [for (k in subobject.keys()) k];
 				var expected_keys = ['string_field'];
@@ -147,7 +155,7 @@ class GraphQLTest extends utest.Test {
 			
 			Assert.notNull(data['person'], 'person is null');
 			if (data['person'] != null) {
-				var subobject = Lib.hashOfAssociativeArray(data['person']);
+				var subobject = Util.hashOfAssociativeArray(data['person']);
 				// Use same() assertion here instead of equality since haxe arrays are underlying objects which will be different instances
 				var keys = [for (k in subobject.keys()) k];
 				var expected_keys = ['__typename', 'name'];
@@ -158,7 +166,7 @@ class GraphQLTest extends utest.Test {
 			
 			Assert.notNull(data['__type'], '__type is null');
 			if (data['__type'] != null) {
-				var subobject = Lib.hashOfAssociativeArray(data['__type']);
+				var subobject = Util.hashOfAssociativeArray(data['__type']);
 				// Use same() assertion here instead of equality since haxe arrays are underlying objects which will be different instances
 				var keys = [for (k in subobject.keys()) k];
 				var expected_keys = ['description'];

@@ -6,10 +6,10 @@
 `haxe-graphql-php-server` is a library for Haxe that takes traditionally defined Haxe classes and generates (using build-time macros) a GraphQL schema and set of resolvers that can be used to run a ready-to-go graphql server.
 
 ## Requirements/target
-As the name implies, the library targets PHP. It does not implement the GraphQL server itself, but rather converts the class structure of the Haxe code into a structure that can be interpreted by the [webonyx/graphql-php](https://github.com/webonyx/graphql-php) library to generate a complete working GraphQL server. Since `webonyx/graphql-php` is based on the [reference implementation in JavaScript](https://github.com/graphql/graphql-js) it is conceivable that, with some work, it could be modified to compile to a nodejs target using `graphql-js`, at some point, as well, although that is not currently on the roadmap.
+This library does not implement the GraphQL server itself, but rather converts the class structure of the Haxe code into a structure that can be interpreted by the [webonyx/graphql-php](https://github.com/webonyx/graphql-php) in PHP or [graphql-js](https://graphql.org/graphql-js/) to generate a complete working GraphQL server.
 
 ## Why
-While existing libraries for building a GraphQL servers can yield great results, the syntax required is very verbose. This makes sense in languages like Javascript and PHP, since the required typing information is not necessarily present, but with Haxe's typing system, I thought this could be streamlined. This library is an attempt at doing just that.
+While existing libraries for building a GraphQL servers can yield great results, the syntax required is quite verbose. This makes sense in languages like Javascript and PHP, since the required typing information is not necessarily present, but with Haxe's typing system, I thought this could be streamlined. This library is an attempt at doing just that. Also, by using Haxe, it is possible to target both PHP and Javascript, to run the same code in different environments. (i.e. PHP, NodeJS, and even in-browser JS).
 
 ### Motivational Example (Building an ObjectType)
 
@@ -58,9 +58,22 @@ To set up and run a new GraphQL server, you will need to install this package:
 ```
 haxelib install graphql-server-php
 ```
-You will also need to install the `webonyx/graphql-php` using composer:
+### PHP
+For a PHP target, you will also need to install the `webonyx/graphql-php` using composer:
 ```
 composer require webonyx/graphql-php
+```
+
+### Javacript
+For a javascript target, you will need to install `graphql` (and the express server, if wanting to run it as a nodejs server):
+```
+npm install --save graphql express-graphql express
+```
+(If all you want is the server object to execute queries against directly, you do not need the express packages).
+
+In order to use [Data Loaders](#deferred-resolvers-n+1-problem), the `dataloader` package will also be required:
+```
+npm install --save dataloader
 ```
 
 Then the following files:
@@ -109,7 +122,7 @@ type Query {
 }
 ```
 
-### Note on autoloading
+### Note on autoloading (PHP target only)
 By default, this configuration will include a 
 ```php
 require_once('vendor/autoload.php');
@@ -371,7 +384,7 @@ class BlogStory implements GraphQLObject {
 #### **MyUserBuffer.hx**
 ```haxe
 class MyUserBuffer extends graphql.DeferredLoader {
-    static function load() : Map<Int, UserObject> {
+    static function load(keys:Array<Int>) : Map<Int, UserObject> {
         // Backend code to populate `results` with a `Map<Int, UserObject>`
         // e.g a sql call for `select ... from user where id in ?`
         // with ? bound to the `keys` variable
@@ -381,7 +394,7 @@ class MyUserBuffer extends graphql.DeferredLoader {
 ```
 <!-- tabs:end -->
 
-The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions). This loader class will have a static property called `keys`, with the type `Array<K>` (So in this example, `Array<Int>`), which will be available through `keys`/`this.keys`/`[[ Your Loader Class Name ]].keys` in your load function.
+The return type of the `load` function must be of the form `Map<K,V>`. If a second argument is passed to `@:deferred` it must be an expression corresponding to the key to be loaded (This is scoped just as the [validation](#validation) expressions). This load function must take an argument with the type `Array<K>` (So in this example, `Array<Int>`), which represents the list of provided keys.
 
 e.g. 
 ```haxe
@@ -394,12 +407,26 @@ Is equivalent to
 public function getUserById(id : Int) : UserObject;
 ```
 
-For any more customised uses for the deferred resolver, the `Deferred` class is available as an extern:
+For any more customised uses for the deferred resolver, a `Deferred` class is available in PHP, or just use a Promise in JS:
+
+<!-- tabs:start -->
+
+##### **PHP**
 ```haxe
 new graphql.externs.Deferred<String>(() -> {
     return "Some String";
 });
 ```
+
+##### **JS**
+```haxe
+new js.lib.Promise<String>((resolve, reject) -> {
+    resolve("Some String");
+});
+```
+<!-- tabs:emd -->
+
+
 #### Notes on deferred resolvers
 - Returning a `Deferred` type directly will result in any post-validation seeing the `Deferred` object as the result, whereas the automatic method above will act on the final result, as expected.
 - Functions using the `@:deferred` method above will not be called at all in the resolver, and if no body is provided, will be removed from the class at build time.
