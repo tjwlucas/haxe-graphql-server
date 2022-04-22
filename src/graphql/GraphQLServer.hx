@@ -37,7 +37,7 @@ class GraphQLServer {
 
     @:keep public function executeQuery(query_string:String, ?variables : NativeArray, ?operationName:String) {
         if(variables == null) {
-            variables = [].toPhpArray();
+            variables = [].toNativeArray();
         }
         
         return GraphQL.executeQuery(schema, query_string, root, this.context, variables, operationName);

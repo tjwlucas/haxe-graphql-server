@@ -118,7 +118,7 @@ class GraphQLTest extends utest.Test {
 					queryTypeName: 'Query'
 			}.associativeArrayOfObject());
 		#if php
-		Assert.equals(result.errors, [].toPhpArray());
+		Assert.equals(result.errors, [].toNativeArray());
 		#elseif js
 		Assert.isNull(result.errors);
 		#end
@@ -133,7 +133,7 @@ class GraphQLTest extends utest.Test {
 			data['__typename'] == 'Query';
 			data['string_field'] == 'This is an instance value';
 			data['renamed'] == result.data['string_field'];
-			var expected = [[1].toPhpArray(), [5, 6].toPhpArray()].toPhpArray();
+			var expected = [[1].toNativeArray(), [5, 6].toNativeArray()].toNativeArray();
             #if php
 			Assert.equals(expected, data['nested_int']);
 			#else

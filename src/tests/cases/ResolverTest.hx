@@ -104,7 +104,7 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{list}");
         
         Assert.notNull(response.data);
-        var expected = [0,1,2,3,4,5,6,7,8,9,10].toPhpArray();
+        var expected = [0,1,2,3,4,5,6,7,8,9,10].toNativeArray();
         #if php
         Assert.equals(expected, response.data['list']);
         #else
@@ -115,7 +115,7 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{list(min:3, max:8)}");
         
         Assert.notNull(response.data);
-        var expected = [3,4,5,6,7,8].toPhpArray();
+        var expected = [3,4,5,6,7,8].toNativeArray();
         #if php
         Assert.equals(expected, response.data['list']);
         #else

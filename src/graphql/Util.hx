@@ -36,7 +36,7 @@ class Util {
         #end
     }
 
-	public static inline function toPhpArray(arr:Array<Dynamic>) : NativeArray {
+	public static inline function toNativeArray(arr:Array<Dynamic>) : NativeArray {
 		#if php
 			return php.Lib.toPhpArray(arr);
 		#else
@@ -52,7 +52,7 @@ class Util {
 		}
 		return argsObject;
 		#else
-			return toPhpArray(arr);
+			return toNativeArray(arr);
 		#end
 	}
 
