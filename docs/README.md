@@ -424,7 +424,7 @@ new js.lib.Promise<String>((resolve, reject) -> {
     resolve("Some String");
 });
 ```
-<!-- tabs:emd -->
+<!-- tabs:end -->
 
 
 #### Notes on deferred resolvers
