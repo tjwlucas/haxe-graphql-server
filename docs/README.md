@@ -1,12 +1,12 @@
-# haxe-graphql-php-server
+# haxe-graphql-server
 
 [![Build Status](https://drone-gh.thomaslucas.co.uk/api/badges/tjwlucas/haxe-graphql-server/status.svg)](https://drone-gh.thomaslucas.co.uk/tjwlucas/haxe-graphql-server)
 
 ## What is it?
-`haxe-graphql-php-server` is a library for Haxe that takes traditionally defined Haxe classes and generates (using build-time macros) a GraphQL schema and set of resolvers that can be used to run a ready-to-go graphql server.
+`haxe-graphql-server` is a library for Haxe that takes traditionally defined Haxe classes and generates (using build-time macros) a GraphQL schema and set of resolvers that can be used to run a ready-to-go graphql server.
 
 ## Requirements/target
-This library does not implement the GraphQL server itself, but rather converts the class structure of the Haxe code into a structure that can be interpreted by the [webonyx/graphql-php](https://github.com/webonyx/graphql-php) in PHP or [graphql-js](https://graphql.org/graphql-js/) to generate a complete working GraphQL server.
+This library does not implement the GraphQL server itself, but rather converts the class structure of the Haxe code into a structure that can be interpreted by the [webonyx/graphql-php](https://github.com/webonyx/graphql-php) or [graphql-js](https://graphql.org/graphql-js/) to generate a complete working GraphQL server.
 
 ## Why
 While existing libraries for building a GraphQL servers can yield great results, the syntax required is quite verbose. This makes sense in languages like Javascript and PHP, since the required typing information is not necessarily present, but with Haxe's typing system, I thought this could be streamlined. This library is an attempt at doing just that. Also, by using Haxe, it is possible to target both PHP and Javascript, to run the same code in different environments. (i.e. PHP, NodeJS, and even in-browser JS).

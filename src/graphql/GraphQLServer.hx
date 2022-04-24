@@ -1,7 +1,6 @@
 package graphql;
 
 import graphql.externs.SchemaPrinter;
-import graphql.externs.ExecutionResult;
 import graphql.externs.GraphQL;
 import haxe.Json;
 import graphql.externs.Schema;
@@ -73,7 +72,7 @@ class GraphQLServer {
             };
             Sys.print(Json.stringify(result));
         }
-        #elseif js
+        #elseif (js && nodejs)
             var app = new  graphql.externs.js.Express();
             app.use((req, res, next) -> {
                 var reqd = graphql.externs.js.Domain.create();

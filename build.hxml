@@ -21,3 +21,7 @@
 # -main tests.Manual
 # -lib hxnodejs
 # -js bin/manual.js
+
+# --next
+# -main tests.Manual
+# -js bin/manual-clientside.js

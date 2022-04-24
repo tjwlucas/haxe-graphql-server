@@ -3,8 +3,6 @@ package tests;
 #if js
 import graphql.externs.js.Process;
 #end
-import sys.io.File;
-import haxe.Json;
 import graphql.GraphQLError;
 import graphql.GraphQLObject;
 import graphql.GraphQLServer;
