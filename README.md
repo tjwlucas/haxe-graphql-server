@@ -1,4 +1,4 @@
-# haxe-graphql-php-server
+# haxe-graphql-server
 
 [![Build Status](https://drone-gh.thomaslucas.co.uk/api/badges/tjwlucas/haxe-graphql-server/status.svg)](https://drone-gh.thomaslucas.co.uk/tjwlucas/haxe-graphql-server)
 
