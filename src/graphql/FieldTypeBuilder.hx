@@ -31,18 +31,9 @@ class FieldTypeBuilder {
 		} else {
 			try {
 				var cls = Context.getType(type).getClass();
-				if(cls.interfaces.map(i -> i.t.toString()).contains('graphql.GraphQLObject')) {
-					if(Context.defined('php')) {
-						switch(this.query_type) {
-							case (Query): return macro () -> $i{cls.name}._gql.type;
-							case (Mutation): return macro () -> $i{cls.name}._gql.mutation_type;
-						}
-					} else if (Context.defined('js')) {
-						switch(this.query_type) {
-							case (Query): return macro $i{cls.name}._gql.type;
-							case (Mutation): return macro $i{cls.name}._gql.mutation_type;
-						}
-					}
+				switch(this.query_type) {
+					case (Query): return macro $i{cls.name}._gql.type;
+					case (Mutation): return macro $i{cls.name}._gql.mutation_type;
 				}
 			} catch (e) {} // Pass through to the error below, no need to throw it especially
 		}
