@@ -2,6 +2,7 @@ package graphql;
 
 import graphql.externs.Type;
 
+@SuppressWarnings("checkstyle:ConstantName") // These constants come from type names, and must match
 class GraphQLTypes {
     public static final Int = Type.int();
     public static final String = Type.string();

@@ -27,7 +27,7 @@ class DeferredLoaderBuilder {
         if(!hasLoad) {
             throw new Error("DeferredLoader class must declare a load() function", Context.currentPos());
         }
-        var tmp_class = switch (Util.getTarget()) {
+        var temporaryClass = switch (Util.getTarget()) {
             case Php: macro class {
                 static var keys:Array<$keyType> = [];
                 public static var values : Map<$keyType,$returnType> = [];
@@ -96,7 +96,7 @@ class DeferredLoaderBuilder {
             }
         }
 
-		tmp_class.addFieldsFromClass(fields);
+		temporaryClass.addFieldsFromClass(fields);
 		return fields;
     }
 
