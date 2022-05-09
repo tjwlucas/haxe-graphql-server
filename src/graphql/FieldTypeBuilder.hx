@@ -142,7 +142,6 @@ class FieldTypeBuilder {
 			switch ([arg.type, arg.name]) {
 				case [TPath({name: a, params: p}), name] if (name != getContextVariableName()): {
 					arg_names.push(arg.name);
-					var ctx_var_name = getContextVariableName();
 						var defaultValue = arg.value != null ? arg.value : macro null;
 						var arg_field : ExprOf<GraphQLArgField> = macro {
 							var arg : graphql.GraphQLArgField = {

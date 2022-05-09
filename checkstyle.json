@@ -133,6 +133,9 @@
 		},
 		{
 			"type": "Trace"
+		},
+		{
+			"type": "UnusedLocalVar"
 		}
     ],
 	"exclude": {
@@ -163,6 +166,9 @@
 		],
 		"SimplifyBooleanExpression": [
 			"Tests?$"
+		],
+		"UnusedLocalVar" : [
+			"Manual$"
 		]
 	},
 	"version": 1

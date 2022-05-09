@@ -95,7 +95,7 @@ class DeferredTest extends Test {
     @async function specNestedDeferredResolver(async:utest.Async) {
         var base = new DeferredTestObject();
         var server = new GraphQLServer(base);
-        var result = @await server.executeQuery("{
+        @await server.executeQuery("{
             top1: getNested(id: 3) {
                 n
                 getNext {
