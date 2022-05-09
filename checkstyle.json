@@ -235,6 +235,28 @@
 					}
 				]
 			}
+		},
+		{
+			"type": "Final"
+		},
+		{
+			"type": "ModifierOrder",
+			"props": {
+				"modifiers": [
+					"OVERRIDE",
+					"PUBLIC_PRIVATE",
+					"STATIC",
+					"INLINE",
+					"MACRO",
+					"DYNAMIC"
+				]
+			}
+		},
+		{
+			"type": "PublicAccessor"
+		},
+		{
+			"type": "RedundantModifier"
 		}
     ],
 	"exclude": {

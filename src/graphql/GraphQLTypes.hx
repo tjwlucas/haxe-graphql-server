@@ -3,11 +3,11 @@ package graphql;
 import graphql.externs.Type;
 
 class GraphQLTypes {
-    public static var Int = Type.int();
-    public static var String = Type.string();
-    public static var Float = Type.float();
-    public static var Bool = Type.boolean();
-    public static var IDType = Type.id();
+    public static final Int = Type.int();
+    public static final String = Type.string();
+    public static final Float = Type.float();
+    public static final Bool = Type.boolean();
+    public static final IDType = Type.id();
     public static function NonNull(type:Dynamic) {
         return Type.nonNull(type);
     }

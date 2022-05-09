@@ -340,15 +340,15 @@ class ResolverTestObject implements GraphQLObject {
         return customContext.value;
     }
 
-    static public var staticVar : String = "This is a static variable";
+    public static final staticVar : String = "This is a static variable";
 
     @:validate(true)
-    static public var staticVarWithValidation : String = 'This is a static variable (with arbitrary validation)';
+    public static final staticVarWithValidation : String = 'This is a static variable (with arbitrary validation)';
     
     @:validateResult(result != 'bad')
-    static public var staticVarWithFailingValidation : String = 'bad';
+    public static final staticVarWithFailingValidation : String = 'bad';
 
-    static public function staticFunction() : String {
+    public static function staticFunction() : String {
         return "This is a static function";
     }
 }

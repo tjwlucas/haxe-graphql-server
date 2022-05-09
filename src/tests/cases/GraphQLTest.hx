@@ -60,7 +60,7 @@ class Person implements GraphQLObject {
 		_name = name;
 	}
 
-	private var _name : String;
+	var _name : String;
 	/**
 		States the person's name
 	**/

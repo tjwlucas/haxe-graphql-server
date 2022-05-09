@@ -12,7 +12,7 @@ class TypeBuilder {
 	/**
 		Automatically build the GraphQL type definition based on the class
 	**/
-	macro static public function build():Array<Field> {
+	public static macro function build():Array<Field> {
 		var fields = Context.getBuildFields();
 		buildClass(fields);
 		return fields;

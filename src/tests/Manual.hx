@@ -105,7 +105,7 @@ class NestedDeferredTestObject implements GraphQLObject {
 }
 
 class NestedDeferredLoader extends DeferredLoader {
-    public static var runBatches = [];
+    public static final runBatches = [];
     static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
         runBatches.push(keys);
