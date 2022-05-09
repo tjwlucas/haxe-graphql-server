@@ -112,6 +112,27 @@
 			"props": {
 				"max": 1
 			}
+		},
+		{
+			"type": "NullableParameter",
+			"props": {
+				"option": "questionMark"
+			}
+		},
+		{
+			"type": "ReturnCount",
+			"props": {
+				"max": 2
+			}
+		},
+		{
+			"type": "SimplifyBooleanExpression"
+		},
+		{
+			"type": "SimplifyBooleanReturn"
+		},
+		{
+			"type": "Trace"
 		}
     ],
 	"exclude": {
@@ -139,6 +160,9 @@
 		"CodeSimilarity": [
 			"Tests?$",
 			"Manual$"
+		],
+		"SimplifyBooleanExpression": [
+			"Tests?$"
 		]
 	},
 	"version": 1

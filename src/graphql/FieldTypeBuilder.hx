@@ -26,47 +26,47 @@ class FieldTypeBuilder {
 	}
 
 	function getBaseType(typeParam) {
-		if(static_field_name_list.contains(typeParam)) {
-			return macro graphql.GraphQLTypes.$typeParam;
-		} else {
-			try {
+		return switch (static_field_name_list) {
+			case a if (a.contains(typeParam)): macro graphql.GraphQLTypes.$typeParam;
+			case _: try {
 				var cls = Context.getType(typeParam).getClass();
 				switch(this.query_type) {
-					case (Query): return macro $i{cls.name}._gql.type;
-					case (Mutation): return macro $i{cls.name}._gql.mutation_type;
+					case (Query): macro $i{cls.name}._gql.type;
+					case (Mutation): macro $i{cls.name}._gql.mutation_type;
 				}
-			} catch (e) {} // Pass through to the error below, no need to throw it especially
+			} catch (e) {
+				throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
+			}
 		}
-		throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
     }
     
     function typeFromTPath(name: String, ?params: Array<TypeParam>, nullable = false) {
-		switch (name) {
+		return switch (name) {
         	case('Array'): {
 				var arrayOf = arrayType(params);
 				var base_type = getBaseType(name);
 				var array_expr = macro $base_type($arrayOf);
 				if(nullable) {
-					return macro $array_expr;
+					macro $array_expr;
 				} else {
-					return macro graphql.GraphQLTypes.NonNull($array_expr);
+					macro graphql.GraphQLTypes.NonNull($array_expr);
 				}
 			}
 			case ('Null'): {
 				var base_type = nullableType(params);
-				return macro $base_type;
+				macro $base_type;
 			}
 			case ('Deferred' | 'Promise'): {
 				is_deferred = true;
 				var deferredOf = arrayType(params);
-				return macro $deferredOf;
+				macro $deferredOf;
 			}
 			default: {
 				var base_type = getBaseType(name);
 				if(nullable) {
-					return macro $base_type;
+					macro $base_type;
 				} else {
-					return macro graphql.GraphQLTypes.NonNull($base_type);
+					macro graphql.GraphQLTypes.NonNull($base_type);
 				}
 			}
 		}
@@ -244,11 +244,11 @@ class FieldTypeBuilder {
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
 		var found = false;
 		for (meta in field.meta) {
-			if ([':$name', name].contains(meta.name)) {
-				if(allowMultiple == false && found == true) {
-					throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
-				}
-				found = true;
+			var nameMatches = [':$name', name].contains(meta.name);
+			found = switch [nameMatches, allowMultiple, found] {
+				case [true, false, true]: throw new Error('Duplicate metadata found for $name on ${field.name}', meta.pos);
+				case [true, _, _]: true;
+				case [false, _, _]: found;
 			}
 		}
 		return found;
@@ -277,24 +277,16 @@ class FieldTypeBuilder {
 		Determines if the field should be visible in the GraphQL Schema
 	**/
 	public function isVisible() {
-		// Never show if flagged as hidden
-		if(hasMeta(Hide)) {
-			return false;
-		}
-
-		/** Always exclude 'special methods' **/
-		if(['new', 'toString'].contains(field.name)) {
-			return false;
-		}
-
-		return switch [query_type, hasMeta(MutationField), hasMeta(QueryField)] {
+		return switch [hasMeta(Hide), field.name, query_type, hasMeta(MutationField), hasMeta(QueryField)] {
 			// If not explicitly specified, for query or mutation, use public field access
 			// Otherwise, base purely on metadata
-			case [Query, true, false]: false;
-			case [Query, _, true]: true;
-			case [Query, _, _]: field.access.contains(APublic);
-			case [Mutation, true, _]: true;
-			case [Mutation, false, _]: false;
+			case [true, _, _, _, _]: false; // Never show if flagged as hidden
+			case [false, "new" | "toString", _, _, _]: false; //Always exclude 'special methods'
+			case [false, _, Query, true, false]: false;
+			case [false, _, Query, _, true]: true;
+			case [false, _, Query, _, _]: field.access.contains(APublic);
+			case [false, _, Mutation, true, _]: true;
+			case [false, _, Mutation, false, _]: false;
 		}
 	}
 

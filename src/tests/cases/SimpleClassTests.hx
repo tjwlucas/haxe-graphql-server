@@ -68,6 +68,7 @@ class SimpleClassTests extends utest.Test {
 
     function specHiddenFieldNotInSchema() {
         Assert.isNull(Util.getFieldDefinitionByName(fields, 'hidden_field'));
+        Assert.isNull(Util.getFieldDefinitionByName(fields, 'toString'));
     }
 
     function specDeprecatedStringField() {
@@ -196,6 +197,10 @@ class SimpleClass implements GraphQLObject {
     **/
     @:GraphQLHide
     public var hidden_field : String;
+
+    public function toString() : String {
+        return "This is a special case, and should NOT appear in the schema";
+    }
 
 
     /**

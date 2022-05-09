@@ -92,7 +92,7 @@ class GraphQLServer {
             app.listen(port);
             Sys.println('Running server on port $port');
         #else
-            trace("Not implemented for anything except PHP & JS");
+            throw "Not implemented for anything except PHP & JS";
         #end
     }
 

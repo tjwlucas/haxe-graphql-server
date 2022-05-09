@@ -24,16 +24,16 @@ class Util {
 
     public static inline function associativeArrayOfHash(hash:Map<String, Dynamic>) {
 		#if php
-            return php.Lib.associativeArrayOfHash(hash);
+            var result = php.Lib.associativeArrayOfHash(hash);
 		#elseif js
-			var obj : Dynamic = {};
+			var result : Dynamic = {};
 			for(k => v in hash) {
-				Reflect.setField(obj, k, v);
+				Reflect.setField(result, k, v);
 			}
-			return obj;
         #else
-            return hash;
+			var result = hash;
         #end
+		return result;
     }
 
 	public static inline function toNativeArray(arr:Array<Dynamic>) : NativeArray {

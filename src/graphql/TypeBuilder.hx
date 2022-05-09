@@ -88,12 +88,12 @@ class TypeBuilder {
 
 	static function classHasMeta(cls : ClassType, name : FieldMetadata) {
 		var found = false;
-		for (meta in cls.meta.get()) {
-			if ([':$name', name].contains(meta.name)) {
-				if(found == true) {
-					throw new Error('Duplicate metadata found for $name on ${cls.name}', meta.pos);
-				}
-				found = true;
+		for (meta in cls.meta.get()) {			
+			var nameMatches = [':$name', name].contains(meta.name);
+			found = switch [nameMatches, found] {
+				case [true, true]: throw new Error('Duplicate metadata found for $name on ${cls.name}', meta.pos);
+				case [true, false]: true;
+				case [false, _]: found;
 			}
 		}
 		return found;
@@ -116,12 +116,12 @@ class TypeBuilder {
 		return classGetMetas(cls, name)[0];
 	}
 
+	@SuppressWarnings("checkstyle:ReturnCount") // The return count check picks up returns inside macro expressions and callbacks
 	static function buildFieldType(f:Field, type: GraphQLObjectType = Query):ExprOf<GraphQLField> {
 		var cls = Context.getLocalClass().get();
 		var field = new FieldTypeBuilder(f, type);
 
 		if (field.isVisible()) {
-
 			var classValidationContext : Array<Expr> = [];
 			if (classHasMeta(cls, ClassValidationContext)) {
 				var validations = classGetMetas(cls, ClassValidationContext);
