@@ -1,6 +1,5 @@
 package tests.cases;
 
-import graphql.externs.GraphQL;
 import graphql.GraphQLField;
 import graphql.TypeObjectDefinition;
 import utest.Assert;

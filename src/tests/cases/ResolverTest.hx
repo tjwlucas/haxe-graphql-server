@@ -1,16 +1,10 @@
 package tests.cases;
 
 import graphql.externs.Error;
-import graphql.GraphQLError;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
-import graphql.externs.NativeArray;
 using graphql.Util;
-
-#if php
-    import php.Exception;
-#end
 
 class ResolverTest extends utest.Test {
     var server : GraphQLServer;

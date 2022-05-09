@@ -1,7 +1,6 @@
 package tests.cases;
 
 import graphql.IDType;
-import sys.io.File;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 

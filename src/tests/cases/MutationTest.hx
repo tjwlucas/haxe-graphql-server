@@ -1,6 +1,5 @@
 package tests.cases;
 
-import graphql.GraphQLError;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;

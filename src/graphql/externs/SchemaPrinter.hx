@@ -1,9 +1,5 @@
 package graphql.externs;
 
-#if php
-import php.NativeArray;
-#end
-
 #if php @:native('GraphQL\\Utils\\SchemaPrinter')
 extern
 #end

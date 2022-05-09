@@ -1,6 +1,5 @@
 package tests.cases;
 
-import graphql.GraphQLTypes;
 import graphql.GraphQLField;
 import graphql.GraphQLObject;
 

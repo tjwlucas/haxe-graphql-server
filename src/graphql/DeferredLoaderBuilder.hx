@@ -2,8 +2,6 @@ package graphql;
 
 import haxe.macro.Expr.Error;
 import haxe.macro.Expr.ComplexType;
-import haxe.macro.Tools.TTypeTools;
-import haxe.macro.TypeTools;
 import haxe.macro.Expr.Field;
 import haxe.macro.Context;
 using graphql.macro.Util;

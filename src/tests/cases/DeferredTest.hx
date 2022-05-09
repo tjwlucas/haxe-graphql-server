@@ -1,14 +1,11 @@
 package tests.cases;
 
-import sys.io.File;
 import graphql.externs.Error;
-import graphql.GraphQLError;
 import utest.Assert;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
 import graphql.GraphQLObject;
 import utest.Test;
-import graphql.externs.Deferred;
 using graphql.Util;
 import graphql.externs.NativeArray;
 

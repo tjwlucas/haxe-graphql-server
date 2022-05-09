@@ -1,7 +1,5 @@
 package graphql.externs;
 
-import graphql.externs.Error;
-import graphql.externs.NativeArray;
 #if php
 @:native('GraphQL\\Executor\\ExecutionResult')
 extern class ExecutionResult {

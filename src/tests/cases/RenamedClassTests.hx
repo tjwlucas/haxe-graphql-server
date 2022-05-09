@@ -2,7 +2,6 @@ package tests.cases;
 
 import graphql.externs.NativeArray;
 import graphql.GraphQLServer;
-import graphql.GraphQLTypes;
 import utest.Assert;
 import utest.Test;
 

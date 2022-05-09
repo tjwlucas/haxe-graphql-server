@@ -1,7 +1,5 @@
 package graphql.externs;
 
-import graphql.externs.NativeArray;
-
 #if php @:native('GraphQL\\GraphQL')
 #elseif js @:jsRequire('graphql')
 #end

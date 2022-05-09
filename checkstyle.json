@@ -136,6 +136,57 @@
 		},
 		{
 			"type": "UnusedLocalVar"
+		},
+		{
+			"type": "DocCommentStyle",
+			"props": {
+				"lineStyle": "none",
+				"startStyle": "twostars"
+			}
+		},
+		{
+			"type": "FieldDocComment",
+			"props": {
+				"severity": "IGNORE",
+				"modifier": "PUBLIC",
+				"requireReturn": false,
+				"excludeNames": [
+					"__str__",
+					"new"
+				],
+				"tokens": [
+					"CLASS_DEF",
+					"INTERFACE_DEF",
+					"TYPEDEF_DEF"
+				]
+			}
+		},
+		{
+			"type": "TODOComment",
+			"props": {
+				"severity": "INFO"
+			}
+		},
+		{
+			"type": "TypeDocComment",
+			"props": {
+				"severity": "IGNORE"
+			}
+		},
+		{
+			"type": "EmptyPackage",
+			"props": {
+				"enforceEmptyPackage": false
+			}
+		},
+		{
+			"type": "UnnecessaryConstructor"
+		},
+		{
+			"type": "AvoidStarImport"
+		},
+		{
+			"type": "UnusedImport"
 		}
     ],
 	"exclude": {
@@ -169,6 +220,11 @@
 		],
 		"UnusedLocalVar" : [
 			"Manual$"
+		],
+		"FieldDocComment" : [
+			"Tests?",
+			"Manual$",
+			"/externs/"
 		]
 	},
 	"version": 1

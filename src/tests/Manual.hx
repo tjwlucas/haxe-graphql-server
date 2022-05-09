@@ -3,7 +3,6 @@ package tests;
 #if js
 import graphql.externs.js.Process;
 #end
-import graphql.GraphQLError;
 import graphql.GraphQLObject;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;

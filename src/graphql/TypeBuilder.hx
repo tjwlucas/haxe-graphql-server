@@ -3,9 +3,7 @@ package graphql;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
-import graphql.GraphQLField;
 using graphql.macro.Util;
-
 using StringTools;
 using graphql.TypeBuilder;
 using haxe.macro.TypeTools;
