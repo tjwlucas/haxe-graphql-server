@@ -210,6 +210,12 @@
 				"allowException": true,
 				"policy": "doubleAndInterpolation"
 			}
+		},
+		{
+			"type": "RedundantAccessMeta"
+		},
+		{
+			"type": "RedundantAllowMeta"
 		}
     ],
 	"exclude": {
