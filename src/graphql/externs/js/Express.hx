@@ -1,6 +1,6 @@
 package graphql.externs.js;
 
-@:jsRequire('express')
+@:jsRequire("express")
 extern class Express {
     @:selfCall public function new();
     public function use(path:Dynamic, ?httpObject: GraphqlHTTP) : Express;

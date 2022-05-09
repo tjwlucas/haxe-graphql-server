@@ -1,7 +1,7 @@
 package graphql.externs;
 
-#if php @:native('GraphQL\\GraphQL')
-#elseif js @:jsRequire('graphql')
+#if php @:native("GraphQL\\GraphQL")
+#elseif js @:jsRequire("graphql")
 #end
 extern class GraphQL {
     #if js inline #end
@@ -38,7 +38,7 @@ extern class GraphQL {
 #if js
     extern class JsDocument {}
 
-    @:jsRequire('graphql')
+    @:jsRequire("graphql")
     extern class Language {
         public static function parse(source:String, ?options:Dynamic) : JsDocument;
     }

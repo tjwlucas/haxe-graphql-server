@@ -1,7 +1,7 @@
 package graphql.externs;
 
 #if php
-@:native('GraphQL\\Type\\Definition\\Type')
+@:native("GraphQL\\Type\\Definition\\Type")
 extern class Type {
     public static function string() : Dynamic;
     public static function int() : Dynamic;
@@ -12,7 +12,7 @@ extern class Type {
     public static function nonNull(type:Dynamic) : Dynamic;
 }
 #elseif js
-@:jsRequire('graphql')
+@:jsRequire("graphql")
 extern class Type {
     static var GraphQLString : Dynamic;
     static var GraphQLInt : Dynamic;
@@ -42,12 +42,12 @@ extern class Type {
     }
 }
 
-@:jsRequire('graphql', 'GraphQLList')
+@:jsRequire("graphql", "GraphQLList")
 extern class GraphQLList {
     public function new(type:Dynamic);
 }
 
-@:jsRequire('graphql', 'GraphQLNonNull')
+@:jsRequire("graphql", "GraphQLNonNull")
 extern class GraphQLNonNull {
     public function new(type:Dynamic);
 }

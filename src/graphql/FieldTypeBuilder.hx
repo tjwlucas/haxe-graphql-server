@@ -7,8 +7,14 @@ using StringTools;
 using haxe.macro.ExprTools;
 
 class FieldTypeBuilder {
+	static inline final NOT_A_FUNCTION = "Not a function";
+
+	static inline final GQL_CONTEXT_VARIABLE = "gql_context_variable";
+
+	static inline final UNKNOWN = "Unknown";
+
 	var field:Field;
-	static var types_class = Context.getType('graphql.GraphQLTypes');
+	static var types_class = Context.getType("graphql.GraphQLTypes");
     static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
     
     public var type : Expr;
@@ -41,7 +47,7 @@ class FieldTypeBuilder {
     
     function typeFromTPath(name: String, ?params: Array<TypeParam>, nullable = false) {
 		return switch (name) {
-        	case('Array'): {
+        	case("Array"): {
 				var arrayOf = arrayType(params);
 				var base_type = getBaseType(name);
 				var array_expr = macro $base_type($arrayOf);
@@ -51,11 +57,11 @@ class FieldTypeBuilder {
 					macro graphql.GraphQLTypes.NonNull($array_expr);
 				}
 			}
-			case ('Null'): {
+			case ("Null"): {
 				var base_type = nullableType(params);
 				macro $base_type;
 			}
-			case ('Deferred' | 'Promise'): {
+			case ("Deferred" | "Promise"): {
 				is_deferred = true;
 				var deferredOf = arrayType(params);
 				macro $deferredOf;
@@ -77,7 +83,7 @@ class FieldTypeBuilder {
             case(TPType(TPath({name: a, params: p}))):
                 nullableType = typeFromTPath(a, p, true);
 			default:
-				getBaseType('Unknown');
+				getBaseType(UNKNOWN);
 		}
 		return nullableType;
 	}
@@ -88,7 +94,7 @@ class FieldTypeBuilder {
             case(TPType(TPath({name: a, params: p}))):
                 arrayType = typeFromTPath(a, p);
 			default:
-				getBaseType('Unknown');
+				getBaseType(UNKNOWN);
 		}
 		return arrayType;
 	}
@@ -99,7 +105,7 @@ class FieldTypeBuilder {
 			case(TPath({name: a, params: p})):
                 returnType = typeFromTPath(a, p);
 			default:
-				getBaseType('Unknown');
+				getBaseType(UNKNOWN);
 		}
 		return returnType;
 	}
@@ -114,7 +120,7 @@ class FieldTypeBuilder {
 		if (hasMeta(ContextVar)) {
 			expr = getMeta(ContextVar).params[0];
 		} else {
-			var context_variable_name = Context.defined("gql_context_variable") ? Context.definedValue("gql_context_variable") : 'ctx';
+			var context_variable_name = Context.defined(GQL_CONTEXT_VARIABLE) ? Context.definedValue(GQL_CONTEXT_VARIABLE) : "ctx";
 			expr = macro $i{context_variable_name};
 		}
 		return expr.toString();
@@ -123,15 +129,15 @@ class FieldTypeBuilder {
     public function buildFieldType() : Void {
 		switch (field.kind) {
 			case(FVar(TPath({name: a, params: p}))):
-                type = typeFromTPath(a, p, hasMeta('optional'));
+                type = typeFromTPath(a, p, hasMeta(Optional));
             case(FFun({ret: return_type, args: args})):
                 is_function = true;
                 var argList = buildArgList(args);
                 this.args = macro $a{ argList };
 				type = functionReturnType(return_type);
 			default:
-				getBaseType('Unknown');
-				type = macro 'Unknown';
+				getBaseType(UNKNOWN);
+				type = macro UNKNOWN;
 		}
     }
 
@@ -157,7 +163,7 @@ class FieldTypeBuilder {
 					}
 				case [TPath({name: a, params: p}), name]: arg_names.push(name);
 				default:
-					getBaseType('Unknown');
+					getBaseType(UNKNOWN);
 			}
 		}
 		return arg_list;
@@ -225,7 +231,7 @@ class FieldTypeBuilder {
 	function getFunctionInfo() {
 		return switch(field.kind) {
 			case FFun(a): a;
-			default: throw new Error("Not a function", field.pos);
+			default: throw new Error(NOT_A_FUNCTION, field.pos);
 		}
 	}
     
@@ -235,7 +241,7 @@ class FieldTypeBuilder {
 			case FFun({args: args}):
 				return args[i].type;
 			default:
-				return throw new Error("Not a function", field.pos);
+				return throw new Error(NOT_A_FUNCTION, field.pos);
 		}
 	}
     

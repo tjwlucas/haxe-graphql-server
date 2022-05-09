@@ -14,7 +14,7 @@ class DeferredLoaderBuilder {
         var returnType : ComplexType;
         var hasLoad = false;
         for(f in fields) {
-            if(f.name == 'load') {
+            if(f.name == "load") {
                 hasLoad = true;
                 if(!f.access.contains(AStatic)) {
                     throw new Error("Load function must be static", f.pos);
@@ -106,7 +106,7 @@ class DeferredLoaderBuilder {
         switch (f.kind) {
             case(FFun({ret: ret})):
                 switch(ret) {
-                    case TPath({name: 'Map', params: p}):
+                    case TPath({name: "Map", params: p}):
                         switch [p[0], p[1]] {
                             case [TPType(a), TPType(b)]: {
                                 keyType = a;

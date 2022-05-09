@@ -13,8 +13,9 @@ enum abstract FieldMetadata(String) from String to String {
 	var ValidationContext = "validationContext";
 	var MutationField = "mutation";
 	var QueryField = "query";
-	var ClassValidationContext = "validationContext";
+	var ClassValidationContext = ValidationContext;
 	var ContextVar = "context";
 	var DocMeta = "doc";
 	var Deferred = "deferred";
+	var Optional = "optional";
 }

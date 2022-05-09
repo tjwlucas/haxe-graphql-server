@@ -7,7 +7,7 @@ import haxe.Exception;
 	var category:String;
 	var clientSafe:Bool;
 
-	public function new(message:String, category = 'generic', clientSafe = true) {
+	public function new(message:String, category = "generic", clientSafe = true) {
 		super(message);
 		this.category = category;
 		this.clientSafe = clientSafe;

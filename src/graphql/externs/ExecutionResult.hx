@@ -1,7 +1,7 @@
 package graphql.externs;
 
 #if php
-@:native('GraphQL\\Executor\\ExecutionResult')
+@:native("GraphQL\\Executor\\ExecutionResult")
 extern class ExecutionResult {
     public function toArray(?debug : Int) : NativeArray;
     @:optional public var errors : NativeArray;

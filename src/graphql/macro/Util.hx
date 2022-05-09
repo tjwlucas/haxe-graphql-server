@@ -4,12 +4,16 @@ import haxe.macro.Expr.TypeDefinition;
 import haxe.macro.Context;
 
 class Util {
+    static inline final AUTOLOAD_DEFAULT_PATH = "vendor/autoload.php";
+
+    static inline final VENDOR = "vendor";
+
     public static macro function requireVendor() {
-        var vendor : String = switch [haxe.macro.Context.defined("vendor"), Context.definedValue("vendor")] {
+        var vendor : String = switch [haxe.macro.Context.defined(VENDOR), Context.definedValue(VENDOR)] {
             case [true, "0" | "false"]: return macro {};
-            case [true, "1" | "true"]: "vendor/autoload.php";
+            case [true, "1" | "true"]: AUTOLOAD_DEFAULT_PATH;
             case [true, value]: value;
-            case [false, _]: "vendor/autoload.php";
+            case [false, _]: AUTOLOAD_DEFAULT_PATH;
         }
         debug('Requiring $vendor');
         return macro php.Global.require_once($v{vendor});
@@ -33,9 +37,9 @@ class Util {
     }
 
     public static function getTarget() : SupportedTarget {
-        if (Context.defined('php')) {
+        if (Context.defined("php")) {
             return Php;
-        } else if (Context.defined('js')) {
+        } else if (Context.defined("js")) {
             return Javascript;
         } else {
             throw "Not a supported target";

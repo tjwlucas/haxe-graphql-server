@@ -1,6 +1,6 @@
 package graphql.externs.js;
 
-@:jsRequire('domain')
+@:jsRequire("domain")
 extern class Domain {
     public static function create() : Domain;
     public function add(item:Dynamic) : Domain;

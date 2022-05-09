@@ -54,7 +54,7 @@ class GraphQLServer {
             var variables : NativeArray;
             var operationName : String;
             try{
-                var raw_input = File.getContent('php://input');
+                var raw_input = File.getContent("php://input");
                 var input = Json.parse(raw_input);
                 query_string = input.query;
                 variables = Util.associativeArrayOfObject( input.variables != null ? input.variables : {} );
@@ -80,7 +80,7 @@ class GraphQLServer {
                 reqd.requestValues = [];
                 reqd.run(next);
               });
-            app.use('/', new graphql.externs.js.GraphqlHTTP({
+            app.use("/", new graphql.externs.js.GraphqlHTTP({
                 schema: this.schema,
                 rootValue: this.root,
                 graphiql: true

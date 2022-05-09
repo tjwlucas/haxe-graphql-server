@@ -151,7 +151,7 @@ class TypeBuilder {
 				arg_var_defs.push(macro var $f : $type = $defined);
 			}
 			// Add renamed context variable to context, even when not present in function argument list
-			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != 'ctx') {
+			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != "ctx") {
 				var f = ctx_var_name;
 				arg_var_defs.insert(0, macro var $f = ctx);
 			}
@@ -166,7 +166,7 @@ class TypeBuilder {
 			}
 			var fieldPath = Context.parse(fieldPathString, Context.currentPos());
 			
-			var args_string = field.arg_names.join(', ');
+			var args_string = field.arg_names.join(", ");
 
 			var getResult = switch(field.is_function) {
 				case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
@@ -236,7 +236,7 @@ class TypeBuilder {
 				resolve = macro null;
 
 				// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
-				f.meta.push({name:':keep', pos: Context.currentPos()});
+				f.meta.push({name:":keep", pos: Context.currentPos()});
 			} else {
 				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{ functionBody }
