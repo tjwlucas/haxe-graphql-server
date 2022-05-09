@@ -3,16 +3,11 @@ import haxe.macro.Context;
 
 class Util {
     public static macro function requireVendor() {
-        var vendor : String = "vendor/autoload.php";
-
-        var definedValue = Context.definedValue("vendor");
-        
-        if(haxe.macro.Context.defined("vendor")) {            
-            if(["0", "false"].contains(definedValue)) {
-                return macro {};
-            } else if (!["1", "true"].contains(definedValue)) {
-                vendor = definedValue;
-            }
+        var vendor : String = switch [haxe.macro.Context.defined("vendor"), Context.definedValue("vendor")] {
+            case [true, "0" | "false"]: return macro {};
+            case [true, "1" | "true"]: "vendor/autoload.php";
+            case [true, _]: Context.definedValue("vendor");
+            case [false, _]: "vendor/autoload.php";
         }
         debug('Requiring $vendor');
         return macro php.Global.require_once($v{vendor});
