@@ -87,6 +87,7 @@ class GraphQLServer {
             }));
             var portString = Sys.args()[0];
             var port = Std.parseInt(portString);
+            @SuppressWarnings("checkstyle:MagicNumber")
             port = port != null ? port : 4000;
             app.listen(port);
             Sys.println('Running server on port $port');

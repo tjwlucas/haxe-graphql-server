@@ -74,11 +74,13 @@ class DeferredLoaderBuilder {
                 }
                 public static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType,$returnType>) {
                     if(graphql.externs.js.Process.domain == null) {
-                        return static_loader = new_value;
+                        static_loader = new_value;
+                        return static_loader;
                     } else {
                         var loaders : Map<String, Dynamic>;
                         loaders = graphql.externs.js.Process.domain.loaders;
-                        return loaders[ $v{cls.name} ] = new_value;
+                        loaders[ $v{cls.name} ] = new_value;
+                        return loaders[ $v{cls.name} ];
                     }
                 }
 

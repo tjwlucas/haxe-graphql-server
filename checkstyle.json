@@ -73,27 +73,48 @@
 				"severityIdentical": "WARNING",
 				"severity": "WARNING"
 			}
+		},
+		{
+			"type": "DefaultComesLast"
+		},
+		{
+			"type": "HiddenField"
+		},
+		{
+			"type": "InnerAssignment"
+		},
+		{
+			"type": "MagicNumber",
+			"props": {
+				"ignoreNumbers": [-1, 0, 1, 2, 3]
+			}
 		}
     ],
 	"exclude": {
 		"all": [],
 		"MagicNumber": [
-			"Tests?$"
+			"Tests?$",
+			"Manual$"
 		],
 		"StringLiteral": [
-			"Tests?$"
+			"Tests?$",
+			"Manual$"
 		],
 		"MultipleStringLiterals": [
-			"Tests?$"
+			"Tests?$",
+			"Manual$"
 		],
 		"Return": [
-			"Tests?$"
+			"Tests?$",
+			"Manual$"
 		],
 		"TypeDocComment": [
-			"Tests?$"
+			"Tests?$",
+			"Manual$"
 		],
 		"CodeSimilarity": [
-			"Tests?$"
+			"Tests?$",
+			"Manual$"
 		]
 	},
 	"version": 1

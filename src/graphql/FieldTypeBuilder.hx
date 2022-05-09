@@ -25,12 +25,12 @@ class FieldTypeBuilder {
 		this.query_type = type;
 	}
 
-	function getBaseType(type) {
-		if(static_field_name_list.contains(type)) {
-			return macro graphql.GraphQLTypes.$type;
+	function getBaseType(typeParam) {
+		if(static_field_name_list.contains(typeParam)) {
+			return macro graphql.GraphQLTypes.$typeParam;
 		} else {
 			try {
-				var cls = Context.getType(type).getClass();
+				var cls = Context.getType(typeParam).getClass();
 				switch(this.query_type) {
 					case (Query): return macro $i{cls.name}._gql.type;
 					case (Mutation): return macro $i{cls.name}._gql.mutation_type;
@@ -73,36 +73,36 @@ class FieldTypeBuilder {
 	}
 	
 	function nullableType(params: Array<TypeParam>) {
-		var type : Expr;
+		var nullableType : Expr;
 		switch(params[0]) {
             case(TPType(TPath({name: a, params: p}))):
-                type = typeFromTPath(a, p, true);
+                nullableType = typeFromTPath(a, p, true);
 			default:
 				getBaseType('Unknown');
 		}
-		return type;
+		return nullableType;
 	}
 
 	function arrayType(params: Array<TypeParam>) {
-		var type : Expr;
+		var arrayType : Expr;
 		switch(params[0]) {
             case(TPType(TPath({name: a, params: p}))):
-                type = typeFromTPath(a, p);
+                arrayType = typeFromTPath(a, p);
 			default:
 				getBaseType('Unknown');
 		}
-		return type;
+		return arrayType;
 	}
 
 	function functionReturnType(?ret: ComplexType) {
-		var type : Expr;
+		var returnType : Expr;
 		switch(ret) {
 			case(TPath({name: a, params: p})):
-                type = typeFromTPath(a, p);
+                returnType = typeFromTPath(a, p);
 			default:
 				getBaseType('Unknown');
 		}
-		return type;
+		return returnType;
 	}
 
 	public function getType() {

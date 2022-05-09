@@ -70,14 +70,14 @@ class TypeObjectDefinition {
         }
     }
 
-    inline function buildTypeObject(name : String, description : String, fields : Void->Array<GraphQLField>) {
+    inline function buildTypeObject(name : String, typeDescription : String, typeFields : Void->Array<GraphQLField>) {
         return new ObjectType({
             name: name,
-            description: description,
+            description: typeDescription,
             fields: () -> {
                 var namedFields : Map<String, NativeArray> = [];
 
-                for(f in fields()) [
+                for(f in typeFields()) [
                     namedFields[f.name] = f.associativeArrayOfObject()
                 ];
                 return Util.associativeArrayOfHash(namedFields);

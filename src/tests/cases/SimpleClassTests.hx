@@ -166,8 +166,8 @@ class SimpleClassTests extends utest.Test {
     function specStructInitClass() {
         var object : SimpleStructClass = {int_value: 32};
         object.gql.description == 'A simple class using @:structInit instead of new()';
-        @:privateAccess var fields = object.gql.fields();
-        var field = Util.getFieldDefinitionByName(fields, 'int_value');
+        @:privateAccess var theseFields = object.gql.fields();
+        var field = Util.getFieldDefinitionByName(theseFields, 'int_value');
         Assert.notNull(field);
         field.resolve == null;
     }
