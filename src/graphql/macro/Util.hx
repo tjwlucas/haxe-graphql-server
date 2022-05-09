@@ -6,7 +6,7 @@ class Util {
         var vendor : String = switch [haxe.macro.Context.defined("vendor"), Context.definedValue("vendor")] {
             case [true, "0" | "false"]: return macro {};
             case [true, "1" | "true"]: "vendor/autoload.php";
-            case [true, _]: Context.definedValue("vendor");
+            case [true, value]: value;
             case [false, _]: "vendor/autoload.php";
         }
         debug('Requiring $vendor');
