@@ -4,11 +4,11 @@ package graphql.externs;
 abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
     @:op([]) public function arrayRead(key:String) : Dynamic {    
         return this[key];
-    }      
+    }
     
     @:op([]) public function arrayReadInt(key:Int) : Dynamic {    
         return this[key];
-    }   
+    }
     
     @:op(a.b) public inline function fieldRead(name:String) : Dynamic {
         return arrayRead(name);
@@ -20,8 +20,7 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
 
     public static inline function toHaxeArray(arr:php.NativeArray) : Array<Dynamic> {
         return php.Lib.toHaxeArray(arr);
-    };
-
+    }
     
     public var length(get, never) : Int;
     inline function get_length() : Int {
@@ -32,11 +31,11 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
 abstract NativeArray(Dynamic) from Dynamic to Dynamic {
   @:op([]) public function arrayRead(key:String) : Dynamic {    
         return Reflect.getProperty(this, key);
-  }      
+  }
     
   @:op([]) public function arrayReadInt(key:Int) : Dynamic {    
       return this[key];
-  }  
+  }
     
   @:op(a.b) public inline function fieldRead(name:String) : Dynamic {
       return arrayRead(name);
@@ -44,6 +43,6 @@ abstract NativeArray(Dynamic) from Dynamic to Dynamic {
 
   public function toHaxeArray() : Array<Dynamic> {
       return this;
-  };
+  }
 }
 #end

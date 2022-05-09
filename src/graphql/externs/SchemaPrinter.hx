@@ -9,8 +9,7 @@ extern
 #end
 class SchemaPrinter {
     #if js inline #end public static function doPrint(schema:Schema) : String 
-    #if js
-    {
+    #if js {
         return JsUtilities.printSchema(schema);
     }
     #end;

@@ -8,8 +8,7 @@ import graphql.externs.NativeArray;
 extern class GraphQL {
     #if js inline #end
     public static function executeQuery(schema: Schema, query: String, rootValue : Dynamic, ?contextValue : Dynamic, ?variables: NativeArray, ?operationName:String) : ExecutionResult
-    #if js
-    {
+    #if js {
         var ast = Language.parse(query);
         var invalidErrors = validate(schema, ast);
         if(invalidErrors.length > 0) {

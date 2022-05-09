@@ -21,9 +21,7 @@ import php.NativeArray;
 @:build(hxasync.AsyncMacro.build())
 #end
 class DeferredTest extends Test {
-    function setup() {
-
-    }
+    function setup() {}
 
     @async function specDeferredResolver(async:utest.Async) {
         var base = new DeferredTestObject();

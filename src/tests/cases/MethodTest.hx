@@ -19,7 +19,8 @@ class MethodTest extends utest.Test {
         arg['name'] == 'name';
         Std.string(arg['type']) == 'String!';
         arg.exists('defaultValue') == false;
-    } 
+    }
+
     function specMethodTestAdd() {
         var field = fields.getFieldDefinitionByName('add');
         Std.string(field.type) == 'Float!';
@@ -32,7 +33,8 @@ class MethodTest extends utest.Test {
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
         arg.exists('defaultValue') == false;
-    } 
+    }
+
     function specMethodTestRandomList() {
         var field = fields.getFieldDefinitionByName('randomList');
         Std.string(field.type) == '[Float!]!';
@@ -40,7 +42,8 @@ class MethodTest extends utest.Test {
         arg['name'] == 'n';
         Std.string(arg['type']) == 'Int!';
         arg.exists('defaultValue') == false;
-    } 
+    }
+
     function specMethodTestRandomListWithDefault() {
         var field = fields.getFieldDefinitionByName('randomListWithDefault');
         Std.string(field.type) == '[Float!]!';
@@ -50,7 +53,7 @@ class MethodTest extends utest.Test {
         Std.string(arg['type']) == 'Int';
         arg.exists('defaultValue') == true;
         arg['defaultValue'] == 5;
-    }    
+    }
 
     function specMethodWithPassedInContext() {
         var field = fields.getFieldDefinitionByName('addWithPassedInContext');
@@ -94,7 +97,7 @@ class MethodTest extends utest.Test {
         arg['name'] == 'id';
         Std.string(arg['type']) == 'ID!';
         arg.exists('defaultValue') == false;
-    } 
+    }
 }
 
 class MethodTestObject implements GraphQLObject {
