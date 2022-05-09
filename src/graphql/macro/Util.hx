@@ -1,4 +1,6 @@
 package graphql.macro;
+import haxe.macro.Expr.Field;
+import haxe.macro.Expr.TypeDefinition;
 import haxe.macro.Context;
 
 class Util {
@@ -22,5 +24,12 @@ class Util {
 			Sys.println('${Date.now()}> [graphql] $message');
 		}
 	}
+
+    public static inline function addFieldsFromClass(cls : TypeDefinition, fields : Array<Field>) {
+        for (field in cls.fields) {
+			fields.push(field);
+		}
+        return fields;
+    }
     #end
 }

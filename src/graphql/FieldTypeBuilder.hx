@@ -51,16 +51,16 @@ class FieldTypeBuilder {
 				} else {
 					return macro graphql.GraphQLTypes.NonNull($array_expr);
 				}
-			} 
+			}
 			case ('Null'): {
 				var base_type = nullableType(params);
 				return macro $base_type;
-			} 
+			}
 			case ('Deferred' | 'Promise'): {
 				is_deferred = true;
 				var deferredOf = arrayType(params);
 				return macro $deferredOf;
-			} 
+			}
 			default: {
 				var base_type = getBaseType(name);
 				if(nullable) {
@@ -69,7 +69,7 @@ class FieldTypeBuilder {
 					return macro graphql.GraphQLTypes.NonNull($base_type);
 				}
 			}
-		}     
+		}
 	}
 	
 	function nullableType(params: Array<TypeParam>) {
@@ -212,20 +212,17 @@ class FieldTypeBuilder {
 	}
 
 	public function getFunctionBody() {
-		switch(field.kind) {
-			case FFun({expr: expr}):
-				return expr;
-			default:
-				return throw new Error("Not a function", field.pos);
-		}
+		getFunctionInfo().expr;
 	}
 
 	public function getFunctionReturnType() {
-		switch(field.kind) {
-			case FFun({ret: ret}):
-				return ret;
-			default:
-				return throw new Error("Not a function", field.pos);
+		return getFunctionInfo().ret;
+	}
+
+	function getFunctionInfo() {
+		return switch(field.kind) {
+			case FFun(a): a;
+			default: throw new Error("Not a function", field.pos);
 		}
 	}
     

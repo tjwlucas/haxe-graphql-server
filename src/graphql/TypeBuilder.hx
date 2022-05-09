@@ -4,7 +4,7 @@ import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import graphql.GraphQLField;
-import graphql.macro.Util;
+using graphql.macro.Util;
 
 using StringTools;
 using graphql.TypeBuilder;
@@ -83,9 +83,7 @@ class TypeBuilder {
 			};
 		}
 
-		for (field in tmp_class.fields) {
-			fields.push(field);
-		}
+		tmp_class.addFieldsFromClass(fields);
 	}
 
 	static function classHasMeta(cls : ClassType, name : FieldMetadata) {

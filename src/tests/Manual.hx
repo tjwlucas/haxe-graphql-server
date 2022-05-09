@@ -7,6 +7,7 @@ import graphql.GraphQLError;
 import graphql.GraphQLObject;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
+import graphql.Util;
 using Math;
 
 class Manual {
@@ -17,10 +18,7 @@ class Manual {
     }
 
 	static function __init__() {
-        #if php
-		// PHP 8.1 compatibility workaround https://github.com/HaxeFoundation/haxe/issues/10502
-		untyped if (version_compare(PHP_VERSION, "8.1.0", ">=")) error_reporting(error_reporting() & ~E_DEPRECATED);
-        #end
+        Util.phpCompat();
 	}
 }
 

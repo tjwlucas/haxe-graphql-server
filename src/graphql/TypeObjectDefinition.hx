@@ -63,32 +63,25 @@ class TypeObjectDefinition {
         this.description = description;
         this.has_mutation = has_mutation;
 
-        type  = new ObjectType({
-            name: this.type_name,
-            description: this.description,
-            fields: () -> {
-                var named_fields : Map<String, NativeArray> = [];
-
-                for(f in this.fields()) [
-                    named_fields[f.name] = f.associativeArrayOfObject()
-                ];
-                return Util.associativeArrayOfHash(named_fields);
-            }
-        }.associativeArrayOfObject());
+        type = buildTypeObject(this.type_name, this.description, this.fields);
 
         if(this.has_mutation) {           
-            mutation_type  = new ObjectType({
-                name: this.mutation_name,
-                description: this.description,
-                fields: () -> {
-                    var named_mutation_fields : Map<String, NativeArray> = [];
-
-                    for(f in this.mutation_fields()) [
-                        named_mutation_fields[f.name] = f.associativeArrayOfObject()
-                    ];
-                    return Util.associativeArrayOfHash(named_mutation_fields);
-                }
-            }.associativeArrayOfObject());
+            mutation_type  = buildTypeObject(this.mutation_name, this.description, this.mutation_fields);
         }
+    }
+
+    inline function buildTypeObject(name : String, description : String, fields : Void->Array<GraphQLField>) {
+        return new ObjectType({
+            name: name,
+            description: description,
+            fields: () -> {
+                var namedFields : Map<String, NativeArray> = [];
+
+                for(f in fields()) [
+                    namedFields[f.name] = f.associativeArrayOfObject()
+                ];
+                return Util.associativeArrayOfHash(namedFields);
+            }
+        }.associativeArrayOfObject());
     }
 }

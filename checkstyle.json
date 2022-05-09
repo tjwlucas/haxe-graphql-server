@@ -57,35 +57,43 @@
 			}
 		},
 		{
-			"type": "RightCurly",
+			"type": "ArrowFunction",
 			"props": {
-				"option": "same",
-				"tokens": [
-					"IF",
-					"TRY"
-				]
+				"allowCurlyBody": true,
+				"allowFunction": false,
+				"allowReturn": true,
+				"allowSingleArgParens": true
+			}
+		},
+		{
+			"type": "CodeSimilarity",
+			"props": {
+				"thresholdIdentical": 12,
+				"thresholdSimilar": 32,
+				"severityIdentical": "WARNING",
+				"severity": "WARNING"
 			}
 		}
     ],
 	"exclude": {
 		"all": [],
 		"MagicNumber": [
-			"Test$"
+			"Tests?$"
 		],
 		"StringLiteral": [
-			"Test$"
+			"Tests?$"
 		],
 		"MultipleStringLiterals": [
-			"Test$"
+			"Tests?$"
 		],
 		"Return": [
-			"Test$"
+			"Tests?$"
 		],
 		"TypeDocComment": [
-			"Test$"
+			"Tests?$"
 		],
 		"CodeSimilarity": [
-			"Test$"
+			"Tests?$"
 		]
 	},
 	"version": 1

@@ -6,6 +6,7 @@ import haxe.macro.Tools.TTypeTools;
 import haxe.macro.TypeTools;
 import haxe.macro.Expr.Field;
 import haxe.macro.Context;
+using graphql.macro.Util;
 
 class DeferredLoaderBuilder {
     public static macro function build() : Array<Field> {        
@@ -96,10 +97,8 @@ class DeferredLoaderBuilder {
                 }
             }
         }
-        
-		for (field in tmp_class.fields) {
-			fields.push(field);
-		}
+
+		tmp_class.addFieldsFromClass(fields);
 		return fields;
     }
 
@@ -110,15 +109,14 @@ class DeferredLoaderBuilder {
             case(FFun({ret: ret})):
                 switch(ret) {
                     case TPath({name: 'Map', params: p}):
-                        switch(p[0]) {
-                            case(TPType(t)):
-                                keyType = t;
-                            default: throw new Error("Bad key type", f.pos);
-                        }
-                        switch(p[1]) {
-                            case(TPType(t)):
-                                returnType = t;
-                            default: throw new Error("Invalid loader return type", f.pos);
+                        switch [p[0], p[1]] {
+                            case [TPType(a), TPType(b)]: {
+                                keyType = a;
+                                returnType = b;
+                            }
+                            case [TPType(_) , _]: throw new Error("Invalid loader return type", f.pos);
+                            case [_, TPType(_)]: throw new Error("Bad key type", f.pos);
+                            case [_, _]: throw new Error("Bad key and loader return types", f.pos);
                         }
                     default:
                         throw new Error("Load function must return a Map", f.pos);
