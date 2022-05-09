@@ -41,30 +41,35 @@ class FieldTypeBuilder {
     }
     
     function typeFromTPath(name: String, ?params: Array<TypeParam>, nullable = false) {
-        if(name == 'Array') {
-            var arrayOf = arrayType(params);
-			var base_type = getBaseType(name);
-			var array_expr = macro $base_type($arrayOf);
-			if(nullable) {
-				return macro $array_expr;
-			} else {
-				return macro graphql.GraphQLTypes.NonNull($array_expr);
-			}
-        } else if (name == 'Null') {
-			var base_type = nullableType(params);
-			return macro $base_type;
-		} else if (name == 'Deferred') {
-			is_deferred = true;
-            var deferredOf = arrayType(params);
-			return macro $deferredOf;
-		} else {
-			var base_type = getBaseType(name);
-			if(nullable) {
+		switch (name) {
+        	case('Array'): {
+				var arrayOf = arrayType(params);
+				var base_type = getBaseType(name);
+				var array_expr = macro $base_type($arrayOf);
+				if(nullable) {
+					return macro $array_expr;
+				} else {
+					return macro graphql.GraphQLTypes.NonNull($array_expr);
+				}
+			} 
+			case ('Null'): {
+				var base_type = nullableType(params);
 				return macro $base_type;
-			} else {
-				return macro graphql.GraphQLTypes.NonNull($base_type);
+			} 
+			case ('Deferred' | 'Promise'): {
+				is_deferred = true;
+				var deferredOf = arrayType(params);
+				return macro $deferredOf;
+			} 
+			default: {
+				var base_type = getBaseType(name);
+				if(nullable) {
+					return macro $base_type;
+				} else {
+					return macro graphql.GraphQLTypes.NonNull($base_type);
+				}
 			}
-        }        
+		}     
 	}
 	
 	function nullableType(params: Array<TypeParam>) {

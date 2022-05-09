@@ -51,6 +51,7 @@ class DeferredTest extends Test {
                 value2:getValue(id: $id3)
                 objectValue:getObjectValue
             }
+            manualDeferredObject
         }", {
             id: 42,
             id2: 367,
@@ -61,6 +62,7 @@ class DeferredTest extends Test {
 
         result.data['getValue'] == "This is the value for id 42, loaded";
         result.data['another'] == "This is the value for id 367, loaded";
+        result.data['manualDeferredObject'] == "Some string";
         var subObject : NativeArray = result.data['getSubObject'];
         subObject['getValue'] == "This is the value for id 42, loaded";
         subObject['value2'] == "This is the value for id 13, loaded";
@@ -153,6 +155,16 @@ class DeferredTestObject implements GraphQLObject {
 
     @:deferred(NestedDeferredLoader)
     public function getNested(id:Int = 0) : NestedDeferredTestObject;
+
+    #if php
+    public function manualDeferredObject() : graphql.externs.Deferred<String> {
+        return new graphql.externs.Deferred(() -> "Some string");
+    }
+    #elseif js
+    public function manualDeferredObject() : js.lib.Promise<String> {
+        return new js.lib.Promise((resolve, reject) -> resolve("Some string"));
+    }
+    #end
 }
 
 class DeferredTestSubObject implements GraphQLObject {
