@@ -285,24 +285,14 @@ class FieldTypeBuilder {
 			return false;
 		}
 
-		switch(query_type) {
+		return switch [query_type, hasMeta(MutationField), hasMeta(QueryField)] {
 			// If not explicitly specified, for query or mutation, use public field access
 			// Otherwise, base purely on metadata
-			case Query:
-				if(hasMeta(MutationField) && !hasMeta(QueryField)) {
-					return false;
-				} else if (hasMeta(QueryField)) {
-					return true;
-				} else {
-					return field.access.contains(APublic);
-				}
-			// Show field on mutation iff has mutation metadata
-			case Mutation:
-				if(hasMeta(MutationField)) {
-					return true;
-				} else {
-					return false;
-				}
+			case [Query, true, false]: false;
+			case [Query, _, true]: true;
+			case [Query, _, _]: field.access.contains(APublic);
+			case [Mutation, true, _]: true;
+			case [Mutation, false, _]: false;
 		}
 	}
 
