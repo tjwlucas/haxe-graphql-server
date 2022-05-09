@@ -127,38 +127,43 @@ class FieldTypeBuilder {
                 type = typeFromTPath(a, p, hasMeta('optional'));
             case(FFun({ret: return_type, args: args})):
                 is_function = true;
-                var arg_list : Array<ExprOf<Dynamic>> = [];
-                for(arg in args) {
-                    switch(arg.type) {
-                        case(TPath({name: a, params: p})):
-							arg_names.push(arg.name);
-							var ctx_var_name = getContextVariableName();
-							if(arg.name != ctx_var_name) {
-								var defaultValue = arg.value != null ? arg.value : macro null;
-								var arg_field : ExprOf<GraphQLArgField> = macro {
-									var arg : graphql.GraphQLArgField = {
-										type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
-										name: $v{ arg.name },
-										description: ${ getDoc(arg) }
-									};
-									if($defaultValue != null) {
-										arg.defaultValue = $defaultValue;
-									}
-									arg;
-								};
-								arg_list.push( macro graphql.Util.associativeArrayOfObject($arg_field));
-							}
-                        default:
-                            getBaseType('Unknown');
-                    }
-                }
-                this.args = macro $a{ arg_list };
+                var argList = buildArgList(args);
+                this.args = macro $a{ argList };
 				type = functionReturnType(return_type);
 			default:
 				getBaseType('Unknown');
 				type = macro 'Unknown';
 		}
     }
+
+	function buildArgList(arguments : Array<FunctionArg>) {
+		var arg_list : Array<ExprOf<Dynamic>> = [];
+		for(arg in arguments) {
+			switch ([arg.type, arg.name]) {
+				case [TPath({name: a, params: p}), name] if (name != getContextVariableName()): {
+					arg_names.push(arg.name);
+					var ctx_var_name = getContextVariableName();
+						var defaultValue = arg.value != null ? arg.value : macro null;
+						var arg_field : ExprOf<GraphQLArgField> = macro {
+							var arg : graphql.GraphQLArgField = {
+								type: ${ typeFromTPath(a, p, arg.opt ? true : arg.value != null) },
+								name: $v{ arg.name },
+								description: ${ getDoc(arg) }
+							};
+							if($defaultValue != null) {
+								arg.defaultValue = $defaultValue;
+							}
+							arg;
+						};
+						arg_list.push( macro graphql.Util.associativeArrayOfObject($arg_field));
+					}
+				case [TPath({name: a, params: p}), name]: arg_names.push(name);
+				default:
+					getBaseType('Unknown');
+			}
+		}
+		return arg_list;
+	}
 
 	public function getDoc(?f:{meta:Metadata}) {
 		var docMeta = getMeta(DocMeta, f);

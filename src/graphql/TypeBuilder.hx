@@ -183,36 +183,35 @@ class TypeBuilder {
 				if(field.getFunctionBody() != null) {
 					Context.warning("Function body will be totally ignored in GraphQL deferred loader", f.pos);
 				}
-				var idExpr = macro {};
-				if(loaderExpression == null) {
-					if(field.arg_names.length != 1) {
-						throw new Error("Deferred loader without expression must have exactly one argument", f.pos);
-					}
-					var arg = field.arg_names[0];
-					idExpr = macro $i{ arg };
-				} else {
-					idExpr = loaderExpression;
+
+				var idExpr = switch [loaderExpression, field.arg_names.length] {
+					case [null, 1]: macro $i{ field.arg_names[0] };
+					case [null, _]: throw new Error("Deferred loader without expression must have exactly one argument", f.pos);
+					case [loader, _]: loader;
 				}
 				var returnType = field.getFunctionReturnType();
 
 				var getResult = macro {};
-				if(Context.defined('php')) {
-					getResult = macro {						
-						var id = $idExpr;
-						$loader.add(@:pos(f.pos) id);
-						return new graphql.externs.Deferred(() -> {
-							var result : $returnType = $loader.getValue(@:pos(f.pos) id);
-							$b{postValidations};
-							return result;
-						});
-					};
-				} else if (Context.defined('js')) {
-					getResult = macro {			
-						var id = $idExpr;
-						return $loader.loader.load(id).then((result) -> {
-							$b{postValidations};
-							return result;
-						});
+				switch (Util.getTarget()) {
+					case Php: {
+						getResult = macro {						
+							var id = $idExpr;
+							$loader.add(@:pos(f.pos) id);
+							return new graphql.externs.Deferred(() -> {
+								var result : $returnType = $loader.getValue(@:pos(f.pos) id);
+								$b{postValidations};
+								return result;
+							});
+						};
+					}
+					case Javascript: {
+						getResult = macro {			
+							var id = $idExpr;
+							return $loader.loader.load(id).then((result) -> {
+								$b{postValidations};
+								return result;
+							});
+						}
 					}
 				}
 				functionBody = functionBody.concat([

@@ -31,5 +31,15 @@ class Util {
 		}
         return fields;
     }
+
+    public static function getTarget() : SupportedTarget {
+        if (Context.defined('php')) {
+            return Php;
+        } else if (Context.defined('js')) {
+            return Javascript;
+        } else {
+            throw "Not a supported target";
+        }
+    }
     #end
 }

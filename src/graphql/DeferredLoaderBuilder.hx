@@ -29,9 +29,8 @@ class DeferredLoaderBuilder {
         if(!hasLoad) {
             throw new Error("DeferredLoader class must declare a load() function", Context.currentPos());
         }
-        var tmp_class = macro class {};
-        if(Context.defined('php')) {
-            tmp_class = macro class {
+        var tmp_class = switch (Util.getTarget()) {
+            case Php: macro class {
                 static var keys:Array<$keyType> = [];
                 public static var values : Map<$keyType,$returnType> = [];
                 static var runCount = 0;
@@ -55,8 +54,7 @@ class DeferredLoaderBuilder {
                     return values[key];
                 }
             }
-        } else if (Context.defined('js')) {
-            tmp_class = macro class {
+            case Javascript: macro class {
                 static var runCount = 0;
                 private static var static_loader : graphql.externs.js.DataLoader<$keyType,$returnType>;
 
@@ -91,7 +89,7 @@ class DeferredLoaderBuilder {
                             return new js.lib.Promise((resolve, reject) -> {
                                 runCount++;
                                 var values = load(keys);
-                                resolve([for(k in keys) values[k]]);
+                                resolve(keys.map(k -> values[k]));
                             });
                         });
                     }
