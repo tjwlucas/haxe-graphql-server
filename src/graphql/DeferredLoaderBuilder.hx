@@ -100,30 +100,17 @@ class DeferredLoaderBuilder {
 		return fields;
     }
 
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")  // "Map" in switch statement must be a literal, variables are interpreted as capture
     public static function getLoaderValueTypes(f:Field) {
-        var keyType : ComplexType;
-        var returnType : ComplexType;
-        switch (f.kind) {
-            case(FFun({ret: ret})):
-                switch(ret) {
-                    case TPath({name: "Map", params: p}):
-                        switch [p[0], p[1]] {
-                            case [TPType(a), TPType(b)]: {
-                                keyType = a;
-                                returnType = b;
-                            }
-                            case [TPType(_) , _]: throw new Error("Invalid loader return type", f.pos);
-                            case [_, TPType(_)]: throw new Error("Bad key type", f.pos);
-                            case [_, _]: throw new Error("Bad key and loader return types", f.pos);
-                        }
-                    default:
-                        throw new Error("Load function must return a Map", f.pos);
-                }
-            default: throw new Error("load property must be a function", f.pos);
+        return switch (f.kind) {
+            case(FFun({ret: TPath({name: "Map", params: [TPType(a), TPType(b)]})})): {
+                key: a,
+                ret: b
+            }
+            case (FFun({ret: TPath({name: "Map", params: [TPType(_) , _]})})): throw new Error("Invalid loader return type", f.pos);
+            case (FFun({ret: TPath({name: "Map", params: [_, TPType(_)]})})): throw new Error("Bad key type", f.pos);
+            case (FFun({ret: TPath({name: "Map", params: [_ , _]})})): throw new Error("Bad key and loader return types", f.pos);
+            default: throw new Error("Load property must be a function returning a Map", f.pos);
         }
-        return {
-            key: keyType,
-            ret: returnType
-        };
     }
 }
