@@ -101,9 +101,7 @@ class TypeBuilder {
 		Retrieves list of metadata with the given name (with or without preceding `:`)
 	**/
     static function classGetMetas(cls : ClassType, name : FieldMetadata) {
-        return cls.meta.get().filter((meta) -> {
-            return [':$name', name].contains(meta.name);
-        });
+        return cls.meta.get().filterMetas(name);
     }
 
 	/**

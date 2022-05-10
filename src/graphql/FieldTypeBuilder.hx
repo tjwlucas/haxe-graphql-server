@@ -6,6 +6,7 @@ import haxe.macro.Expr;
 using haxe.macro.TypeTools;
 using StringTools;
 using haxe.macro.ExprTools;
+using graphql.macro.Util;
 
 class FieldTypeBuilder {
 
@@ -359,9 +360,7 @@ class FieldTypeBuilder {
         if (field == null) {
             field = this.field;
         }
-        return field.meta.filter((meta) -> {
-            return [':$name', name].contains(meta.name);
-        });
+        return field.meta.filterMetas(name);
     }
 
 	/**

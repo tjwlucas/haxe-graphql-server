@@ -1,5 +1,6 @@
 package graphql.macro;
 
+import haxe.macro.Expr.Metadata;
 import haxe.macro.Expr.Field;
 import haxe.macro.Expr.TypeDefinition;
 import haxe.macro.Context;
@@ -66,6 +67,19 @@ class Util {
         } else {
             throw "Not a supported target";
         }
+    }
+
+    /**
+        Filters a list of metadata to return only those with the passed name
+        (Including preceded by `:`, for build only metadata)
+
+        @param meta Raw Metadata from class, field etc.
+        @param name String to filter by
+    **/
+    public static function filterMetas(meta: Metadata, name : FieldMetadata) {
+        return meta.filter((meta) -> {
+            return [':$name', name].contains(meta.name);
+        });
     }
     #end
 }

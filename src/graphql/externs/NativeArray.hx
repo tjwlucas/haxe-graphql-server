@@ -1,9 +1,14 @@
 package graphql.externs;
 
-#if php
-abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
+abstract NativeArray
+#if php (php.NativeArray) from php.NativeArray to php.NativeArray
+#else (Dynamic) from Dynamic to Dynamic #end {
     @:op([]) public function arrayRead(key:String) : Dynamic {
+        #if php
         return this[key];
+        #else
+        return Reflect.getProperty(this, key);
+        #end
     }
 
     @:op([]) public function arrayReadInt(key:Int) : Dynamic {
@@ -14,12 +19,18 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
         return arrayRead(name);
     }
 
+    #if php
     public inline function iterator() {
         return php.Global.array_values(this).iterator();
     }
+    #end
 
-    public static inline function toHaxeArray(arr:php.NativeArray) : Array<Dynamic> {
+    public static inline function toHaxeArray(arr:NativeArray) : Array<Dynamic> {
+        #if php
         return php.Lib.toHaxeArray(arr);
+        #else
+        return arr;
+        #end
     }
 
     public var length(get, never) : Int;
@@ -27,22 +38,3 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
         return toHaxeArray(this).length;
     }
 }
-#else
-abstract NativeArray(Dynamic) from Dynamic to Dynamic {
-    @:op([]) public function arrayRead(key:String) : Dynamic {
-        return Reflect.getProperty(this, key);
-    }
-
-    @:op([]) public function arrayReadInt(key:Int) : Dynamic {
-        return this[key];
-    }
-
-    @:op(a.b) public inline function fieldRead(name:String) : Dynamic {
-        return arrayRead(name);
-    }
-
-    public function toHaxeArray() : Array<Dynamic> {
-        return this;
-    }
-}
-#end
