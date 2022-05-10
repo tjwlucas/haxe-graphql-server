@@ -68,11 +68,11 @@ class TypeBuilder {
 			**/
 			public static var _gql : graphql.TypeObjectDefinition = {
 					fields: () -> $a{graphql_field_definitions},
-					mutation_fields: () -> $a{graphql_mutation_field_definitions},
-					type_name: $type_name,
-					mutation_name: $mutation_name,
+					mutationFields: () -> $a{graphql_mutation_field_definitions},
+					typeName: $type_name,
+					mutationName: $mutation_name,
 					description: $classDoc,
-					has_mutation: $v{ hasMutationFields }
+					hasMutation: $v{ hasMutationFields }
 			};
 
 			public var gql(get, null) : graphql.TypeObjectDefinition = null;
