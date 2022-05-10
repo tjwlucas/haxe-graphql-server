@@ -36,17 +36,17 @@ extern class GraphQL {
     #if js
     static function execute(parameters: {
         schema: Schema, document: JsDocument, ?rootValue:Dynamic, ?contextValue:Dynamic, ?variableValues: NativeArray, ?operationName: String
-    }) : ExecutionResult;
+        }) : ExecutionResult;
 
     static function validate(schema: Schema, document: JsDocument) : Array<Error>;
     #end
 }
 
 #if js
-    extern class JsDocument {}
+extern class JsDocument {}
 
-    @:jsRequire("graphql")
-    extern class Language {
-        public static function parse(source:String, ?options:Dynamic) : JsDocument;
-    }
+@:jsRequire("graphql")
+extern class Language {
+    public static function parse(source:String, ?options:Dynamic) : JsDocument;
+}
 #end

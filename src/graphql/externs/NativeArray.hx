@@ -29,20 +29,20 @@ abstract NativeArray(php.NativeArray) from php.NativeArray to php.NativeArray {
 }
 #else
 abstract NativeArray(Dynamic) from Dynamic to Dynamic {
-  @:op([]) public function arrayRead(key:String) : Dynamic {    
+    @:op([]) public function arrayRead(key:String) : Dynamic {    
         return Reflect.getProperty(this, key);
-  }
+    }
     
-  @:op([]) public function arrayReadInt(key:Int) : Dynamic {    
-      return this[key];
-  }
+    @:op([]) public function arrayReadInt(key:Int) : Dynamic {    
+        return this[key];
+    }
     
-  @:op(a.b) public inline function fieldRead(name:String) : Dynamic {
-      return arrayRead(name);
-  }
+    @:op(a.b) public inline function fieldRead(name:String) : Dynamic {
+        return arrayRead(name);
+    }
 
-  public function toHaxeArray() : Array<Dynamic> {
-      return this;
-  }
+    public function toHaxeArray() : Array<Dynamic> {
+        return this;
+    }
 }
 #end

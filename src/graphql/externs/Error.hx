@@ -14,13 +14,13 @@ extern class Error #if php extends php.Exception #end {
     #end
 
     #if js
-        var message : String;
-        function toString() : String;
-        public inline function getMessage() : String {
-            // var formatted = GraphQLErrorFormatter.formatError(this);
-            // trace(formatted);
-            return this.message;
-        }
+    var message : String;
+    function toString() : String;
+    public inline function getMessage() : String {
+        // var formatted = GraphQLErrorFormatter.formatError(this);
+        // trace(formatted);
+        return this.message;
+    }
     #end
 }
 

@@ -18,7 +18,7 @@ class SimpleClassTests extends utest.Test {
         gql = new SimpleClass().gql;
     }
 
-	function specTypes() {
+    function specTypes() {
         GraphQLTypes.String == graphql.externs.Type.string();
         GraphQLTypes.Int == graphql.externs.Type.int();
         GraphQLTypes.Float == graphql.externs.Type.float();

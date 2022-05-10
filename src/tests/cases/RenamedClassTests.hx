@@ -40,13 +40,13 @@ class RenamedClassTests extends Test {
     }
 
     function specQuerySchema() {
-	    var base = new RenamedClass();
+        var base = new RenamedClass();
         var server = new GraphQLServer(base);
         var result = server.executeQuery('{__typename}');
         var data : NativeArray = result.data;
         data.__typename == 'RenamedForGraphQL';
 
-	    var base = new NotRenamedClass();
+        var base = new NotRenamedClass();
         var server = new GraphQLServer(base);
         var result = server.executeQuery('{__typename}');
         var data : NativeArray = result.data;

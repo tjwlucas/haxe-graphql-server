@@ -68,13 +68,13 @@ class DeferredTest extends Test {
         @:privateAccess Assert.same(
             [],
             DeferredTestLoader.keys
-            );
-            @:privateAccess Assert.notNull(DeferredTestLoader.values);
-            @:privateAccess Assert.same([
-                42 => "This is the value for id 42, loaded",
-                367 => "This is the value for id 367, loaded",
-                13 => "This is the value for id 13, loaded",
-            ], DeferredTestLoader.values);
+        );
+        @:privateAccess Assert.notNull(DeferredTestLoader.values);
+        @:privateAccess Assert.same([
+            42 => "This is the value for id 42, loaded",
+            367 => "This is the value for id 367, loaded",
+            13 => "This is the value for id 13, loaded",
+        ], DeferredTestLoader.values);
         #end
 
         Assert.notNull(result.errors);

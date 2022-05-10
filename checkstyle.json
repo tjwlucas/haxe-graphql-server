@@ -387,6 +387,14 @@
 				"requireEmptyLineAfterInterface": false,
 				"requireEmptyLineAfterPackage": true
 			}
+		},
+		{
+			"type": "Indentation",
+			"props": {
+				"character": "    ",
+				"conditionalPolicy": "ignore",
+				"wrapPolicy": "exact"
+			}
 		}
     ],
 	"exclude": {

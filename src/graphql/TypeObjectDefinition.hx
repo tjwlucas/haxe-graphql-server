@@ -54,7 +54,7 @@ class TypeObjectDefinition {
         mutationFields: Void->Array<graphql.GraphQLField>,
         description: String,
         hasMutation: Bool
-        ) {
+    ) {
         this.typeName = typeName;
         this.fields = fields;
         this.mutationFields = mutationFields;

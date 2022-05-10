@@ -6,9 +6,9 @@ import haxe.Json;
 import graphql.externs.Schema;
 
 #if php 
-    import sys.io.File;
-    import php.Global;
-    import php.Exception;
+import sys.io.File;
+import php.Global;
+import php.Exception;
 #end
 using graphql.Util;
 import graphql.externs.NativeArray;
@@ -73,32 +73,32 @@ class GraphQLServer {
             Sys.print(Json.stringify(result));
         }
         #elseif (js && nodejs)
-            var app = new  graphql.externs.js.Express();
-            app.use((req, res, next) -> {
-                var reqd = graphql.externs.js.Domain.create();
-                reqd.loaders = [];
-                reqd.requestValues = [];
-                reqd.run(next);
-              });
-            app.use("/", new graphql.externs.js.GraphqlHTTP({
-                schema: this.schema,
-                rootValue: this.root,
-                graphiql: true
-            }));
-            var portString = Sys.args()[0];
-            var port = Std.parseInt(portString);
-            @SuppressWarnings("checkstyle:MagicNumber")
-            port = port != null ? port : 4000;
-            app.listen(port);
-            Sys.println('Running server on port $port');
+        var app = new  graphql.externs.js.Express();
+        app.use((req, res, next) -> {
+            var reqd = graphql.externs.js.Domain.create();
+            reqd.loaders = [];
+            reqd.requestValues = [];
+            reqd.run(next);
+        });
+        app.use("/", new graphql.externs.js.GraphqlHTTP({
+            schema: this.schema,
+            rootValue: this.root,
+            graphiql: true
+        }));
+        var portString = Sys.args()[0];
+        var port = Std.parseInt(portString);
+        @SuppressWarnings("checkstyle:MagicNumber")
+        port = port != null ? port : 4000;
+        app.listen(port);
+        Sys.println('Running server on port $port');
         #else
-            throw "Not implemented for anything except PHP & JS";
+        throw "Not implemented for anything except PHP & JS";
         #end
     }
 
-	static function __init__() {
+    static function __init__() {
         #if php
-            graphql.macro.Util.requireVendor();
+        graphql.macro.Util.requireVendor();
         #end
-	}
+    }
 }

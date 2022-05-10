@@ -28,16 +28,16 @@ class Util {
     /**
 		If `graphql-verbose` flag is set, prints the provided message at build-time
 	**/
-	public static function debug(message:String) : Void {
-		if(Context.defined("graphql-verbose")) {
-			Sys.println('${Date.now()}> [graphql] $message');
-		}
-	}
+    public static function debug(message:String) : Void {
+        if(Context.defined("graphql-verbose")) {
+            Sys.println('${Date.now()}> [graphql] $message');
+        }
+    }
 
     public static inline function addFieldsFromClass(cls : TypeDefinition, fields : Array<Field>) {
         for (field in cls.fields) {
-			fields.push(field);
-		}
+            fields.push(field);
+        }
         return fields;
     }
 

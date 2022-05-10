@@ -16,9 +16,9 @@ class Manual {
         server.run();
     }
 
-	static function __init__() {
+    static function __init__() {
         Util.phpCompat();
-	}
+    }
 }
 
 @:typeName("Query")
@@ -31,14 +31,14 @@ class ManualTest implements GraphQLObject {
 
     public static function calledCount() : Int {
         #if js
-            var requestValues = Process.domain.requestValues;
-            if(!requestValues.exists("CALLED_COUNT")) {
-                requestValues["CALLED_COUNT"] = 1;
-            }
-            return Process.domain.requestValues["CALLED_COUNT"]++;
+        var requestValues = Process.domain.requestValues;
+        if(!requestValues.exists("CALLED_COUNT")) {
+            requestValues["CALLED_COUNT"] = 1;
+        }
+        return Process.domain.requestValues["CALLED_COUNT"]++;
         #end
         #if php
-            return _calledCount++;
+        return _calledCount++;
         #end
     }
 
