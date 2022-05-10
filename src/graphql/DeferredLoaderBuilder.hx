@@ -60,8 +60,8 @@ class DeferredLoaderBuilder {
                     private static var static_loader : graphql.externs.js.DataLoader<$keyType, $returnType>;
 
                     private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType, $returnType>;
-                    public static function get__loader() : Dynamic {
-                        return switch (graphql.externs.js.Process.domain) {
+                    public static function get__loader() : graphql.externs.js.DataLoader<$keyType, $returnType> {
+                        return cast switch (graphql.externs.js.Process.domain) {
                             case null: static_loader;
                             case _: graphql.externs.js.Process.domain.loaders[ $v{cls.name} ];
                         }
@@ -71,7 +71,7 @@ class DeferredLoaderBuilder {
                             static_loader = new_value;
                             return static_loader;
                         } else {
-                            var loaders : Map<String, Dynamic>;
+                            var loaders : Map<String, Any>;
                             loaders = graphql.externs.js.Process.domain.loaders;
                             loaders[ $v{cls.name} ] = new_value;
                             return loaders[ $v{cls.name} ];

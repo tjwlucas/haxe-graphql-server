@@ -8,7 +8,7 @@ typedef GraphQLArgField = {
     /**
         GraphQL type of the input field on the schema
     **/
-    var type: Dynamic;
+    var type: Any;
     /**
         Description for the argument field
     **/
@@ -16,5 +16,5 @@ typedef GraphQLArgField = {
     /**
         (Optional) Default value passed in, if none provided
     **/
-    var ?defaultValue : Null<Dynamic>;
+    var ?defaultValue : Null<Any>;
 }

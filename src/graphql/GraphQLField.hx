@@ -12,7 +12,7 @@ class GraphQLField {
     /**
         GraphQL type of the field on the schema
     **/
-    public var type: Dynamic;
+    public var type: Any;
     /**
         Field description on the schema
     **/

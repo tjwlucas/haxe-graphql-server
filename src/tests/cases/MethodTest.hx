@@ -122,16 +122,16 @@ class MethodTestObject implements GraphQLObject {
         return [for (i in 1...(n + 1)) Math.random()];
     }
 
-    public function addWithPassedInContext(x:Float, y:Float, ctx:Dynamic) : Float {
+    public function addWithPassedInContext(x:Float, y:Float, ctx:Any) : Float {
         return x + y;
     }
 
     @:context(customContext)
-    public function addWithPassedInCustomContext(x:Float, y:Float, customContext:Dynamic) : Float {
+    public function addWithPassedInCustomContext(x:Float, y:Float, customContext:Any) : Float {
         return x + y;
     }
 
-    public function addWithPassedInContextArbitraryOrder(x:Float, ctx:Dynamic, y:Float) : Float {
+    public function addWithPassedInContextArbitraryOrder(x:Float, ctx:Any, y:Float) : Float {
         return x + y;
     }
 }

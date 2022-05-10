@@ -121,7 +121,7 @@ class GraphQLTest extends utest.Test {
         #end
         Assert.notNull(result.data);
         if (result.data != null) {
-            var data:Map<String, Dynamic> = result.data.hashOfAssociativeArray();
+            var data:Map<String, Any> = result.data.hashOfAssociativeArray();
 
             var keys = [for (k in data.keys()) k];
             var expected_keys = ['__typename', '__type', 'string_field', 'renamed', 'nested_int', 'object_field', 'float', 'greet', 'person', 'divide'];

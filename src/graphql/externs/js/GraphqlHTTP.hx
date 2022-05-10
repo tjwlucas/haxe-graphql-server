@@ -4,7 +4,7 @@ package graphql.externs.js;
 extern class GraphqlHTTP {
     @:selfCall public function new(options:{
         schema: Schema,
-        rootValue: Dynamic,
+        rootValue: Any,
         graphiql: Bool
     });
 }

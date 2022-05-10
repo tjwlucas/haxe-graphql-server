@@ -349,7 +349,7 @@
 		{
 			"type": "Dynamic",
 			"props": {
-				"severity": "IGNORE"
+				"severity": "WARNING"
 			}
 		},
 		{

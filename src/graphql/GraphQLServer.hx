@@ -16,11 +16,11 @@ import graphql.externs.NativeArray;
 class GraphQLServer {
     var query : GraphQLObject;
     var mutation : Null<GraphQLObject>;
-    var context : Null<Dynamic>;
-    var root : Dynamic;
+    var context : Null<Any>;
+    var root : Any;
     var schema : Schema;
 
-    public function new(base : GraphQLObject, ?context:Dynamic) {
+    public function new(base : GraphQLObject, ?context:Any) {
         this.query = base;
         this.context = context;
         this.root = base;

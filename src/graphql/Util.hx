@@ -8,11 +8,12 @@ class Util {
 
         @param arr Associative array (PHP), or Object
     **/
-    public static inline function hashOfAssociativeArray(arr:Dynamic) : Map<String, Dynamic> {
+    @SuppressWarnings("checkstyle:Dynamic")
+    public static inline function hashOfAssociativeArray(arr:Dynamic) : Map<String, Any> {
         #if php
         return php.Lib.hashOfAssociativeArray(arr);
         #else
-        var returnMap : Map<String, Dynamic> = [];
+        var returnMap : Map<String, Any> = [];
         for (key in Reflect.fields(arr)) {
             returnMap[key] = Reflect.field(arr, key);
         }
@@ -25,6 +26,7 @@ class Util {
 
         @param obj Object
     **/
+    @SuppressWarnings("checkstyle:Dynamic")
     public static inline function associativeArrayOfObject(obj:Dynamic) {
         #if php
         return php.Lib.associativeArrayOfObject(obj);
@@ -38,11 +40,11 @@ class Util {
 
         @param hash The haxe String Map
     **/
-    public static inline function associativeArrayOfHash(hash:Map<String, Dynamic>) {
+    public static inline function associativeArrayOfHash(hash:Map<String, Any>) {
         #if php
         var result = php.Lib.associativeArrayOfHash(hash);
         #elseif js
-        var result : Dynamic = {};
+        var result : Any = {};
         for (k => v in hash) {
             Reflect.setField(result, k, v);
         }
@@ -57,7 +59,7 @@ class Util {
 
         @param arr Haxe array
     **/
-    public static inline function toNativeArray(arr:Array<Dynamic>) : NativeArray {
+    public static inline function toNativeArray(arr:Array<Any>) : NativeArray {
         #if php
         return php.Lib.toPhpArray(arr);
         #else
@@ -75,7 +77,7 @@ class Util {
     **/
     public static inline function processArgs(arr:Array<NativeArray>) : NativeArray {
         #if js
-        var argsObject : Dynamic = {};
+        var argsObject : Any = {};
         for (arg in arr) {
             Reflect.setField(argsObject, arg.name, arg);
         }
@@ -91,7 +93,7 @@ class Util {
 
         @param a An array, which will be returned
     **/
-    public static inline function toHaxeArray(a:Array<Dynamic>):Array<Dynamic> {
+    public static inline function toHaxeArray(a:Array<Any>):Array<Any> {
         return a;
     }
     #end

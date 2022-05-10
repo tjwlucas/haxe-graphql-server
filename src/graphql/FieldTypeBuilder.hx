@@ -210,7 +210,7 @@ class FieldTypeBuilder {
     }
 
     function buildArgList(arguments : Array<FunctionArg>) {
-        var arg_list : Array<ExprOf<Dynamic>> = [];
+        var arg_list : Array<ExprOf<Any>> = [];
         for (arg in arguments) {
             switch ([arg.type, arg.name]) {
                 case [TPath({name: a, params: p}), name] if (name != getContextVariableName()): {

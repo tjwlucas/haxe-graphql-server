@@ -12,7 +12,7 @@ class Util {
         return null;
     }
 
-    public static function getArgMaps(field : GraphQLField) : Array<Map<String, Dynamic>> {
+    public static function getArgMaps(field : GraphQLField) : Array<Map<String, Any>> {
         #if php
         var result = [for (arg in field.args) graphql.Util.hashOfAssociativeArray(arg)];
         #elseif js

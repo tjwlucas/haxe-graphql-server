@@ -6,7 +6,7 @@ extern class Error #if php extends php.Exception #end {
     static var CATEGORY_GRAPHQL : String;
     static var CATEGORY_INTERNAL : String;
     function getLocations() : Array<SourceLocation>;
-    function getPath() : Array<Dynamic>;
+    function getPath() : Array<Any>;
 
     #if php
     function isClientSafe() : Bool;

@@ -8,8 +8,8 @@ extern class GraphQL {
     public static function executeQuery(
         schema: Schema,
         query: String,
-        rootValue : Dynamic,
-        ?contextValue : Dynamic,
+        rootValue : Any,
+        ?contextValue : Any,
         ?variables: NativeArray,
         ?operationName:String
     ) : ExecutionResult
@@ -35,7 +35,7 @@ extern class GraphQL {
 
     #if js
     static function execute(parameters: {
-        schema: Schema, document: JsDocument, ?rootValue:Dynamic, ?contextValue:Dynamic, ?variableValues: NativeArray, ?operationName: String
+        schema: Schema, document: JsDocument, ?rootValue:Any, ?contextValue:Any, ?variableValues: NativeArray, ?operationName: String
         }) : ExecutionResult;
 
     static function validate(schema: Schema, document: JsDocument) : Array<Error>;
@@ -47,6 +47,6 @@ extern class JsDocument {}
 
 @:jsRequire("graphql")
 extern class Language {
-    public static function parse(source:String, ?options:Dynamic) : JsDocument;
+    public static function parse(source:String, ?options:Any) : JsDocument;
 }
 #end

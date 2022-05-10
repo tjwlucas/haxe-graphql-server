@@ -31,7 +31,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "mutationOnlyField" on type "MutationTestObject"') == true;
     }
@@ -49,7 +49,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyFieldExplicit" on type "MutationTestObjectMutation"') == true;
 
@@ -59,7 +59,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "MutationTestObjectMutation"') == true;
     }
@@ -87,7 +87,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "mutationOnlyField" on type "DynamicMutationReturnTestObject"') == true;
 
@@ -113,7 +113,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "DynamicMutationReturnTestObjectMutation"') == true;
     }
