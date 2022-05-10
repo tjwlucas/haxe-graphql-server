@@ -1,5 +1,6 @@
 package graphql.macro;
 
+import haxe.macro.Expr;
 import haxe.macro.Expr.Metadata;
 import haxe.macro.Expr.Field;
 import haxe.macro.Expr.TypeDefinition;
@@ -13,7 +14,7 @@ class Util {
     /**
         Add autoload, based on compiler configuration using the `-D vendor` flag
     **/
-    public static macro function requireVendor() {
+    public static macro function requireVendor() : Expr {
         var vendor : String = switch [haxe.macro.Context.defined(VENDOR), Context.definedValue(VENDOR)] {
             case [true, "0" | "false"]: return macro {};
             case [true, "1" | "true"]: AUTOLOAD_DEFAULT_PATH;

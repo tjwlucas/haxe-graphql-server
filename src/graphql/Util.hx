@@ -27,7 +27,7 @@ class Util {
         @param obj Object
     **/
     @SuppressWarnings("checkstyle:Dynamic")
-    public static inline function associativeArrayOfObject(obj:Dynamic) {
+    public static inline function associativeArrayOfObject(obj:Dynamic) : NativeArray {
         #if php
         return php.Lib.associativeArrayOfObject(obj);
         #else
@@ -40,7 +40,7 @@ class Util {
 
         @param hash The haxe String Map
     **/
-    public static inline function associativeArrayOfHash(hash:Map<String, Any>) {
+    public static inline function associativeArrayOfHash(hash:Map<String, Any>) : NativeArray {
         #if php
         var result = php.Lib.associativeArrayOfHash(hash);
         #elseif js
@@ -103,7 +103,7 @@ class Util {
         
         (Will safely do nothing outside of PHP targets)
     **/
-    public static inline function phpCompat() {
+    public static inline function phpCompat() : Void {
         #if php
         untyped if (version_compare(PHP_VERSION, "8.1.0", ">=")) error_reporting(error_reporting() & ~E_DEPRECATED);
         #end

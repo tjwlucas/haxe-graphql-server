@@ -355,10 +355,9 @@
 		{
 			"type": "Return",
 			"props": {
-				"enforceReturnType": false,
+				"enforceReturnType": true,
 				"allowEmptyReturn": true,
-				"enforceReturnTypeForAnonymous": false,
-				"severity": "IGNORE"
+				"enforceReturnTypeForAnonymous": false
 			}
 		},
 		{

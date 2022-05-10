@@ -29,7 +29,7 @@ class GraphQLTypes {
 
         @param type Any valid (nullable) GraphQL type
     **/
-    public static function NonNull(type:Any) {
+    public static function NonNull(type:Any) : Any {
         return Type.nonNull(type);
     }
     /**
@@ -37,7 +37,7 @@ class GraphQLTypes {
 
         @param type Any valid GraphQL type
     **/
-    public static function Array(type:Any) {
+    public static function Array(type:Any) : Any {
         return Type.listOf(type);
     }
 }

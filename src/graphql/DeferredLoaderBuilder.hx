@@ -98,7 +98,7 @@ class DeferredLoaderBuilder {
     }
 
     @SuppressWarnings("checkstyle:MultipleStringLiterals")  // "Map" in switch statement must be a literal, variables are interpreted as capture
-    static function getLoaderValueTypes(f:Field) {
+    static function getLoaderValueTypes(f:Field) : {key:ComplexType, ret:ComplexType} {
         return switch (f.kind) {
             case(FFun({ret: TPath({name: "Map", params: [TPType(a), TPType(b)]})})): {
                     key: a,

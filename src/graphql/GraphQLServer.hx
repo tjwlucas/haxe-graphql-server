@@ -1,5 +1,6 @@
 package graphql;
 
+import graphql.externs.ExecutionResult;
 import graphql.externs.SchemaPrinter;
 import graphql.externs.GraphQL;
 import haxe.Json;
@@ -55,7 +56,7 @@ class GraphQLServer {
         @param variables Keyed array (In PHP) or object (In JS) of variables to pass in to the query.
         @param operationName Operation name for the query
     **/
-    @:keep public function executeQuery(queryString:String, ?variables : NativeArray, ?operationName:String) {
+    @:keep public function executeQuery(queryString:String, ?variables : NativeArray, ?operationName:String) : ExecutionResult {
         if (variables == null) {
             variables = [].toNativeArray();
         }
@@ -64,10 +65,10 @@ class GraphQLServer {
     }
 
     /**
-        Take raw input (from `php://input`), run it through the graphql server, and print the output.
-        Expects a JSON in the body in form `{"query": "...", "variables": {}, "operationName": ""}`
+        Take raw input (from the request body), run it through the graphql server, and print the output.
+        Expects a JSON in the body in the form `{"query": "...", "variables": {}, "operationName": ""}`
     **/
-    public function run() {
+    public function run() : Void {
         #if php
         Global.header("Content-Type: application/json; charset=utf-8");
         try {
@@ -117,7 +118,7 @@ class GraphQLServer {
         #end
     }
 
-    static function __init__() {
+    static function __init__() : Void {
         #if php
         graphql.macro.Util.requireVendor();
         #end

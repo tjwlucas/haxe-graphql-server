@@ -69,7 +69,7 @@ class TypeObjectDefinition {
         }
     }
 
-    inline function buildTypeObject(name : String, typeDescription : String, typeFields : Void -> Array<GraphQLField>) {
+    inline function buildTypeObject(name : String, typeDescription : String, typeFields : Void -> Array<GraphQLField>) : ObjectType {
         return new ObjectType({
             name: name,
             description: typeDescription,
