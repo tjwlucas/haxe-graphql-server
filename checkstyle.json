@@ -301,6 +301,45 @@
 		},
 		{
 			"type": "ParameterName"
+		},
+		{
+			"type": "TypeName",
+			"props": {
+				"severity": "ERROR",
+				"format": "^[A-Z]+[a-zA-Z0-9]*$",
+				"tokens": [
+					"CLASS",
+					"ENUM",
+					"TYPEDEF",
+					"ABSTRACT",
+					"INTERFACE"
+				]
+			}
+		},
+		{
+			"type": "FileLength",
+			"props": {
+				"max": 500,
+				"ignoreEmptyLines": true
+			}
+		},
+		{
+			"type": "LineLength"
+		},
+		{
+			"type": "MethodCount",
+			"props": {
+				"maxTotal": 20,
+				"maxPublic": 10,
+				"severity": "IGNORE"
+			}
+		},
+		{
+			"type": "MethodLength",
+			"props": {
+				"max": 100,
+				"ignoreEmptyLines": true
+			}
 		}
     ],
 	"exclude": {
@@ -351,6 +390,9 @@
 		"MemberName": [
 			"Tests?",
 			"Manual$"
+		],
+		"MethodLength": [
+			"Tests?$"
 		]
 	},
 	"version": 1

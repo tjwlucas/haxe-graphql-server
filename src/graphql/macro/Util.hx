@@ -18,6 +18,10 @@ class Util {
         debug('Requiring $vendor');
         return macro php.Global.require_once($v{vendor});
     }
+    
+    public static macro function getTargetMacro() : ExprOf<SupportedTarget> {
+        return macro $v{ getTarget() };
+    }
 
     #if macro
     /**

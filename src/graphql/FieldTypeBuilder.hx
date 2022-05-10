@@ -288,7 +288,7 @@ class FieldTypeBuilder {
 			case [false, "new" | "toString", _, _, _]: false; //Always exclude 'special methods'
 			case [false, _, Query, true, false]: false;
 			case [false, _, Query, _, true]: true;
-			case [false, _, Query, _, _]: field.access.contains(APublic);
+			case [false, _, Query, false, false]: field.access.contains(APublic);
 			case [false, _, Mutation, true, _]: true;
 			case [false, _, Mutation, false, _]: false;
 		}

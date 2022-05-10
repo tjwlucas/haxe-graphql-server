@@ -57,16 +57,11 @@ class DeferredLoaderBuilder {
                 private static var static_loader : graphql.externs.js.DataLoader<$keyType,$returnType>;
 
                 private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType,$returnType>;
-                public static function get__loader() {
-                    var loaders : Map<String, Dynamic>;
-                    if(graphql.externs.js.Process.domain == null) {
-                        loaders = [
-                            $v{cls.name} => static_loader
-                        ];
-                    } else {
-                        loaders = graphql.externs.js.Process.domain.loaders;
+                public static function get__loader() : Dynamic {
+                    return switch (graphql.externs.js.Process.domain) {
+                        case null: static_loader;
+                        case _: graphql.externs.js.Process.domain.loaders[ $v{cls.name} ];
                     }
-                    return loaders[ $v{cls.name} ];
                 }
                 public static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType,$returnType>) {
                     if(graphql.externs.js.Process.domain == null) {
@@ -96,8 +91,7 @@ class DeferredLoaderBuilder {
             }
         }
 
-		temporaryClass.addFieldsFromClass(fields);
-		return fields;
+		return temporaryClass.addFieldsFromClass(fields);
     }
 
     @SuppressWarnings("checkstyle:MultipleStringLiterals")  // "Map" in switch statement must be a literal, variables are interpreted as capture

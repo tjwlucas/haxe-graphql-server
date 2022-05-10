@@ -14,8 +14,8 @@ class TypeBuilder {
 	**/
 	public static macro function build():Array<Field> {
 		var fields = Context.getBuildFields();
-		buildClass(fields);
-		return fields;
+		var resultantFields = buildClass(fields);
+		return resultantFields;
 	}
 
 	#if macro
@@ -24,7 +24,7 @@ class TypeBuilder {
 		var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
 
 		var cls = Context.getLocalClass().get();
-		var toRemove = [];
+		var resultantFields = fields.copy();
 		Util.debug('Building ${cls.name} object');
 		for (f in fields) {
 			var new_field = buildFieldType(f);
@@ -39,27 +39,20 @@ class TypeBuilder {
 			}
 			var fieldBuilder = new FieldTypeBuilder(f);
 			if(fieldBuilder.isMagicDeferred() && fieldBuilder.getFunctionBody() == null) {
-				toRemove.push(f);
+				resultantFields.remove(f);
 			}
-		}
-		for(f in toRemove) {
-			fields.remove(f);
 		}
 		
 		var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
 		var mutation_name : ExprOf<String> = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
 
-		var classDoc : ExprOf<String> = macro null;
-
-		if(cls.classHasMeta(DocMeta)) {
-			if(cls.classGetMeta(DocMeta).params.length > 0) {
-				classDoc = cls.classGetMeta(DocMeta).params[0];
-			}
-		} else {
-			if(cls.doc != null){
-				classDoc = macro $v{ cls.doc.trim() };
-			}
+		var classDoc : ExprOf<String> = switch [cls.classHasMeta(DocMeta), cls.classGetMeta(DocMeta), cls.doc] {
+			case [true, meta, _] if (meta.params.length == 0): macro null;
+			case [true, meta, _]: meta.params[0];
+			case [false, _, null]: macro null;
+			case [false, _, _]: macro $v{ cls.doc.trim() };
 		}
+
 		var hasMutationFields = (graphql_mutation_field_definitions.length > 0);
 
 		var tmp_class = macro class {
@@ -76,12 +69,13 @@ class TypeBuilder {
 			};
 
 			public var gql(get, null) : graphql.TypeObjectDefinition = null;
-			public function get_gql() : graphql.TypeObjectDefinition {
+			function get_gql() : graphql.TypeObjectDefinition {
 				return _gql;
 			};
 		}
 
-		tmp_class.addFieldsFromClass(fields);
+		tmp_class.addFieldsFromClass(resultantFields);
+		return resultantFields;
 	}
 
 	static function classHasMeta(cls : ClassType, name : FieldMetadata) {
@@ -114,49 +108,53 @@ class TypeBuilder {
 		return classGetMetas(cls, name)[0];
 	}
 
+	static function buildValidations(field : FieldTypeBuilder, cls : ClassType) {
+		var classValidationContext : Array<Expr> = [];
+		if (classHasMeta(cls, ClassValidationContext)) {
+			var validations = classGetMetas(cls, ClassValidationContext);
+			for(v in validations) {
+				var expr = v.params[0];
+				classValidationContext.push(expr);
+			}
+		}
+		
+		var validations = field.getValidators();
+		var validationContext = field.getValidationContext();
+		var ctx_var_name = field.getContextVariableName();
+
+		var arg_var_defs = [];
+		for(i => f in field.arg_names) {
+			var type = field.getFunctionArgType(i);
+			var defined = if(f == ctx_var_name) {
+				macro ctx;
+			} else {
+				macro args.$f;
+			}
+			arg_var_defs.push(macro var $f : $type = $defined);
+		}
+		// Add renamed context variable to context, even when not present in function argument list
+		if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != "ctx") {
+			var f = ctx_var_name;
+			arg_var_defs.insert(0, macro var $f = ctx);
+		}
+
+		validations = arg_var_defs.concat(classValidationContext).concat(validationContext).concat(validations);
+		return validations;
+	}
+
 	@SuppressWarnings("checkstyle:ReturnCount") // The return count check picks up returns inside macro expressions and callbacks
 	static function buildFieldType(f:Field, type: GraphQLObjectType = Query):ExprOf<GraphQLField> {
 		var cls = Context.getLocalClass().get();
 		var field = new FieldTypeBuilder(f, type);
 
 		if (field.isVisible()) {
-			var classValidationContext : Array<Expr> = [];
-			if (classHasMeta(cls, ClassValidationContext)) {
-				var validations = classGetMetas(cls, ClassValidationContext);
-				for(v in validations) {
-					var expr = v.params[0];
-					classValidationContext.push(expr);
-				}
-			}
+			field.buildFieldType();
 
-			var type = field.getType();
-			var comment = field.getDoc();
-			var deprecationReason = field.getDeprecationReason();
-			var validations = field.getValidators();
+			var validations = buildValidations(field, cls);
 			var postValidations = field.getValidators(ValidateAfter);
-			var validationContext = field.getValidationContext();
-			var ctx_var_name = field.getContextVariableName();
-
-			var number_of_validations = validations.length;
+			var number_of_validations = field.getValidators().length;
 			var number_of_post_validations = postValidations.length;
 
-			var arg_var_defs = [];
-			for(i => f in field.arg_names) {
-				var type = field.getFunctionArgType(i);
-				var defined = if(f == ctx_var_name) {
-					macro ctx;
-				} else {
-					macro args.$f;
-				}
-				arg_var_defs.push(macro var $f : $type = $defined);
-			}
-			// Add renamed context variable to context, even when not present in function argument list
-			if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != "ctx") {
-				var f = ctx_var_name;
-				arg_var_defs.insert(0, macro var $f = ctx);
-			}
-
-			validations = arg_var_defs.concat(classValidationContext).concat(validationContext).concat(validations);
 			var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
 			var name = f.name;
 
@@ -189,10 +187,8 @@ class TypeBuilder {
 				}
 				var returnType = field.getFunctionReturnType();
 
-				var getResult = macro {};
-				switch (Util.getTarget()) {
-					case Php: {
-						getResult = macro {						
+				var getResult = switch (Util.getTarget()) {
+					case Php: macro {						
 							var id = $idExpr;
 							$loader.add(@:pos(f.pos) id);
 							return new graphql.externs.Deferred(() -> {
@@ -201,16 +197,13 @@ class TypeBuilder {
 								return result;
 							});
 						};
-					}
-					case Javascript: {
-						getResult = macro {			
+					case Javascript: macro {			
 							var id = $idExpr;
 							return $loader.loader.load(id).then((result) -> {
 								$b{postValidations};
 								return result;
 							});
 						}
-					}
 				}
 				functionBody = functionBody.concat([
 					macro return $getResult
@@ -223,32 +216,24 @@ class TypeBuilder {
 				]);
 			}
 
-			var resolve = macro {};
-			if(
-				number_of_validations == 0 
-				&& number_of_post_validations == 0 
-				&& !field.isStatic() 
-				&& !field.is_function
-				&& !Context.defined("gql_explicit_resolvers")
-			) {
-				// Prevents creation of redundant anonymous function that simply returns the property value
-				// (This is already the behaviour of the server when no/null callback is provided)
-				resolve = macro null;
-
-				// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
-				f.meta.push({name:":keep", pos: Context.currentPos()});
-			} else {
-				resolve = macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
+			var resolve = switch [number_of_validations, number_of_post_validations, field.isStatic(), field.is_function, Context.defined("gql_explicit_resolvers")] {
+				case [0, 0, false, false, false]: {
+					// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
+					f.meta.push({name:":keep", pos: Context.currentPos()});
+					// Prevents creation of redundant anonymous function that simply returns the property value
+					// (This is already the behaviour of the server when no/null callback is provided)
+					macro null;
+				}
+				default: macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
 					$b{ functionBody }
 				}
 			}
 
-
 			var field:ExprOf<GraphQLField> = macro {
 				name: $v{f.name},
-				type: $type,
-				description: $comment,
-				deprecationReason: $deprecationReason,
+				type: ${ field.getType() },
+				description: ${ field.getDoc() },
+				deprecationReason: ${ field.getDeprecationReason() },
 				args: graphql.Util.processArgs( ${ field.args } ),
 				resolve: $resolve
 			}

@@ -5,7 +5,14 @@ package graphql.externs;
 #end
 extern class GraphQL {
     #if js inline #end
-    public static function executeQuery(schema: Schema, query: String, rootValue : Dynamic, ?contextValue : Dynamic, ?variables: NativeArray, ?operationName:String) : ExecutionResult
+    public static function executeQuery(
+        schema: Schema,
+        query: String,
+        rootValue : Dynamic,
+        ?contextValue : Dynamic,
+        ?variables: NativeArray,
+        ?operationName:String
+    ) : ExecutionResult
     #if js {
         var ast = Language.parse(query);
         var invalidErrors = validate(schema, ast);
