@@ -340,6 +340,53 @@
 				"max": 100,
 				"ignoreEmptyLines": true
 			}
+		},
+		{
+			"type": "ParameterNumber"
+		},
+		{
+			"type": "Anonymous"
+		},
+		{
+			"type": "Dynamic",
+			"props": {
+				"severity": "IGNORE"
+			}
+		},
+		{
+			"type": "Return",
+			"props": {
+				"enforceReturnType": false,
+				"allowEmptyReturn": true,
+				"enforceReturnTypeForAnonymous": false,
+				"severity": "IGNORE"
+			}
+		},
+		{
+			"type": "Type",
+			"props": {
+				"ignoreEnumAbstractValues": true,
+				"severity": "IGNORE"
+			}
+		},
+		{
+			"type": "ArrayAccess",
+			"props": {
+				"spaceBefore": false,
+				"spaceInside": false
+			}
+		},
+		{
+			"type": "EmptyLines",
+			"props": {
+				"allowEmptyLineAfterMultiLineComment": false,
+				"allowEmptyLineAfterSingleLineComment": false,
+				"max": 1,
+				"requireEmptyLineAfterAbstract": false,
+				"requireEmptyLineAfterClass": false,
+				"requireEmptyLineAfterInterface": false,
+				"requireEmptyLineAfterPackage": true
+			}
 		}
     ],
 	"exclude": {

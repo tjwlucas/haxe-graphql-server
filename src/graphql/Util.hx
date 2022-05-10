@@ -1,4 +1,5 @@
 package graphql;
+
 import graphql.externs.NativeArray;
 
 class Util {

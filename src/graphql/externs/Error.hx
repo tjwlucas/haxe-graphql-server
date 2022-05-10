@@ -1,6 +1,5 @@
 package graphql.externs;
 
-
 #if php @:native("GraphQL\\Error\\Error") #end
 #if js @:jsRequire("graphql", "GraphQLError") #end
 extern class Error #if php extends php.Exception #end {

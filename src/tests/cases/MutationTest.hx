@@ -5,7 +5,6 @@ import graphql.GraphQLObject;
 import utest.Assert;
 import graphql.externs.NativeArray;
 
-
 using graphql.Util;
 using StringTools;
 
@@ -78,7 +77,6 @@ class MutationTest extends utest.Test {
         dynamicMutationReturnTest.queryOnlyField == "Query Only";
         dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObject";
 
-
         var response = server.executeQuery('{
             dynamicMutationReturnTest {
                 mutationOnlyField
@@ -104,7 +102,6 @@ class MutationTest extends utest.Test {
         var dynamicMutationReturnTest : NativeArray = data.dynamicMutationReturnTest;
         dynamicMutationReturnTest.mutationOnlyField == "Mutation Only";
         dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObjectMutation";
-
 
         var response = server.executeQuery('mutation {
             dynamicMutationReturnTest {
@@ -132,7 +129,6 @@ class MutationTest extends utest.Test {
         var dynamicRenamedMutationReturnTest : NativeArray = data.dynamicRenamedMutationReturnTest;
         dynamicRenamedMutationReturnTest.__typename == "CustomMutationReturn";
 
-
         // Query
         var response = server.executeQuery('{
             dynamicRenamedMutationReturnTest {
@@ -159,7 +155,6 @@ class MutationTest extends utest.Test {
         }
     }
 }
-
 
 class MutationTestObject implements GraphQLObject {
     public function new() {}

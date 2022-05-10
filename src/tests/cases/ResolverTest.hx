@@ -271,7 +271,6 @@ class ResolverTest extends utest.Test {
     }
 }
 
-
 @:validationContext((ctx : SomeContextClass))
 class ResolverTestObject implements GraphQLObject {
     public function new() {}

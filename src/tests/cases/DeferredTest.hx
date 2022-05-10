@@ -189,7 +189,6 @@ class DeferredTestLoader extends DeferredLoader {
     }
 }
 
-
 /**
     Trivial example with different types
 **/

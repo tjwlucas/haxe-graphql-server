@@ -91,7 +91,6 @@ class TypeBuilder {
 		return found;
 	}
 
-
 	/**
 		Retrieves list of metadata with the given name (with or without preceding `:`)
 	**/

@@ -1,4 +1,5 @@
 package graphql.macro;
+
 import haxe.macro.Expr.Field;
 import haxe.macro.Expr.TypeDefinition;
 import haxe.macro.Context;

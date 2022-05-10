@@ -1,4 +1,5 @@
 package graphql;
+
 #if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -234,7 +235,6 @@ class FieldTypeBuilder {
 			default: throw new Error(NOT_A_FUNCTION, field.pos);
 		}
 	}
-    
 
 	public function getFunctionArgType(i:Int = 0) {
 		switch(field.kind) {

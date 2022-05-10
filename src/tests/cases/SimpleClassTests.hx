@@ -201,7 +201,6 @@ class SimpleClass implements GraphQLObject {
         return "This is a special case, and should NOT appear in the schema";
     }
 
-
     /**
         This field is a deprecated `String`
     **/
@@ -212,12 +211,9 @@ class SimpleClass implements GraphQLObject {
     public var int_field:Int;
     public var float_field:Float;
 
-
     public var int_array:Array<Int>;
 
-
     public var nested_int_array:Array<Array<Array<Int>>>;
-
 
     public var nullable_string: Null<String>;
     @:optional public var optional_string: String;

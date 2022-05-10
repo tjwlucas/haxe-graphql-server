@@ -1,4 +1,5 @@
 package tests;
+
 import graphql.GraphQLField;
 
 class Util {

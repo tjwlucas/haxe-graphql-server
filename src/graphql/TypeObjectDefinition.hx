@@ -37,7 +37,6 @@ class TypeObjectDefinition {
 
     var hasMutation : Bool;
 
-
     /**
         GraphQL mutation object type definition, as passed to the `graphql-php` library
     **/

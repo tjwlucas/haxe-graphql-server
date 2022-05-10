@@ -8,7 +8,6 @@ import utest.Assert;
 using graphql.Util;
 import graphql.GraphQLObject;
 
-
 /**
 	This is the Query description
 **/
@@ -28,9 +27,7 @@ class GraphQLInstanceTest implements GraphQLObject {
 
     public var nested_int:Array<Array<Int>> = [[1], [5, 6]];
 	public var float: Float = 7.2;
-	
-
-    public function greet(name:String = 'Bob') : String {
+	public function greet(name:String = 'Bob') : String {
         return 'Hello, $name';
 	}
 	

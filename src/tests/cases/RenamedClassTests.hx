@@ -7,7 +7,6 @@ import utest.Test;
 
 import graphql.GraphQLObject;
 
-
 @:typeName('RenamedForGraphQL')
 class RenamedClass implements GraphQLObject {
     public function new(){}
@@ -46,7 +45,6 @@ class RenamedClassTests extends Test {
         var result = server.executeQuery('{__typename}');
         var data : NativeArray = result.data;
         data.__typename == 'RenamedForGraphQL';
-
 
 	    var base = new NotRenamedClass();
         var server = new GraphQLServer(base);
