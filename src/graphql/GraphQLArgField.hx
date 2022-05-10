@@ -1,5 +1,8 @@
 package graphql;
 
+/**
+    Object representing a property argument field on the generated GraphQL schema
+**/
 typedef GraphQLArgField = {
     /**
         Name of the argument field on the GraphQL Schema

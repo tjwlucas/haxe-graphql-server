@@ -6,6 +6,9 @@ import haxe.macro.Expr.Field;
 import haxe.macro.Expr.TypeDefinition;
 import haxe.macro.Context;
 
+/**
+    Macro utility class containing both generic macro functions and utility functions for use *within* the macros
+**/
 class Util {
     static inline final AUTOLOAD_DEFAULT_PATH : String = "vendor/autoload.php";
 

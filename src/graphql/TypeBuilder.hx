@@ -8,6 +8,9 @@ using StringTools;
 using graphql.TypeBuilder;
 using haxe.macro.TypeTools;
 
+/**
+    Main macro class which autobuilds the `GraphQLObject`s 
+**/
 class TypeBuilder {
     /**
         Automatically build the GraphQL type definition based on the class
@@ -209,7 +212,7 @@ class TypeBuilder {
                     // (This is already the behaviour of the server when no/null callback is provided)
                         macro null;
                     }
-                default: macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
+                default: macro (obj : $objectType, args : graphql.externs.NativeArray, ctx) -> {
                         $b{ functionBody }
                     }
             }

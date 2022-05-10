@@ -6,6 +6,11 @@ import haxe.macro.Expr.Field;
 import haxe.macro.Context;
 using graphql.macro.Util;
 
+/**
+    Class of macros to autoBuild classes extending the `graphql.DeferredLoader`
+
+    @see graphql.DeferredLoader
+**/
 class DeferredLoaderBuilder {
     /**
         Macro to build 'magic' deferred loaders

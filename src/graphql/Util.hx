@@ -2,6 +2,9 @@ package graphql;
 
 import graphql.externs.NativeArray;
 
+/**
+    General utility class containing a set of generic static functions
+**/
 class Util {
     /**
         Transforms either a (PHP) associative array or a (JS) object into a native haxe String Map.

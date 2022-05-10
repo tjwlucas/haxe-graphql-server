@@ -14,6 +14,9 @@ import php.Exception;
 using graphql.Util;
 import graphql.externs.NativeArray;
 
+/**
+    Base class to build a GraphQL server to make use of the auto-generated Type objects.
+**/
 class GraphQLServer {
     var query : GraphQLObject;
     var mutation : Null<GraphQLObject>;

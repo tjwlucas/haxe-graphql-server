@@ -167,10 +167,7 @@
 			}
 		},
 		{
-			"type": "TypeDocComment",
-			"props": {
-				"severity": "IGNORE"
-			}
+			"type": "TypeDocComment"
 		},
 		{
 			"type": "EmptyPackage",
@@ -479,8 +476,8 @@
 			"Manual$"
 		],
 		"TypeDocComment": [
-			"Tests?$",
-			"Manual$"
+			"/tests/",
+			"/externs/"
 		],
 		"CodeSimilarity": [
 			"Tests?$",

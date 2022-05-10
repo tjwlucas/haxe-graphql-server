@@ -8,6 +8,9 @@ using StringTools;
 using haxe.macro.ExprTools;
 using graphql.macro.Util;
 
+/**
+    Class of macros to build the individual fields on auto-built classes implementing `GraphQLObjec`
+**/
 class FieldTypeBuilder {
 
     static inline final CTX_DEFAULT_VARIABLE_NAME = "ctx";

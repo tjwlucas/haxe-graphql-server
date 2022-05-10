@@ -3,6 +3,9 @@ package graphql;
 using graphql.Util;
 import graphql.externs.NativeArray;
 
+/**
+    Object representing a field on a GraphQL Type object
+**/
 @:structInit
 class GraphQLField {
     /**

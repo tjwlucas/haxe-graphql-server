@@ -2,6 +2,9 @@ package graphql;
 
 import graphql.externs.Type;
 
+/**
+    This class contains a set of constants representing primitive scalar types
+**/
 @SuppressWarnings("checkstyle:ConstantName", "checkstyle:MethodName") // These constants come from type names, and must match
 class GraphQLTypes {
     /**
