@@ -5,7 +5,7 @@ import graphql.externs.GraphQL;
 import haxe.Json;
 import graphql.externs.Schema;
 
-#if php 
+#if php
 import sys.io.File;
 import php.Global;
 import php.Exception;
@@ -35,10 +35,10 @@ class GraphQLServer {
     }
 
     @:keep public function executeQuery(queryString:String, ?variables : NativeArray, ?operationName:String) {
-        if(variables == null) {
+        if (variables == null) {
             variables = [].toNativeArray();
         }
-        
+
         return GraphQL.executeQuery(schema, queryString, root, this.context, variables, operationName);
     }
 

@@ -30,11 +30,11 @@ class GraphQLInstanceTest implements GraphQLObject {
     public function greet(name:String = 'Bob') : String {
         return 'Hello, $name';
     }
-	
+
     public function person(name:String) : Person {
         return new Person(name);
     }
-	
+
     public function divide(x:Int, y:Int) : Float {
         return x / y;
     }
@@ -73,7 +73,7 @@ class GraphQLTest extends utest.Test {
     function setup() {
         gql = obj.gql;
     }
-	
+
     function specGraphQLInstanceClass() {
         Assert.notNull(gql);
         Assert.notNull(gql.type);
@@ -84,7 +84,7 @@ class GraphQLTest extends utest.Test {
             query: gql.type
         }.associativeArrayOfObject());
         var result = GraphQL.executeQuery(schema, "query(
-			$greet:String!, 
+			$greet:String!,
 			$person:String!,
 			$x:Int!,
 			$y:Int!,
@@ -149,7 +149,7 @@ class GraphQLTest extends utest.Test {
                 Assert.same(keys, expected_keys, null, 'Key list mismatch. Got: $keys, expected: $expected_keys');
                 subobject['string_field'] == 'This is a value on the sub-object';
             }
-			
+
             Assert.notNull(data['person'], 'person is null');
             if (data['person'] != null) {
                 var subobject = Util.hashOfAssociativeArray(data['person']);
@@ -160,7 +160,7 @@ class GraphQLTest extends utest.Test {
                 subobject['__typename'] == 'Person';
                 subobject['name'] == 'This person has the name: Herbert';
             }
-			
+
             Assert.notNull(data['__type'], '__type is null');
             if (data['__type'] != null) {
                 var subobject = Util.hashOfAssociativeArray(data['__type']);

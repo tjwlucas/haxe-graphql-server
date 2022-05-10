@@ -32,7 +32,7 @@ class ManualTest implements GraphQLObject {
     public static function calledCount() : Int {
         #if js
         var requestValues = Process.domain.requestValues;
-        if(!requestValues.exists("CALLED_COUNT")) {
+        if (!requestValues.exists("CALLED_COUNT")) {
             requestValues["CALLED_COUNT"] = 1;
         }
         return Process.domain.requestValues["CALLED_COUNT"]++;
@@ -66,7 +66,7 @@ class ManualTest implements GraphQLObject {
     @:validate(min <= max, 'min ($min) cannot be greater than max ($max)')
     @:validateResult( !result.contains(0), 'The result contains a 0 (${Std.string(result)})', "invalid_response")
     public function randomInts(n : Int = 10, min : Int = 1, max : Int  = 10) : Null<Array<Int>> {
-        return [for(i in 0...n) (Math.random() * (max - min + 1)).floor() + min];
+        return [for (i in 0...n) (Math.random() * (max - min + 1)).floor() + min];
     }
 
     public function person(name:String = "Me") : ManualPerson {
@@ -94,7 +94,7 @@ class NestedDeferredTestObject implements GraphQLObject {
     public var n : Int;
 
     public function new(n:Int) {
-        this.n = n ;
+        this.n = n;
     }
 
     @:deferred(NestedDeferredLoader, obj.n + 1)
@@ -109,7 +109,7 @@ class NestedDeferredLoader extends DeferredLoader {
     static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
         runBatches.push(keys);
-        for(key in keys) {
+        for (key in keys) {
             results[key] = new NestedDeferredTestObject(key);
         }
         return results;

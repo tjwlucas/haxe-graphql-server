@@ -149,7 +149,7 @@ class MutationTest extends utest.Test {
         }');
         var data : NativeArray = response.data;
         Assert.notNull(data.__type);
-        if(data.__type != null) {
+        if (data.__type != null) {
             var __type : NativeArray = data.__type;
             __type.description == 'This is a custom Mutation return object';
         }
@@ -167,7 +167,7 @@ class MutationTestObject implements GraphQLObject {
 
     @:query @:mutation public var bothField : String = "Will appear on both";
     @:query @:mutation public var dynamicMutationReturnTest : DynamicMutationReturnTestObject = new DynamicMutationReturnTestObject();
-    
+
     @:query @:mutation public var dynamicRenamedMutationReturnTest : RenamedDynamicMutationReturnTestObject = new RenamedDynamicMutationReturnTestObject();
 
 }

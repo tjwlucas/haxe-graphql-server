@@ -37,7 +37,7 @@ class ResolverTest extends utest.Test {
             x: 5,
             y: 12
         }.associativeArrayOfObject());
-        
+
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
         var errors = response.errors;
@@ -57,7 +57,7 @@ class ResolverTest extends utest.Test {
             x: 5,
             y: 12
         }.associativeArrayOfObject());
-        
+
         Assert.notNull(response.data);
         response.data['protectedNullableAdd'] == null;
 
@@ -79,7 +79,7 @@ class ResolverTest extends utest.Test {
             x: 5,
             y: 12
         }.associativeArrayOfObject());
-        
+
         Assert.notNull(response.data);
         response.data['protectedNullableAddObjectValue'] == null;
 
@@ -96,9 +96,9 @@ class ResolverTest extends utest.Test {
     function specListMethod() {
         // Using just the default values
         var response = server.executeQuery("{list}");
-        
+
         Assert.notNull(response.data);
-        var expected = [0,1,2,3,4,5,6,7,8,9,10].toNativeArray();
+        var expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].toNativeArray();
         #if php
         Assert.equals(expected, response.data['list']);
         #else
@@ -107,9 +107,9 @@ class ResolverTest extends utest.Test {
 
         // Using valid provided values
         var response = server.executeQuery("{list(min:3, max:8)}");
-        
+
         Assert.notNull(response.data);
-        var expected = [3,4,5,6,7,8].toNativeArray();
+        var expected = [3, 4, 5, 6, 7, 8].toNativeArray();
         #if php
         Assert.equals(expected, response.data['list']);
         #else
@@ -118,7 +118,7 @@ class ResolverTest extends utest.Test {
 
         // Using invalid provided values
         var response = server.executeQuery("{list(min:13, max:8)}");
-        
+
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
@@ -139,7 +139,7 @@ class ResolverTest extends utest.Test {
         }", {
             input: 'this is valid'
         }.associativeArrayOfObject());
-        
+
         Assert.notNull(response.data);
         response.data['toUpperCase'] == "THIS IS VALID";
 
@@ -149,7 +149,7 @@ class ResolverTest extends utest.Test {
         }", {
             input: 'forbidden'
         }.associativeArrayOfObject());
-        
+
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
@@ -175,9 +175,9 @@ class ResolverTest extends utest.Test {
             'staticVar' => true
         ];
 
-        for(name => hasResolver in expect_resolvers) {
+        for (name => hasResolver in expect_resolvers) {
             var field = Util.getFieldDefinitionByName(fields, name);
-            switch(hasResolver) {
+            switch (hasResolver) {
                 case true: field.resolve != null;
                 case false: field.resolve == null;
             }
@@ -186,8 +186,8 @@ class ResolverTest extends utest.Test {
 
     function specVariableResolver() {
         // Get plain unprotected variable
-        var response = server.executeQuery("{unprotectedVariable}"); 
-               
+        var response = server.executeQuery("{unprotectedVariable}");
+
         Assert.notNull(response.data);
         Assert.equals(response.data['unprotectedVariable'], 42);
 
@@ -195,11 +195,11 @@ class ResolverTest extends utest.Test {
         var response = server.executeQuery("{unvalidatedVariable}");
 
         Assert.notNull(response.data);
-        Assert.equals(response.data['unvalidatedVariable'], 42);    
+        Assert.equals(response.data['unvalidatedVariable'], 42);
 
         // Get a blocked variable
         var response = server.executeQuery("{protectedVariable}");
-        
+
         Assert.isNull(response.data);
 
         Assert.notNull(response.errors);
@@ -216,25 +216,25 @@ class ResolverTest extends utest.Test {
     function specContext() {
         var response = server.executeQuery("{withContext}");
         Assert.notNull(response.data);
-        if(response.data != null) {
-            response.data['withContext'] == 'This is a value on the context';   
+        if (response.data != null) {
+            response.data['withContext'] == 'This is a value on the context';
         }
 
         var response = server.executeQuery("{withNamedContext}");
         Assert.notNull(response.data);
-        if(response.data != null) {
+        if (response.data != null) {
             response.data['withNamedContext'] == 'This is a value on the context';
         }
 
         var response = server.executeQuery("{withContextAndValidation}");
         Assert.notNull(response.data);
-        if(response.data != null) {
+        if (response.data != null) {
             response.data['withContextAndValidation'] == 'This is a value on the context';
-        }        
+        }
 
         var response = server.executeQuery("{withCustomContextAndValidation}");
         Assert.notNull(response.data);
-        if(response.data != null) {
+        if (response.data != null) {
             response.data['withCustomContextAndValidation'] == 'This is a value on the context';
         }
     }
@@ -242,15 +242,15 @@ class ResolverTest extends utest.Test {
     function specStatic() {
         var response = server.executeQuery("{staticVar}");
         Assert.notNull(response.data);
-        if(response.data != null) {
-            response.data['staticVar'] == 'This is a static variable';   
+        if (response.data != null) {
+            response.data['staticVar'] == 'This is a static variable';
         }
         var response = server.executeQuery("{staticVarWithValidation}");
         Assert.notNull(response.data);
-        if(response.data != null) {
-            response.data['staticVarWithValidation'] == 'This is a static variable (with arbitrary validation)';   
+        if (response.data != null) {
+            response.data['staticVarWithValidation'] == 'This is a static variable (with arbitrary validation)';
         }
-        
+
         var response = server.executeQuery("{staticVarWithFailingValidation}");
         Assert.isNull(response.data);
         Assert.notNull(response.errors);
@@ -265,8 +265,8 @@ class ResolverTest extends utest.Test {
 
         var response = server.executeQuery("{staticFunction}");
         Assert.notNull(response.data);
-        if(response.data != null) {
-            response.data['staticFunction'] == 'This is a static function';   
+        if (response.data != null) {
+            response.data['staticFunction'] == 'This is a static function';
         }
     }
 }
@@ -302,7 +302,7 @@ class ResolverTestObject implements GraphQLObject {
 
     @:validate(min < max, "Minimum must be smaller than maximum!")
     public function list(min: Int = 0, max:Int = 10) : Array<Int> {
-        return [for(i in min...(max+1)) i];
+        return [for (i in min...(max + 1)) i];
     }
 
     @:validateResult(result != "FORBIDDEN")
@@ -343,7 +343,7 @@ class ResolverTestObject implements GraphQLObject {
 
     @:validate(true)
     public static final staticVarWithValidation : String = 'This is a static variable (with arbitrary validation)';
-    
+
     @:validateResult(result != 'bad')
     public static final staticVarWithFailingValidation : String = 'bad';
 

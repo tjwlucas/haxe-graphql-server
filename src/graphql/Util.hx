@@ -6,9 +6,9 @@ class Util {
     public static inline function hashOfAssociativeArray(arr:Dynamic) : Map<String, Dynamic> {
 		#if php
         return php.Lib.hashOfAssociativeArray(arr);
-		#else			
+		#else
         var returnMap : Map<String, Dynamic> = [];
-        for(key in Reflect.fields(arr)) {
+        for (key in Reflect.fields(arr)) {
             returnMap[key] = Reflect.field(arr, key);
         }
         return returnMap;
@@ -28,7 +28,7 @@ class Util {
         var result = php.Lib.associativeArrayOfHash(hash);
 		#elseif js
         var result : Dynamic = {};
-        for(k => v in hash) {
+        for (k => v in hash) {
             Reflect.setField(result, k, v);
         }
         #else
@@ -48,7 +48,7 @@ class Util {
     public static inline function processArgs(arr:Array<NativeArray>) : NativeArray {
 		#if js
         var argsObject : Dynamic = {};
-        for(arg in arr) {
+        for (arg in arr) {
             Reflect.setField(argsObject, arg.name, arg);
         }
         return argsObject;

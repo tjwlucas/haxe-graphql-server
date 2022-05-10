@@ -41,7 +41,7 @@ class SimpleClassTests extends utest.Test {
         // Arbitrary Nesting
         Std.string(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.String)))) == '[[[String]]]';
     }
-    
+
     function specGraphQLField() {
         Assert.isOfType(gql, TypeObjectDefinition);
         @:privateAccess gql.typeName == 'SimpleClass';
@@ -73,7 +73,7 @@ class SimpleClassTests extends utest.Test {
     function specDeprecatedStringField() {
         var field = Util.getFieldDefinitionByName(fields, 'deprecated_string_field');
         Assert.notNull(field);
-        if(field != null) {
+        if (field != null) {
             field.deprecationReason == 'With a deprecation reason';
         }
     }
@@ -81,7 +81,7 @@ class SimpleClassTests extends utest.Test {
     function specIntField() {
         var field = Util.getFieldDefinitionByName(fields, 'int_field');
         Assert.notNull(field, 'int_field is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'Int!';
         }
     }
@@ -89,7 +89,7 @@ class SimpleClassTests extends utest.Test {
     function specIntArrayField() {
         var field = Util.getFieldDefinitionByName(fields, 'int_array');
         Assert.notNull(field);
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int!]!';
         }
     }
@@ -97,7 +97,7 @@ class SimpleClassTests extends utest.Test {
     function specNestedIntArrayField() {
         var field = Util.getFieldDefinitionByName(fields, 'nested_int_array');
         Assert.notNull(field);
-        if(field != null) {
+        if (field != null) {
             var field = Util.getFieldDefinitionByName(fields, 'nested_int_array');
             Std.string(field.type) == '[[[Int!]!]!]!';
         }
@@ -106,7 +106,7 @@ class SimpleClassTests extends utest.Test {
     function specFloatField() {
         var field = Util.getFieldDefinitionByName(fields, 'float_field');
         Assert.notNull(field, 'float_field is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'Float!';
         }
     }
@@ -114,7 +114,7 @@ class SimpleClassTests extends utest.Test {
     function specNullableString() {
         var field = Util.getFieldDefinitionByName(fields, 'nullable_string');
         Assert.notNull(field, 'nullable_string is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'String';
         }
     }
@@ -122,7 +122,7 @@ class SimpleClassTests extends utest.Test {
     function specNullableArrayOfInts() {
         var field = Util.getFieldDefinitionByName(fields, 'nullable_array_of_ints');
         Assert.notNull(field, 'nullable_array_of_ints is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int!]';
         }
     }
@@ -130,7 +130,7 @@ class SimpleClassTests extends utest.Test {
     function specNullableArrayOfNullableInts() {
         var field = Util.getFieldDefinitionByName(fields, 'nullable_array_of_nullable_ints');
         Assert.notNull(field, 'nullable_array_of_nullable_ints is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int]';
         }
     }
@@ -138,7 +138,7 @@ class SimpleClassTests extends utest.Test {
     function specBoolField() {
         var field = Util.getFieldDefinitionByName(fields, 'bool_field');
         Assert.notNull(field, 'bool_field is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'Boolean!';
         }
     }
@@ -146,7 +146,7 @@ class SimpleClassTests extends utest.Test {
     function specOptionalString() {
         var field = Util.getFieldDefinitionByName(fields, 'optional_string');
         Assert.notNull(field, 'optional_string is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'String';
         }
     }
@@ -154,7 +154,7 @@ class SimpleClassTests extends utest.Test {
     function specOptionalArrayOfInts() {
         var field = Util.getFieldDefinitionByName(fields, 'optional_array_of_ints');
         Assert.notNull(field, 'optional_array_of_ints is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int!]';
         }
     }
@@ -174,7 +174,7 @@ class SimpleClassTests extends utest.Test {
     function specIdField() {
         var field = Util.getFieldDefinitionByName(fields, 'id');
         Assert.notNull(field, 'id is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'ID!';
         }
     }

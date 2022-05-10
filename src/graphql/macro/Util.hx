@@ -19,7 +19,7 @@ class Util {
         debug('Requiring $vendor');
         return macro php.Global.require_once($v{vendor});
     }
-    
+
     public static macro function getTargetMacro() : ExprOf<SupportedTarget> {
         return macro $v{ getTarget() };
     }
@@ -29,7 +29,7 @@ class Util {
 		If `graphql-verbose` flag is set, prints the provided message at build-time
 	**/
     public static function debug(message:String) : Void {
-        if(Context.defined("graphql-verbose")) {
+        if (Context.defined("graphql-verbose")) {
             Sys.println('${Date.now()}> [graphql] $message');
         }
     }

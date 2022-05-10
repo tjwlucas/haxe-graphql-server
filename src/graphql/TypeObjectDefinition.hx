@@ -12,7 +12,7 @@ using graphql.Util;
 class TypeObjectDefinition {
     /**
         Name given to the type in GraphQL queries
-    **/ 
+    **/
     var typeName: String;
 
     /**
@@ -23,17 +23,17 @@ class TypeObjectDefinition {
     /**
         Array of fields, constructed from the class to be added to the GraphQL query type object
     **/
-    var fields: Void->Array<graphql.GraphQLField>;
+    var fields: Void -> Array<graphql.GraphQLField>;
 
     /**
         GraphQL query object type definition, as passed to the `graphql-php` library
     **/
     public var type : ObjectType;
-    
+
     /**
         Array of fields, constructed from the class to be added to the GraphQL mutation type object
     **/
-    var mutationFields: Void->Null<Array<graphql.GraphQLField>>;
+    var mutationFields: Void -> Null<Array<graphql.GraphQLField>>;
 
     var hasMutation : Bool;
 
@@ -48,10 +48,10 @@ class TypeObjectDefinition {
     public var description: Null<String>;
 
     public function new(
-        typeName:String, 
-        mutationName:String, 
-        fields:Void->Array<graphql.GraphQLField>, 
-        mutationFields: Void->Array<graphql.GraphQLField>,
+        typeName:String,
+        mutationName:String,
+        fields:Void -> Array<graphql.GraphQLField>,
+        mutationFields: Void -> Array<graphql.GraphQLField>,
         description: String,
         hasMutation: Bool
     ) {
@@ -64,19 +64,19 @@ class TypeObjectDefinition {
 
         type = buildTypeObject(this.typeName, this.description, this.fields);
 
-        if(this.hasMutation) {           
+        if (this.hasMutation) {
             mutationType  = buildTypeObject(this.mutationName, this.description, this.mutationFields);
         }
     }
 
-    inline function buildTypeObject(name : String, typeDescription : String, typeFields : Void->Array<GraphQLField>) {
+    inline function buildTypeObject(name : String, typeDescription : String, typeFields : Void -> Array<GraphQLField>) {
         return new ObjectType({
             name: name,
             description: typeDescription,
             fields: () -> {
                 var namedFields : Map<String, NativeArray> = [];
 
-                for(f in typeFields()) [
+                for (f in typeFields()) [
                     namedFields[f.name] = f.associativeArrayOfObject()
                 ];
                 return Util.associativeArrayOfHash(namedFields);

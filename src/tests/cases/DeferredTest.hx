@@ -126,8 +126,8 @@ class DeferredTest extends Test {
           }
           ");
         Assert.same([
-            [3,0],
-            [4,1],
+            [3, 0],
+            [4, 1],
             [2]
         ], NestedDeferredLoader.runBatches);
         async.done();
@@ -136,10 +136,10 @@ class DeferredTest extends Test {
 
 class DeferredTestObject implements GraphQLObject {
     public function new() {}
-    
+
     @:deferred(tests.cases.DeferredTestLoader)
     public function getValue(id:Int) : String;
-    
+
     @:deferred(tests.cases.DeferredStaticTestLoader)
     @:validateResult(result != 98)
     public function getStaticValue(id:String) : Null<Int>;
@@ -177,12 +177,12 @@ class DeferredTestSubObject implements GraphQLObject {
 class DeferredTestLoader extends DeferredLoader {
     static function load(keys:Array<Int>) : Map<Int, String> {
         #if php
-        if(runCount > 0) {
+        if (runCount > 0) {
             throw "Load function should not be called more than once";
         }
         #end
         var results : Map<Int, String> = [];
-        for(key in keys) {
+        for (key in keys) {
             results[key] = 'This is the value for id $key, loaded';
         }
         return results;
@@ -205,7 +205,7 @@ class NestedDeferredTestObject implements GraphQLObject {
     public var n : Int;
 
     public function new(n:Int) {
-        this.n = n ;
+        this.n = n;
     }
 
     @:deferred(NestedDeferredLoader, obj.n + 1)
@@ -220,7 +220,7 @@ class NestedDeferredLoader extends DeferredLoader {
     static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
         runBatches.push(keys);
-        for(key in keys) {
+        for (key in keys) {
             results[key] = new NestedDeferredTestObject(key);
         }
         return results;

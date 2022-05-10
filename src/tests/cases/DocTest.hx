@@ -24,7 +24,7 @@ class DocTest extends utest.Test {
             'functionMetaRemovedDoc' => null
         ];
 
-        for(name => doc in expected_docs) {
+        for (name => doc in expected_docs) {
             var field = Util.getFieldDefinitionByName(fields, name);
             field.description == doc;
         }
@@ -52,7 +52,7 @@ class DocTestObject implements GraphQLObject {
     **/
     @:doc("This is a meta doc")
     public var metaVariable : String;
-    
+
     /**
         Not used
     **/

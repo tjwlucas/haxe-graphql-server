@@ -88,7 +88,7 @@ class MethodTest extends utest.Test {
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
     }
-    
+
     function specMethodTestGetFromId() {
         var field = fields.getFieldDefinitionByName('getFromId');
         Std.string(field.type) == 'String!';
@@ -115,11 +115,11 @@ class MethodTestObject implements GraphQLObject {
     }
 
     public function randomList(n:Int) : Array<Float> {
-        return [for (i in 1...(n+1)) Math.random()];
+        return [for (i in 1...(n + 1)) Math.random()];
     }
 
     public function randomListWithDefault(n:Int = 5) : Array<Float> {
-        return [for (i in 1...(n+1)) Math.random()];
+        return [for (i in 1...(n + 1)) Math.random()];
     }
 
     public function addWithPassedInContext(x:Float, y:Float, ctx:Dynamic) : Float {

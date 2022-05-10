@@ -16,7 +16,7 @@ extern class GraphQL {
     #if js {
         var ast = Language.parse(query);
         var invalidErrors = validate(schema, ast);
-        if(invalidErrors.length > 0) {
+        if (invalidErrors.length > 0) {
             return {
                 errors: invalidErrors
             };

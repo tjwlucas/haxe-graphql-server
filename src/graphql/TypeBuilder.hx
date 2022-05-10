@@ -38,14 +38,14 @@ class TypeBuilder {
                 graphql_mutation_field_definitions.push(new_field);
             }
             var fieldBuilder = new FieldTypeBuilder(f);
-            if(fieldBuilder.isMagicDeferred() && fieldBuilder.getFunctionBody() == null) {
+            if (fieldBuilder.isMagicDeferred() && fieldBuilder.getFunctionBody() == null) {
                 resultantFields.remove(f);
             }
         }
-		
+
         var type_name : ExprOf<String> = cls.classHasMeta(TypeName) ? cls.classGetMeta(TypeName).params[0] : macro $v{cls.name};
-        var mutation_name : ExprOf<String> = 
-            cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
+        var mutation_name : ExprOf<String>
+        = cls.classHasMeta(MutationTypeName) ? cls.classGetMeta(MutationTypeName).params[0] : macro $v{cls.name + "Mutation"};
 
         var classDoc : ExprOf<String> = switch [cls.classHasMeta(DocMeta), cls.classGetMeta(DocMeta), cls.doc] {
             case [true, meta, _] if (meta.params.length == 0): macro null;
@@ -81,7 +81,7 @@ class TypeBuilder {
 
     static function classHasMeta(cls : ClassType, name : FieldMetadata) {
         var found = false;
-        for (meta in cls.meta.get()) {			
+        for (meta in cls.meta.get()) {
             var nameMatches = [':$name', name].contains(meta.name);
             found = switch [nameMatches, found] {
                 case [true, true]: throw new Error('Duplicate metadata found for $name on ${cls.name}', meta.pos);
@@ -112,20 +112,20 @@ class TypeBuilder {
         var classValidationContext : Array<Expr> = [];
         if (classHasMeta(cls, ClassValidationContext)) {
             var validations = classGetMetas(cls, ClassValidationContext);
-            for(v in validations) {
+            for (v in validations) {
                 var expr = v.params[0];
                 classValidationContext.push(expr);
             }
         }
-		
+
         var validations = field.getValidators();
         var validationContext = field.getValidationContext();
         var ctx_var_name = field.getContextVariableName();
 
         var arg_var_defs = [];
-        for(i => f in field.arg_names) {
+        for (i => f in field.arg_names) {
             var type = field.getFunctionArgType(i);
-            var defined = if(f == ctx_var_name) {
+            var defined = if (f == ctx_var_name) {
                 macro ctx;
             } else {
                 macro args.$f;
@@ -133,7 +133,7 @@ class TypeBuilder {
             arg_var_defs.push(macro var $f : $type = $defined);
         }
 		// Add renamed context variable to context, even when not present in function argument list
-        if(!field.arg_names.contains(ctx_var_name) && ctx_var_name != "ctx") {
+        if (!field.arg_names.contains(ctx_var_name) && ctx_var_name != "ctx") {
             var f = ctx_var_name;
             arg_var_defs.insert(0, macro var $f = ctx);
         }
@@ -158,25 +158,25 @@ class TypeBuilder {
             var objectType = TPath({name: cls.name, params: [], pack: cls.pack});
             var name = f.name;
 
-            var fieldPathString = switch(field.isStatic()) {
+            var fieldPathString = switch (field.isStatic()) {
                 case true: '${cls.name}.$name';
                 case false: 'obj.$name';
             }
             var fieldPath = Context.parse(fieldPathString, Context.currentPos());
-			
+
             var args_string = field.arg_names.join(", ");
 
-            var getResult = switch(field.is_function) {
+            var getResult = switch (field.is_function) {
                 case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
                 case false: macro $fieldPath;
             }
             var functionBody = validations;
 
-            if(field.isMagicDeferred()) {
+            if (field.isMagicDeferred()) {
                 Util.debug('$name is deferred');
                 var loader = field.getDeferredLoaderClass();
                 var loaderExpression = field.getDeferredLoaderExpresssion();
-                if(field.getFunctionBody() != null) {
+                if (field.getFunctionBody() != null) {
                     Context.warning("Function body will be totally ignored in GraphQL deferred loader", f.pos);
                 }
 
@@ -188,7 +188,7 @@ class TypeBuilder {
                 var returnType = field.getFunctionReturnType();
 
                 var getResult = switch (Util.getTarget()) {
-                    case Php: macro {						
+                    case Php: macro {
                             var id = $idExpr;
                             $loader.add(@:pos(f.pos) id);
                             return new graphql.externs.Deferred(() -> {
@@ -197,7 +197,7 @@ class TypeBuilder {
                                 return result;
                             });
                         };
-                    case Javascript: macro {			
+                    case Javascript: macro {
                             var id = $idExpr;
                             return $loader.loader.load(id).then((result) -> {
                                 $b{postValidations};

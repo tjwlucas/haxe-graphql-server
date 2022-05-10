@@ -7,16 +7,16 @@ import haxe.macro.Context;
 using graphql.macro.Util;
 
 class DeferredLoaderBuilder {
-    public static macro function build() : Array<Field> {        
+    public static macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
         var cls = Context.getLocalClass().get();
         var keyType : ComplexType;
         var returnType : ComplexType;
         var hasLoad = false;
-        for(f in fields) {
-            if(f.name == "load") {
+        for (f in fields) {
+            if (f.name == "load") {
                 hasLoad = true;
-                if(!f.access.contains(AStatic)) {
+                if (!f.access.contains(AStatic)) {
                     throw new Error("Load function must be static", f.pos);
                 }
                 var types = getLoaderValueTypes(f);
@@ -24,26 +24,26 @@ class DeferredLoaderBuilder {
                 returnType = types.ret;
             }
         }
-        if(!hasLoad) {
+        if (!hasLoad) {
             throw new Error("DeferredLoader class must declare a load() function", Context.currentPos());
         }
         var temporaryClass = switch (Util.getTarget()) {
             case Php: macro class {
                     static var keys:Array<$keyType> = [];
-                    public static var values : Map<$keyType,$returnType> = [];
+                    public static var values : Map<$keyType, $returnType> = [];
                     static var runCount = 0;
 
                     public static function add(key:$keyType) {
-                        if(!keys.contains(key)) {
+                        if (!keys.contains(key)) {
                             keys.push(key);
                         }
                     }
 
                     public static function getValue(key:$keyType) : $returnType {
                         var loadedKeys = [for (k in values.keys()) k];
-                        if(!loadedKeys.contains(key)) {
+                        if (!loadedKeys.contains(key)) {
                             var newValues = load(keys);
-                            for(k => v in newValues) {
+                            for (k => v in newValues) {
                                 values[k] = v;
                             }
                             keys = [];
@@ -54,17 +54,17 @@ class DeferredLoaderBuilder {
                 }
             case Javascript: macro class {
                     static var runCount = 0;
-                    private static var static_loader : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                    private static var static_loader : graphql.externs.js.DataLoader<$keyType, $returnType>;
 
-                    private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                    private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType, $returnType>;
                     public static function get__loader() : Dynamic {
                         return switch (graphql.externs.js.Process.domain) {
                             case null: static_loader;
                             case _: graphql.externs.js.Process.domain.loaders[ $v{cls.name} ];
                         }
                     }
-                    public static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType,$returnType>) {
-                        if(graphql.externs.js.Process.domain == null) {
+                    public static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType, $returnType>) {
+                        if (graphql.externs.js.Process.domain == null) {
                             static_loader = new_value;
                             return static_loader;
                         } else {
@@ -75,10 +75,10 @@ class DeferredLoaderBuilder {
                         }
                     }
 
-                    public static var loader(get, never) : graphql.externs.js.DataLoader<$keyType,$returnType>;
+                    public static var loader(get, never) : graphql.externs.js.DataLoader<$keyType, $returnType>;
                     static public function get_loader() {
-                        if(_loader == null) {
-                            _loader = new graphql.externs.js.DataLoader<$keyType,$returnType>((keys:Array<$keyType>) -> {
+                        if (_loader == null) {
+                            _loader = new graphql.externs.js.DataLoader<$keyType, $returnType>((keys:Array<$keyType>) -> {
                                 return new js.lib.Promise((resolve, reject) -> {
                                     runCount++;
                                     var values = load(keys);
@@ -101,9 +101,9 @@ class DeferredLoaderBuilder {
                     key: a,
                     ret: b
                 }
-            case (FFun({ret: TPath({name: "Map", params: [TPType(_) , _]})})): throw new Error("Invalid loader return type", f.pos);
+            case (FFun({ret: TPath({name: "Map", params: [TPType(_), _]})})): throw new Error("Invalid loader return type", f.pos);
             case (FFun({ret: TPath({name: "Map", params: [_, TPType(_)]})})): throw new Error("Bad key type", f.pos);
-            case (FFun({ret: TPath({name: "Map", params: [_ , _]})})): throw new Error("Bad key and loader return types", f.pos);
+            case (FFun({ret: TPath({name: "Map", params: [_, _]})})): throw new Error("Bad key and loader return types", f.pos);
             default: throw new Error("Load property must be a function returning a Map", f.pos);
         }
     }

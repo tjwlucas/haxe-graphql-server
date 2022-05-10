@@ -17,7 +17,7 @@ class FieldTypeBuilder {
     var field:Field;
     static var types_class = Context.getType("graphql.GraphQLTypes");
     static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
-    
+
     public var type : Expr;
     public var args : Expr = macro [];
     public var arg_names: Array<String> = [];
@@ -36,23 +36,23 @@ class FieldTypeBuilder {
             case a if (a.contains(typeParam)): macro graphql.GraphQLTypes.$typeParam;
             case _: try {
                     var cls = Context.getType(typeParam).getClass();
-                    switch(this.query_type) {
+                    switch (this.query_type) {
                         case (Query): macro $i{cls.name}._gql.type;
                         case (Mutation): macro $i{cls.name}._gql.mutationType;
                     }
                 } catch (e) {
-                    throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 
+                    throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos);
                 }
         }
     }
-    
+
     function typeFromTPath(name: String, ?params: Array<TypeParam>, nullable = false) {
         return switch (name) {
             case("Array"): {
                     var arrayOf = arrayType(params);
                     var base_type = getBaseType(name);
                     var array_expr = macro $base_type($arrayOf);
-                    if(nullable) {
+                    if (nullable) {
                         macro $array_expr;
                     } else {
                         macro graphql.GraphQLTypes.NonNull($array_expr);
@@ -69,7 +69,7 @@ class FieldTypeBuilder {
                 }
             default: {
                     var base_type = getBaseType(name);
-                    if(nullable) {
+                    if (nullable) {
                         macro $base_type;
                     } else {
                         macro graphql.GraphQLTypes.NonNull($base_type);
@@ -77,10 +77,10 @@ class FieldTypeBuilder {
                 }
         }
     }
-	
+
     function nullableType(params: Array<TypeParam>) {
         var nullableType : Expr;
-        switch(params[0]) {
+        switch (params[0]) {
             case(TPType(TPath({name: a, params: p}))):
                 nullableType = typeFromTPath(a, p, true);
             default:
@@ -91,7 +91,7 @@ class FieldTypeBuilder {
 
     function arrayType(params: Array<TypeParam>) {
         var arrayType : Expr;
-        switch(params[0]) {
+        switch (params[0]) {
             case(TPType(TPath({name: a, params: p}))):
                 arrayType = typeFromTPath(a, p);
             default:
@@ -102,7 +102,7 @@ class FieldTypeBuilder {
 
     function functionReturnType(?ret: ComplexType) {
         var returnType : Expr;
-        switch(ret) {
+        switch (ret) {
             case(TPath({name: a, params: p})):
                 returnType = typeFromTPath(a, p);
             default:
@@ -112,7 +112,7 @@ class FieldTypeBuilder {
     }
 
     public function getType() {
-        if(type == null) buildFieldType();
+        if (type == null) buildFieldType();
         return type;
     }
 
@@ -144,7 +144,7 @@ class FieldTypeBuilder {
 
     function buildArgList(arguments : Array<FunctionArg>) {
         var arg_list : Array<ExprOf<Dynamic>> = [];
-        for(arg in arguments) {
+        for (arg in arguments) {
             switch ([arg.type, arg.name]) {
                 case [TPath({name: a, params: p}), name] if (name != getContextVariableName()): {
                         arg_names.push(arg.name);
@@ -155,7 +155,7 @@ class FieldTypeBuilder {
                                 name: $v{ arg.name },
                                 description: ${ getDoc(arg) }
                             };
-                            if($defaultValue != null) {
+                            if ($defaultValue != null) {
                                 arg.defaultValue = $defaultValue;
                             }
                             arg;
@@ -173,8 +173,8 @@ class FieldTypeBuilder {
     public function getDoc(?f:{meta:Metadata}) {
         var docMeta = getMeta(DocMeta, f);
         var description = macro null;
-        if(docMeta != null && docMeta.params != null) {
-            if(docMeta.params.length > 0) {
+        if (docMeta != null && docMeta.params != null) {
+            if (docMeta.params.length > 0) {
                 description = docMeta.params[0];
             }
         } else if (f == null) {
@@ -193,13 +193,13 @@ class FieldTypeBuilder {
             null;
         };
     }
-    
+
     /**
 		Returns a string expression for the deprecation reason, if provided using the @:deprecated metadata
 	**/
     public function getDeprecationReason():ExprOf<String> {
         var deprecationReason = macro null;
-        if(hasMeta(Deprecated)) {
+        if (hasMeta(Deprecated)) {
             deprecationReason = getMeta(Deprecated).params[0];
         }
         return deprecationReason;
@@ -230,21 +230,21 @@ class FieldTypeBuilder {
     }
 
     function getFunctionInfo() {
-        return switch(field.kind) {
+        return switch (field.kind) {
             case FFun(a): a;
             default: throw new Error(NOT_A_FUNCTION, field.pos);
         }
     }
 
     public function getFunctionArgType(i:Int = 0) {
-        switch(field.kind) {
+        switch (field.kind) {
             case FFun({args: args}):
                 return args[i].type;
             default:
                 return throw new Error(NOT_A_FUNCTION, field.pos);
         }
     }
-    
+
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
         var found = false;
         for (meta in field.meta) {
@@ -269,7 +269,7 @@ class FieldTypeBuilder {
 		Retrieves list of metadata with the given name (with or without preceding `:`)
 	**/
     function getMetas(name : FieldMetadata, ?field:{meta:Metadata}) {
-        if(field == null) {
+        if (field == null) {
             field = this.field;
         }
         return field.meta.filter((meta) -> {
@@ -301,13 +301,13 @@ class FieldTypeBuilder {
         var checks : Array<Expr> = [];
         if (hasMeta(meta, true)) {
             var validations = getMetas(meta);
-            for(v in validations) {
+            for (v in validations) {
                 var check = v.params[0];
                 var message = v.params.length > 1 ? v.params[1] : macro "Validation failed";
                 var extension = v.params.length > 2 ? v.params[2] : macro "validation";
                 var clientSafe = v.params.length > 3 ? v.params[3] : macro null;
                 var expr = macro {
-                    if(!$check) {
+                    if (!$check) {
                         throw new graphql.GraphQLError($message, $extension, $clientSafe);
                     }
                 }
@@ -324,7 +324,7 @@ class FieldTypeBuilder {
         var expressions : Array<Expr> = [];
         if (hasMeta(ValidationContext, true)) {
             var validations = getMetas(ValidationContext);
-            for(v in validations) {
+            for (v in validations) {
                 var expr = v.params[0];
                 expressions.push(expr);
             }

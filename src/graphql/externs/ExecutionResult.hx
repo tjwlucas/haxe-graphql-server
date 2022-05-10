@@ -22,7 +22,7 @@ enum abstract DebugFlag(Int) from Int to Int {
     final RETHROW_UNSAFE_EXCEPTIONS   = 8;
     public static inline function getDebugValue(flags: Array<DebugFlag>) : Int {
         var result = 0;
-        for(f in flags) {
+        for (f in flags) {
             result += f;
         }
         return result;
