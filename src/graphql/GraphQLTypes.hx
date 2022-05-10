@@ -7,23 +7,23 @@ class GraphQLTypes {
     /**
         GraphQL Native Integer type
     **/
-    public static final Int = Type.int();
+    public static final Int : Any = Type.int();
     /**
         GraphQL Native String type
     **/
-    public static final String = Type.string();
+    public static final String : Any = Type.string();
     /**
         GraphQL Native Float type
     **/
-    public static final Float = Type.float();
+    public static final Float : Any = Type.float();
     /**
         GraphQL Native Boolean type
     **/
-    public static final Bool = Type.boolean();
+    public static final Bool : Any = Type.boolean();
     /**
         GraphQL Native ID type
     **/
-    public static final IDType = Type.id();
+    public static final IDType : Any = Type.id();
     /**
         Transforms passed type into a non-nullable type.
 

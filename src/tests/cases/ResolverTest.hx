@@ -275,7 +275,7 @@ class ResolverTest extends utest.Test {
 class ResolverTestObject implements GraphQLObject {
     public function new() {}
 
-    var falseValue = false;
+    var falseValue : Bool = false;
 
     public function simpleMethod() : String {
         return "This is a simple response";
@@ -354,6 +354,6 @@ class ResolverTestObject implements GraphQLObject {
 
 class SomeContextClass {
     public function new(){}
-    public var value = 'This is a value on the context';
-    public var allowed = true;
+    public var value : String = 'This is a value on the context';
+    public var allowed : Bool = true;
 }

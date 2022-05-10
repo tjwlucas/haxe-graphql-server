@@ -7,9 +7,9 @@ import haxe.macro.Expr.TypeDefinition;
 import haxe.macro.Context;
 
 class Util {
-    static inline final AUTOLOAD_DEFAULT_PATH = "vendor/autoload.php";
+    static inline final AUTOLOAD_DEFAULT_PATH : String = "vendor/autoload.php";
 
-    static inline final VENDOR = "vendor";
+    static inline final VENDOR : String = "vendor";
 
     /**
         Add autoload, based on compiler configuration using the `-D vendor` flag

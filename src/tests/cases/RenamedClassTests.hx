@@ -19,7 +19,7 @@ class NotRenamedClass implements GraphQLObject {
 }
 
 class RenamedClassTests extends Test {
-    var type = new RenamedClass();
+    var type : GraphQLObject = new RenamedClass();
     function specTypeExists() {
         Assert.notNull(type.gql);
     }

@@ -363,8 +363,7 @@
 		{
 			"type": "Type",
 			"props": {
-				"ignoreEnumAbstractValues": true,
-				"severity": "IGNORE"
+				"ignoreEnumAbstractValues": true
 			}
 		},
 		{

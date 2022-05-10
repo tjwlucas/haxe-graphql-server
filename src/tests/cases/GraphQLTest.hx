@@ -67,7 +67,7 @@ class Person implements GraphQLObject {
 }
 
 class GraphQLTest extends utest.Test {
-    var obj = new GraphQLInstanceTest();
+    var obj : GraphQLObject = new GraphQLInstanceTest();
     var gql : TypeObjectDefinition;
 
     function setup() {
