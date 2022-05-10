@@ -44,7 +44,7 @@ class SimpleClassTests extends utest.Test {
     
     function specGraphQLField() {
         Assert.isOfType(gql, TypeObjectDefinition);
-        @:privateAccess gql.type_name == 'SimpleClass';
+        @:privateAccess gql.typeName == 'SimpleClass';
 
         Assert.isOfType(fields, Array);
         for (f in fields) {

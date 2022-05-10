@@ -26,7 +26,7 @@ class GraphQLServer {
         this.root = base;
         this.schema = new Schema({
             query: query.gql.type,
-            mutation: query.gql.mutation_type
+            mutation: query.gql.mutationType
         }.associativeArrayOfObject());
     }
 

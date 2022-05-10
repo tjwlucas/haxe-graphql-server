@@ -37,7 +37,7 @@ class FieldTypeBuilder {
 				var cls = Context.getType(typeParam).getClass();
 				switch(this.query_type) {
 					case (Query): macro $i{cls.name}._gql.type;
-					case (Mutation): macro $i{cls.name}._gql.mutation_type;
+					case (Mutation): macro $i{cls.name}._gql.mutationType;
 				}
 			} catch (e) {
 				throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos); 

@@ -27,7 +27,7 @@ class RenamedClassTests extends Test {
 
     @:depends(specTypeExists)
     function specTypeName() {
-        @:privateAccess type.gql.type_name == 'RenamedForGraphQL';
+        @:privateAccess type.gql.typeName == 'RenamedForGraphQL';
     }
 
     @:depends(specTypeExists)
