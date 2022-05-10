@@ -13,11 +13,11 @@ import haxe.Exception;
         this.clientSafe = clientSafe;
     }
 
-    public function isClientSafe() {
+    function isClientSafe() {
         return clientSafe;
     }
 
-    public function getCategory() {
+    function getCategory() {
         return category;
     }
 }

@@ -8,6 +8,8 @@ using StringTools;
 using haxe.macro.ExprTools;
 
 class FieldTypeBuilder {
+
+    static inline final CTX_DEFAULT_VARIABLE_NAME = "ctx";
     static inline final NOT_A_FUNCTION = "Not a function";
 
     static inline final GQL_CONTEXT_VARIABLE = "gql_context_variable";
@@ -18,17 +20,79 @@ class FieldTypeBuilder {
     static var types_class = Context.getType("graphql.GraphQLTypes");
     static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
 
-    public var type : Expr;
-    public var args : Expr = macro [];
-    public var arg_names: Array<String> = [];
-    public var is_function = false;
-    public var is_deferred = false;
+    var type : Expr;
 
+    /**
+        List of identifier expressions, if the field is a function.
+        e.g. for `doSomething(message:String, count:Int, ctx:ContextObject)`,
+        will equal:
+        ```
+        [
+            macro message,
+            macro count,
+            macro ctx
+        ]
+        ```
+    **/
+    public var args : Expr = macro [];
+
+    /**
+        If field is a function returns a list of strings containing the names of the arguments.
+
+         e.g. for `doSomething(message:String, count:Int, ctx:ContextObject)`,
+        will equal: `["message", "count", "ctx"]`
+    **/
+    public var argNames: Array<String> = [];
+
+    /**
+        Returns true if this field is a function (as opposed to a variable)
+    **/
+    public var isFunction = false;
+    var isDeferred = false;
+
+    /**
+        Specifies whether this FieldTypeBuilder represents the `Query` or `Mutation` version of this field
+    **/
     public var query_type : GraphQLObjectType;
 
     public function new(field:Field, type: GraphQLObjectType = Query) {
         this.field = field;
         this.query_type = type;
+        if (isVisible()) {
+            buildFieldType();
+        }
+    }
+
+    /**
+        Get an array of expressions defining variables from passed arguments (and context variable).
+
+        e.g. From the function with signature: `doSomething(message:String, count:Int)`,
+        the returned array would contain
+        ```
+        [
+            macro var message = args.message,
+            macro var count = args.count
+        ]
+        ```
+    **/
+    public function getArgumentVariableDefinitions() {
+        var ctx_var_name = getContextVariableName();
+        var argumentVariableDefinitions = [];
+        for (i => f in argNames) {
+            var thisArgType = getFunctionArgType(i);
+            var defined = if (f == ctx_var_name) {
+                macro ctx;
+            } else {
+                macro args.$f;
+            }
+            argumentVariableDefinitions.push(macro var $f : $thisArgType = $defined);
+        }
+		// Add renamed context variable to context, even when not present in function argument list
+        if (!argNames.contains(ctx_var_name) && ctx_var_name != CTX_DEFAULT_VARIABLE_NAME) {
+            var f = ctx_var_name;
+            argumentVariableDefinitions.insert(0, macro var $f = ctx);
+        }
+        return argumentVariableDefinitions;
     }
 
     function getBaseType(typeParam) {
@@ -63,7 +127,7 @@ class FieldTypeBuilder {
                     macro $base_type;
                 }
             case ("Deferred" | "Promise"): {
-                    is_deferred = true;
+                    isDeferred = true;
                     var deferredOf = arrayType(params);
                     macro $deferredOf;
                 }
@@ -111,28 +175,30 @@ class FieldTypeBuilder {
         return returnType;
     }
 
+    /**
+        Expression defining a type compatible with the graphql output.
+    **/
     public function getType() {
-        if (type == null) buildFieldType();
         return type;
     }
 
-    public function getContextVariableName() {
+    function getContextVariableName() {
         var expr : Expr;
         if (hasMeta(ContextVar)) {
             expr = getMeta(ContextVar).params[0];
         } else {
-            var context_variable_name = Context.defined(GQL_CONTEXT_VARIABLE) ? Context.definedValue(GQL_CONTEXT_VARIABLE) : "ctx";
+            var context_variable_name = Context.defined(GQL_CONTEXT_VARIABLE) ? Context.definedValue(GQL_CONTEXT_VARIABLE) : CTX_DEFAULT_VARIABLE_NAME;
             expr = macro $i{context_variable_name};
         }
         return expr.toString();
     }
 
-    public function buildFieldType() : Void {
+    function buildFieldType() : Void {
         switch (field.kind) {
             case(FVar(TPath({name: a, params: p}))):
                 type = typeFromTPath(a, p, hasMeta(Optional));
             case(FFun({ret: return_type, args: args})):
-                is_function = true;
+                isFunction = true;
                 var argList = buildArgList(args);
                 this.args = macro $a{ argList };
                 type = functionReturnType(return_type);
@@ -147,7 +213,7 @@ class FieldTypeBuilder {
         for (arg in arguments) {
             switch ([arg.type, arg.name]) {
                 case [TPath({name: a, params: p}), name] if (name != getContextVariableName()): {
-                        arg_names.push(arg.name);
+                        argNames.push(arg.name);
                         var defaultValue = arg.value != null ? arg.value : macro null;
                         var arg_field : ExprOf<GraphQLArgField> = macro {
                             var arg : graphql.GraphQLArgField = {
@@ -162,7 +228,7 @@ class FieldTypeBuilder {
                         };
                         arg_list.push( macro graphql.Util.associativeArrayOfObject($arg_field));
                     }
-                case [TPath({name: a, params: p}), name]: arg_names.push(name);
+                case [TPath({name: a, params: p}), name]: argNames.push(name);
                 default:
                     getBaseType(UNKNOWN);
             }
@@ -170,6 +236,9 @@ class FieldTypeBuilder {
         return arg_list;
     }
 
+    /**
+        Returns the documentation defined for this field. (Either in a doc comment, or metadata)
+    **/
     public function getDoc(?f:{meta:Metadata}) {
         var docMeta = getMeta(DocMeta, f);
         var description = macro null;
@@ -205,27 +274,45 @@ class FieldTypeBuilder {
         return deprecationReason;
     }
 
+    /**
+        Returns true if field is static
+    **/
     public function isStatic() : Bool {
         return field.access.contains(AStatic);
     }
 
+    /**
+        Returns true if the field is a 'magic deferred' (i.e. Using the `@:deferred` metadata)
+    **/
     public function isMagicDeferred() : Bool {
         return hasMeta(Deferred);
     }
 
+    /**
+        Returns the first expression passed to `@:deferred` metadata
+    **/
     public function getDeferredLoaderClass() {
         return getMeta(Deferred).params[0];
     }
 
-    public function getDeferredLoaderExpresssion() {
+    /**
+        Returns the first expression passed to `@:deferred` metadata
+    **/
+    public function getDeferredLoaderExpression() {
         return getMeta(Deferred).params[1];
     }
 
+    /**
+        Returns expression of the function body (If the field is a function)
+    **/
     public function getFunctionBody() {
         getFunctionInfo().expr;
     }
 
-    public function getFunctionReturnType() {
+    /**
+        Returns the `ComplexType` of the return value of the function (If the field is a function)
+    **/
+    public function getFunctionReturnType() : ComplexType {
         return getFunctionInfo().ret;
     }
 
@@ -236,7 +323,7 @@ class FieldTypeBuilder {
         }
     }
 
-    public function getFunctionArgType(i:Int = 0) {
+    function getFunctionArgType(i:Int = 0) {
         switch (field.kind) {
             case FFun({args: args}):
                 return args[i].type;
@@ -295,7 +382,9 @@ class FieldTypeBuilder {
     }
 
 	/**
-		Retrieves a list of all attached validate metadata entries and returns a list of validation expressions based on them
+		Retrieves a list of all attached validate metadata entries and returns a list of validation expressions based on them.
+
+        @param meta Which metadata values to look at. Defaults to `Validate`, but might also be `ValidateAfter`.
 	**/
     public function getValidators(meta : FieldMetadata = Validate) : Array<Expr> {
         var checks : Array<Expr> = [];

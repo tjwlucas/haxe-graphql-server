@@ -30,10 +30,31 @@ class GraphQLServer {
         }.associativeArrayOfObject());
     }
 
+    /**
+        Returns string representation of the constructed schema in `gql`, e.g.
+
+        ```
+        type Query {
+            me: User
+        }
+
+        type User {
+            id: ID
+            name: String
+        }
+        ```
+    **/
     @:keep public function readSchema()  : String {
         return SchemaPrinter.doPrint(schema);
     }
 
+    /**
+        Executes a query against the constructed schema and returns the results.
+
+        @param queryString GraphQL query to execute
+        @param variables Keyed array (In PHP) or object (In JS) of variables to pass in to the query.
+        @param operationName Operation name for the query
+    **/
     @:keep public function executeQuery(queryString:String, ?variables : NativeArray, ?operationName:String) {
         if (variables == null) {
             variables = [].toNativeArray();

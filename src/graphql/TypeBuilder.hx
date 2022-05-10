@@ -19,6 +19,11 @@ class TypeBuilder {
     }
 
 	#if macro
+    /**
+        This is the main function which builds a class implementing `GraphQLObject` into a valid GraphQL class
+
+        @param fields An array of the fields on the class to be built
+    **/
     static function buildClass(fields:Array<Field>) {
         var graphql_field_definitions:Array<ExprOf<GraphQLField>> = [];
         var graphql_mutation_field_definitions:Array<ExprOf<GraphQLField>> = [];
@@ -120,25 +125,9 @@ class TypeBuilder {
 
         var validations = field.getValidators();
         var validationContext = field.getValidationContext();
-        var ctx_var_name = field.getContextVariableName();
+        var argumentVariableDefinitions = field.getArgumentVariableDefinitions();
 
-        var arg_var_defs = [];
-        for (i => f in field.arg_names) {
-            var type = field.getFunctionArgType(i);
-            var defined = if (f == ctx_var_name) {
-                macro ctx;
-            } else {
-                macro args.$f;
-            }
-            arg_var_defs.push(macro var $f : $type = $defined);
-        }
-		// Add renamed context variable to context, even when not present in function argument list
-        if (!field.arg_names.contains(ctx_var_name) && ctx_var_name != "ctx") {
-            var f = ctx_var_name;
-            arg_var_defs.insert(0, macro var $f = ctx);
-        }
-
-        validations = arg_var_defs.concat(classValidationContext).concat(validationContext).concat(validations);
+        validations = argumentVariableDefinitions.concat(classValidationContext).concat(validationContext).concat(validations);
         return validations;
     }
 
@@ -148,8 +137,6 @@ class TypeBuilder {
         var field = new FieldTypeBuilder(f, type);
 
         if (field.isVisible()) {
-            field.buildFieldType();
-
             var validations = buildValidations(field, cls);
             var postValidations = field.getValidators(ValidateAfter);
             var validationsCount = field.getValidators().length;
@@ -164,9 +151,9 @@ class TypeBuilder {
             }
             var fieldPath = Context.parse(fieldPathString, Context.currentPos());
 
-            var args_string = field.arg_names.join(", ");
+            var args_string = field.argNames.join(", ");
 
-            var getResult = switch (field.is_function) {
+            var getResult = switch (field.isFunction) {
                 case true: Context.parse('$fieldPathString($args_string);', Context.currentPos());
                 case false: macro $fieldPath;
             }
@@ -175,13 +162,13 @@ class TypeBuilder {
             if (field.isMagicDeferred()) {
                 Util.debug('$name is deferred');
                 var loader = field.getDeferredLoaderClass();
-                var loaderExpression = field.getDeferredLoaderExpresssion();
+                var loaderExpression = field.getDeferredLoaderExpression();
                 if (field.getFunctionBody() != null) {
                     Context.warning("Function body will be totally ignored in GraphQL deferred loader", f.pos);
                 }
 
-                var idExpr = switch [loaderExpression, field.arg_names.length] {
-                    case [null, 1]: macro $i{ field.arg_names[0] };
+                var idExpr = switch [loaderExpression, field.argNames.length] {
+                    case [null, 1]: macro $i{ field.argNames[0] };
                     case [null, _]: throw new Error("Deferred loader without expression must have exactly one argument", f.pos);
                     case [loader, _]: loader;
                 }
@@ -216,7 +203,7 @@ class TypeBuilder {
                 ]);
             }
 
-            var resolve = switch [validationsCount, postValidationsCount, field.isStatic(), field.is_function, Context.defined("gql_explicit_resolvers")] {
+            var resolve = switch [validationsCount, postValidationsCount, field.isStatic(), field.isFunction, Context.defined("gql_explicit_resolvers")] {
                 case [0, 0, false, false, false]: {
 					// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
                         f.meta.push({name:":keep", pos: Context.currentPos()});

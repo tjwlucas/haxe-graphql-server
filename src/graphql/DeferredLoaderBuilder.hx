@@ -7,6 +7,9 @@ import haxe.macro.Context;
 using graphql.macro.Util;
 
 class DeferredLoaderBuilder {
+    /**
+        Macro to build 'magic' deferred loaders
+    **/
     public static macro function build() : Array<Field> {
         var fields = Context.getBuildFields();
         var cls = Context.getLocalClass().get();
@@ -95,7 +98,7 @@ class DeferredLoaderBuilder {
     }
 
     @SuppressWarnings("checkstyle:MultipleStringLiterals")  // "Map" in switch statement must be a literal, variables are interpreted as capture
-    public static function getLoaderValueTypes(f:Field) {
+    static function getLoaderValueTypes(f:Field) {
         return switch (f.kind) {
             case(FFun({ret: TPath({name: "Map", params: [TPType(a), TPType(b)]})})): {
                     key: a,
