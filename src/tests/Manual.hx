@@ -33,12 +33,12 @@ class ManualTest implements GraphQLObject {
         #if js
         var requestValues = Process.domain.requestValues;
         if (!requestValues.exists("CALLED_COUNT")) {
-            requestValues["CALLED_COUNT"] = 1;
+            requestValues["CALLED_COUNT"] = 0;
         }
-        return Process.domain.requestValues["CALLED_COUNT"]++;
+        return ++Process.domain.requestValues["CALLED_COUNT"];
         #end
         #if php
-        return _calledCount++;
+        return ++_calledCount;
         #end
     }
 
@@ -48,9 +48,7 @@ class ManualTest implements GraphQLObject {
     public var loaded:Bool = true;
 
     public function platform() : String {
-        #if php return "PHP";
-        #elseif js return "Javascript";
-        #end
+        return graphql.macro.Util.getTargetMacro();
     }
 
     @:validationContext(var capName = (name:String).toUpperCase())

@@ -1,6 +1,6 @@
 package graphql.macro;
 
-enum SupportedTarget {
-    Javascript;
-    Php;
+enum abstract SupportedTarget(String) from String to String {
+    var Javascript = "JavaScript";
+    var Php = "PHP";
 }
