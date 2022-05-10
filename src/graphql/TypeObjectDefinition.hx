@@ -49,19 +49,19 @@ class TypeObjectDefinition {
     public var description: Null<String>;
 
     public function new(
-        type_name:String, 
-        mutation_name:String, 
+        typeName:String, 
+        mutationName:String, 
         fields:Void->Array<graphql.GraphQLField>, 
-        mutation_fields: Void->Array<graphql.GraphQLField>,
+        mutationFields: Void->Array<graphql.GraphQLField>,
         description: String,
-        has_mutation: Bool
+        hasMutation: Bool
         ) {
-        this.typeName = type_name;
+        this.typeName = typeName;
         this.fields = fields;
-        this.mutationFields = mutation_fields;
-        this.mutationName = mutation_name;
+        this.mutationFields = mutationFields;
+        this.mutationName = mutationName;
         this.description = description;
-        this.hasMutation = has_mutation;
+        this.hasMutation = hasMutation;
 
         type = buildTypeObject(this.typeName, this.description, this.fields);
 

@@ -292,6 +292,15 @@
 			  "ENUM"
 			]
 		  }
+		},
+		{
+			"type": "MethodName",
+            "props": {
+                "format": "^__init__$|^[a-z][a-zA-Z0-9]*$"
+            }
+		},
+		{
+			"type": "ParameterName"
 		}
     ],
 	"exclude": {

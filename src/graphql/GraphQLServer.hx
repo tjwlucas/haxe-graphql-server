@@ -34,12 +34,12 @@ class GraphQLServer {
         return SchemaPrinter.doPrint(schema);
     }
 
-    @:keep public function executeQuery(query_string:String, ?variables : NativeArray, ?operationName:String) {
+    @:keep public function executeQuery(queryString:String, ?variables : NativeArray, ?operationName:String) {
         if(variables == null) {
             variables = [].toNativeArray();
         }
         
-        return GraphQL.executeQuery(schema, query_string, root, this.context, variables, operationName);
+        return GraphQL.executeQuery(schema, queryString, root, this.context, variables, operationName);
     }
 
     /**
