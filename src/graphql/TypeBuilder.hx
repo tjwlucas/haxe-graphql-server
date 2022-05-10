@@ -9,16 +9,16 @@ using graphql.TypeBuilder;
 using haxe.macro.TypeTools;
 
 class TypeBuilder {
-	/**
-		Automatically build the GraphQL type definition based on the class
-	**/
+    /**
+        Automatically build the GraphQL type definition based on the class
+    **/
     public static macro function build():Array<Field> {
         var fields = Context.getBuildFields();
         var resultantFields = buildClass(fields);
         return resultantFields;
     }
 
-	#if macro
+    #if macro
     /**
         This is the main function which builds a class implementing `GraphQLObject` into a valid GraphQL class
 
@@ -62,9 +62,9 @@ class TypeBuilder {
         var hasMutationFields = (graphql_mutation_field_definitions.length > 0);
 
         var tmp_class = macro class {
-			/**
-				Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
-			**/
+            /**
+                Auto-generated list of public fields on the class. Prototype for generating a full graphql definition
+            **/
             public static var _gql : graphql.TypeObjectDefinition = {
                 fields: () -> $a{graphql_field_definitions},
                 mutationFields: () -> $a{graphql_mutation_field_definitions},
@@ -97,16 +97,16 @@ class TypeBuilder {
         return found;
     }
 
-	/**
-		Retrieves list of metadata with the given name (with or without preceding `:`)
-	**/
+    /**
+        Retrieves list of metadata with the given name (with or without preceding `:`)
+    **/
     static function classGetMetas(cls : ClassType, name : FieldMetadata) {
         return cls.meta.get().filterMetas(name);
     }
 
-	/**
-		Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
-	**/
+    /**
+        Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
+    **/
     static function classGetMeta(cls: ClassType, name : FieldMetadata) {
         return classGetMetas(cls, name)[0];
     }
@@ -203,10 +203,10 @@ class TypeBuilder {
 
             var resolve = switch [validationsCount, postValidationsCount, field.isStatic(), field.isFunction, Context.defined("gql_explicit_resolvers")] {
                 case [0, 0, false, false, false]: {
-					// Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
+                    // Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
                         f.meta.push({name:":keep", pos: Context.currentPos()});
-					// Prevents creation of redundant anonymous function that simply returns the property value
-					// (This is already the behaviour of the server when no/null callback is provided)
+                    // Prevents creation of redundant anonymous function that simply returns the property value
+                    // (This is already the behaviour of the server when no/null callback is provided)
                         macro null;
                     }
                 default: macro (obj : $objectType, args : graphql.ArgumentAccessor, ctx) -> {
@@ -226,5 +226,5 @@ class TypeBuilder {
         }
         return null;
     }
-	#end
+    #end
 }

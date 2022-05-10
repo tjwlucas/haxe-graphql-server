@@ -9,15 +9,15 @@ class Util {
         @param arr Associative array (PHP), or Object
     **/
     public static inline function hashOfAssociativeArray(arr:Dynamic) : Map<String, Dynamic> {
-		#if php
+        #if php
         return php.Lib.hashOfAssociativeArray(arr);
-		#else
+        #else
         var returnMap : Map<String, Dynamic> = [];
         for (key in Reflect.fields(arr)) {
             returnMap[key] = Reflect.field(arr, key);
         }
         return returnMap;
-		#end
+        #end
     }
 
     /**
@@ -26,11 +26,11 @@ class Util {
         @param obj Object
     **/
     public static inline function associativeArrayOfObject(obj:Dynamic) {
-		#if php
+        #if php
         return php.Lib.associativeArrayOfObject(obj);
-		#else
+        #else
         return obj;
-		#end
+        #end
     }
 
     /**
@@ -39,9 +39,9 @@ class Util {
         @param hash The haxe String Map
     **/
     public static inline function associativeArrayOfHash(hash:Map<String, Dynamic>) {
-		#if php
+        #if php
         var result = php.Lib.associativeArrayOfHash(hash);
-		#elseif js
+        #elseif js
         var result : Dynamic = {};
         for (k => v in hash) {
             Reflect.setField(result, k, v);
@@ -58,11 +58,11 @@ class Util {
         @param arr Haxe array
     **/
     public static inline function toNativeArray(arr:Array<Dynamic>) : NativeArray {
-		#if php
+        #if php
         return php.Lib.toPhpArray(arr);
-		#else
+        #else
         return arr;
-		#end
+        #end
     }
 
     /**
@@ -74,18 +74,18 @@ class Util {
         @param arr Array of arguments
     **/
     public static inline function processArgs(arr:Array<NativeArray>) : NativeArray {
-		#if js
+        #if js
         var argsObject : Dynamic = {};
         for (arg in arr) {
             Reflect.setField(argsObject, arg.name, arg);
         }
         return argsObject;
-		#else
+        #else
         return toNativeArray(arr);
-		#end
+        #end
     }
 
-	#if js
+    #if js
     /**
         Dummy function in JS, so that toHaxeArray calls can be ignored, rather than repeated conditinal compilation
 
@@ -94,7 +94,7 @@ class Util {
     public static inline function toHaxeArray(a:Array<Dynamic>):Array<Dynamic> {
         return a;
     }
-	#end
+    #end
 
     /**
         PHP 8.1 compatibility workaround https://github.com/HaxeFoundation/haxe/issues/10502
@@ -102,8 +102,8 @@ class Util {
         (Will safely do nothing outside of PHP targets)
     **/
     public static inline function phpCompat() {
-		#if php
+        #if php
         untyped if (version_compare(PHP_VERSION, "8.1.0", ">=")) error_reporting(error_reporting() & ~E_DEPRECATED);
-		#end
+        #end
     }
 }

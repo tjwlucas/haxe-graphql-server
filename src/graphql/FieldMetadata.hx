@@ -1,7 +1,7 @@
 package graphql;
 
 /**
-	Enum of the valid metadata values which have special meaning in the GraphQL schema generation
+    Enum of the valid metadata values which have special meaning in the GraphQL schema generation
 **/
 enum abstract FieldMetadata(String) from String to String {
     var Hide = "GraphQLHide";

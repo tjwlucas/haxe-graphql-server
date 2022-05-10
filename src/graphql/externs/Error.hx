@@ -9,8 +9,8 @@ extern class Error #if php extends php.Exception #end {
     function getPath() : Array<Dynamic>;
 
     #if php
-	    function isClientSafe() : Bool;
-	    function getCategory() : String;
+        function isClientSafe() : Bool;
+        function getCategory() : String;
     #end
 
     #if js

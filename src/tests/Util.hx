@@ -13,13 +13,13 @@ class Util {
     }
 
     public static function getArgMaps(field : GraphQLField) : Array<Map<String, Dynamic>> {
-		#if php
+        #if php
         var result = [for (arg in field.args) graphql.Util.hashOfAssociativeArray(arg)];
-		#elseif js
+        #elseif js
         var result = [for (arg in Reflect.fields(field.args)) graphql.Util.hashOfAssociativeArray(Reflect.field(field.args, arg))];
-		#else
+        #else
         var result = [for (arg in field.args.toHaxeArray()) graphql.Util.hashOfAssociativeArray(arg)];
-		#end
+        #end
         return result;
     }
 }

@@ -186,9 +186,9 @@ class SimpleClassTests extends utest.Test {
 class SimpleClass implements GraphQLObject {
     public function new(){}
     public var id:graphql.IDType;
-	/**
-		This is the `simple_string_field` documentation
-	**/
+    /**
+        This is the `simple_string_field` documentation
+    **/
     public var simple_string_field:String;
 
     /**

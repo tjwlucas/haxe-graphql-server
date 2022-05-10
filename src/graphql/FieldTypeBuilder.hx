@@ -88,7 +88,7 @@ class FieldTypeBuilder {
             }
             argumentVariableDefinitions.push(macro var $f : $thisArgType = $defined);
         }
-		// Add renamed context variable to context, even when not present in function argument list
+        // Add renamed context variable to context, even when not present in function argument list
         if (!argNames.contains(ctx_var_name) && ctx_var_name != CTX_DEFAULT_VARIABLE_NAME) {
             var f = ctx_var_name;
             argumentVariableDefinitions.insert(0, macro var $f = ctx);
@@ -253,9 +253,9 @@ class FieldTypeBuilder {
         return description;
     }
 
-	/**
-		Get the commment string from the field
-	**/
+    /**
+        Get the commment string from the field
+    **/
     public function getComment():Null<String> {
         return if (this.field.doc != null) {
             this.field.doc.trim();
@@ -265,8 +265,8 @@ class FieldTypeBuilder {
     }
 
     /**
-		Returns a string expression for the deprecation reason, if provided using the @:deprecated metadata
-	**/
+        Returns a string expression for the deprecation reason, if provided using the @:deprecated metadata
+    **/
     public function getDeprecationReason():ExprOf<String> {
         var deprecationReason = macro null;
         if (hasMeta(Deprecated)) {
@@ -346,16 +346,16 @@ class FieldTypeBuilder {
         return found;
     }
 
-	/**
-		Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
-	**/
+    /**
+        Retrieves the *first* metadata item with the provided name (with or without preceding `:`)
+    **/
     function getMeta(name : FieldMetadata, ?field:{meta:Metadata}) {
         return getMetas(name, field)[0];
     }
 
-	/**
-		Retrieves list of metadata with the given name (with or without preceding `:`)
-	**/
+    /**
+        Retrieves list of metadata with the given name (with or without preceding `:`)
+    **/
     function getMetas(name : FieldMetadata, ?field:{meta:Metadata}) {
         if (field == null) {
             field = this.field;
@@ -363,13 +363,13 @@ class FieldTypeBuilder {
         return field.meta.filterMetas(name);
     }
 
-	/**
-		Determines if the field should be visible in the GraphQL Schema
-	**/
+    /**
+        Determines if the field should be visible in the GraphQL Schema
+    **/
     public function isVisible() {
         return switch [hasMeta(Hide), field.name, query_type, hasMeta(MutationField), hasMeta(QueryField)] {
-			// If not explicitly specified, for query or mutation, use public field access
-			// Otherwise, base purely on metadata
+            // If not explicitly specified, for query or mutation, use public field access
+            // Otherwise, base purely on metadata
             case [true, _, _, _, _]: false; // Never show if flagged as hidden
             case [false, "new" | "toString", _, _, _]: false; //Always exclude 'special methods'
             case [false, _, Query, true, false]: false;
@@ -380,11 +380,11 @@ class FieldTypeBuilder {
         }
     }
 
-	/**
-		Retrieves a list of all attached validate metadata entries and returns a list of validation expressions based on them.
+    /**
+        Retrieves a list of all attached validate metadata entries and returns a list of validation expressions based on them.
 
         @param meta Which metadata values to look at. Defaults to `Validate`, but might also be `ValidateAfter`.
-	**/
+    **/
     public function getValidators(meta : FieldMetadata = Validate) : Array<Expr> {
         var checks : Array<Expr> = [];
         if (hasMeta(meta, true)) {
@@ -405,9 +405,9 @@ class FieldTypeBuilder {
         return checks;
     }
 
-	/**
-		Gets the validation context metadata, if present, and adds it to the validation expression list, before any of the validations are run.
-	**/
+    /**
+        Gets the validation context metadata, if present, and adds it to the validation expression list, before any of the validations are run.
+    **/
     public function getValidationContext() : Array<Expr> {
         var expressions : Array<Expr> = [];
         if (hasMeta(ValidationContext, true)) {

@@ -33,10 +33,10 @@ class Util {
 
     #if macro
     /**
-		If `graphql-verbose` flag is set, prints the provided message at build-time
+        If `graphql-verbose` flag is set, prints the provided message at build-time
 
         @param message The message to output if debug is on
-	**/
+    **/
     public static function debug(message:String) : Void {
         if (Context.defined("graphql-verbose")) {
             Sys.println('${Date.now()}> [graphql] $message');
