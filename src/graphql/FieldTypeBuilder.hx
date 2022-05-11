@@ -244,27 +244,16 @@ class FieldTypeBuilder {
         Returns the documentation defined for this field. (Either in a doc comment, or metadata)
     **/
     public function getDoc(?f:{meta:Metadata}) {
-        var docMeta = getMeta(DocMeta, f);
-        var description = macro null;
-        if (docMeta != null && docMeta.params != null) {
-            if (docMeta.params.length > 0) {
-                description = docMeta.params[0];
-            }
-        } else if (f == null) {
-            description = macro $v{ getComment() };
+        var description = switch [getMeta(DocMeta, f), f] {
+            case [null, null]: {
+                    var comment = this.field.doc != null ? this.field.doc.trim() : null;
+                    macro $v{ comment };
+                }
+            case [null, _]: macro null;
+            case [meta, _] if (meta.params != null && meta.params.length > 0): meta.params[0];
+            default: macro null;
         }
         return description;
-    }
-
-    /**
-        Get the commment string from the field
-    **/
-    public function getComment():Null<String> {
-        return if (this.field.doc != null) {
-            this.field.doc.trim();
-        } else {
-            null;
-        };
     }
 
     /**
@@ -320,6 +309,9 @@ class FieldTypeBuilder {
         return getFunctionInfo().ret;
     }
 
+    /**
+        Retrieves type data for this field, if it is a function. Throws an error if not a function.
+    **/
     function getFunctionInfo() {
         return switch (field.kind) {
             case FFun(a): a;
@@ -327,15 +319,21 @@ class FieldTypeBuilder {
         }
     }
 
+    /**
+        Returns the ComplexType of the specified function argument
+
+        @param i Index of function argument to retrieve the type for
+    **/
     function getFunctionArgType(i:Int = 0) {
-        switch (field.kind) {
-            case FFun({args: args}):
-                return args[i].type;
-            default:
-                return throw new Error(NOT_A_FUNCTION, field.pos);
-        }
+        return getFunctionInfo().args[i].type;
     }
 
+    /**
+        Returns true if the field being build contains MetaData matching the provided name. (Runtime or buildtime versions)
+
+        @param name Name of meta data to check for
+        @param allowMultiple If set to false, throws an error if the specified metadata occurs more than once on the field
+    **/
     function hasMeta(name : FieldMetadata, allowMultiple = false) {
         var found = false;
         for (meta in field.meta) {

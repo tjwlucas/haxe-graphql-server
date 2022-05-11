@@ -325,9 +325,8 @@
 		{
 			"type": "MethodCount",
 			"props": {
-				"maxTotal": 20,
-				"maxPublic": 10,
-				"severity": "IGNORE"
+				"maxTotal": 100,
+				"maxPublic": 20
 			}
 		},
 		{
@@ -508,6 +507,10 @@
 		],
 		"MethodLength": [
 			"Tests?$"
+		],
+		"MethodCount": [
+			"/tests/",
+			"/externs/"
 		]
 	},
 	"version": 1
