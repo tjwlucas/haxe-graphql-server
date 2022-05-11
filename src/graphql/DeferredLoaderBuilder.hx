@@ -62,19 +62,18 @@ class DeferredLoaderBuilder {
                 }
             case Javascript: macro class {
                     static var runCount = 0;
-                    private static var static_loader : graphql.externs.js.DataLoader<$keyType, $returnType>;
 
-                    private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType, $returnType>;
-                    public static function get__loader() : graphql.externs.js.DataLoader<$keyType, $returnType> {
+                    @:isVar private static var _loader(get, set) : graphql.externs.js.DataLoader<$keyType, $returnType>;
+                    static function get__loader() : graphql.externs.js.DataLoader<$keyType, $returnType> {
                         return cast switch (graphql.externs.js.Process.domain) {
-                            case null: static_loader;
+                            case null: _loader;
                             case _: graphql.externs.js.Process.domain.loaders[ $v{cls.name} ];
                         }
                     }
-                    public static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType, $returnType>) {
+                    static function set__loader(new_value: graphql.externs.js.DataLoader<$keyType, $returnType>) {
                         if (graphql.externs.js.Process.domain == null) {
-                            static_loader = new_value;
-                            return static_loader;
+                            _loader = new_value;
+                            return _loader;
                         } else {
                             var loaders : Map<String, Any>;
                             loaders = graphql.externs.js.Process.domain.loaders;
