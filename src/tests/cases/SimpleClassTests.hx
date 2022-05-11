@@ -1,6 +1,5 @@
 package tests.cases;
 
-import graphql.externs.GraphQL;
 import graphql.GraphQLField;
 import graphql.TypeObjectDefinition;
 import utest.Assert;
@@ -19,7 +18,7 @@ class SimpleClassTests extends utest.Test {
         gql = new SimpleClass().gql;
     }
 
-	function specTypes() {
+    function specTypes() {
         GraphQLTypes.String == graphql.externs.Type.string();
         GraphQLTypes.Int == graphql.externs.Type.int();
         GraphQLTypes.Float == graphql.externs.Type.float();
@@ -42,10 +41,10 @@ class SimpleClassTests extends utest.Test {
         // Arbitrary Nesting
         Std.string(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.Array(GraphQLTypes.String)))) == '[[[String]]]';
     }
-    
+
     function specGraphQLField() {
         Assert.isOfType(gql, TypeObjectDefinition);
-        @:privateAccess gql.type_name == 'SimpleClass';
+        @:privateAccess gql.typeName == 'SimpleClass';
 
         Assert.isOfType(fields, Array);
         for (f in fields) {
@@ -68,12 +67,13 @@ class SimpleClassTests extends utest.Test {
 
     function specHiddenFieldNotInSchema() {
         Assert.isNull(Util.getFieldDefinitionByName(fields, 'hidden_field'));
+        Assert.isNull(Util.getFieldDefinitionByName(fields, 'toString'));
     }
 
     function specDeprecatedStringField() {
         var field = Util.getFieldDefinitionByName(fields, 'deprecated_string_field');
         Assert.notNull(field);
-        if(field != null) {
+        if (field != null) {
             field.deprecationReason == 'With a deprecation reason';
         }
     }
@@ -81,7 +81,7 @@ class SimpleClassTests extends utest.Test {
     function specIntField() {
         var field = Util.getFieldDefinitionByName(fields, 'int_field');
         Assert.notNull(field, 'int_field is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'Int!';
         }
     }
@@ -89,7 +89,7 @@ class SimpleClassTests extends utest.Test {
     function specIntArrayField() {
         var field = Util.getFieldDefinitionByName(fields, 'int_array');
         Assert.notNull(field);
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int!]!';
         }
     }
@@ -97,7 +97,7 @@ class SimpleClassTests extends utest.Test {
     function specNestedIntArrayField() {
         var field = Util.getFieldDefinitionByName(fields, 'nested_int_array');
         Assert.notNull(field);
-        if(field != null) {
+        if (field != null) {
             var field = Util.getFieldDefinitionByName(fields, 'nested_int_array');
             Std.string(field.type) == '[[[Int!]!]!]!';
         }
@@ -106,7 +106,7 @@ class SimpleClassTests extends utest.Test {
     function specFloatField() {
         var field = Util.getFieldDefinitionByName(fields, 'float_field');
         Assert.notNull(field, 'float_field is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'Float!';
         }
     }
@@ -114,7 +114,7 @@ class SimpleClassTests extends utest.Test {
     function specNullableString() {
         var field = Util.getFieldDefinitionByName(fields, 'nullable_string');
         Assert.notNull(field, 'nullable_string is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'String';
         }
     }
@@ -122,7 +122,7 @@ class SimpleClassTests extends utest.Test {
     function specNullableArrayOfInts() {
         var field = Util.getFieldDefinitionByName(fields, 'nullable_array_of_ints');
         Assert.notNull(field, 'nullable_array_of_ints is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int!]';
         }
     }
@@ -130,7 +130,7 @@ class SimpleClassTests extends utest.Test {
     function specNullableArrayOfNullableInts() {
         var field = Util.getFieldDefinitionByName(fields, 'nullable_array_of_nullable_ints');
         Assert.notNull(field, 'nullable_array_of_nullable_ints is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int]';
         }
     }
@@ -138,7 +138,7 @@ class SimpleClassTests extends utest.Test {
     function specBoolField() {
         var field = Util.getFieldDefinitionByName(fields, 'bool_field');
         Assert.notNull(field, 'bool_field is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'Boolean!';
         }
     }
@@ -146,7 +146,7 @@ class SimpleClassTests extends utest.Test {
     function specOptionalString() {
         var field = Util.getFieldDefinitionByName(fields, 'optional_string');
         Assert.notNull(field, 'optional_string is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'String';
         }
     }
@@ -154,7 +154,7 @@ class SimpleClassTests extends utest.Test {
     function specOptionalArrayOfInts() {
         var field = Util.getFieldDefinitionByName(fields, 'optional_array_of_ints');
         Assert.notNull(field, 'optional_array_of_ints is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == '[Int!]';
         }
     }
@@ -166,15 +166,15 @@ class SimpleClassTests extends utest.Test {
     function specStructInitClass() {
         var object : SimpleStructClass = {int_value: 32};
         object.gql.description == 'A simple class using @:structInit instead of new()';
-        @:privateAccess var fields = object.gql.fields();
-        var field = Util.getFieldDefinitionByName(fields, 'int_value');
+        @:privateAccess var theseFields = object.gql.fields();
+        var field = Util.getFieldDefinitionByName(theseFields, 'int_value');
         Assert.notNull(field);
         field.resolve == null;
     }
     function specIdField() {
         var field = Util.getFieldDefinitionByName(fields, 'id');
         Assert.notNull(field, 'id is missing');
-        if(field != null) {
+        if (field != null) {
             Std.string(field.type) == 'ID!';
         }
     }
@@ -186,9 +186,9 @@ class SimpleClassTests extends utest.Test {
 class SimpleClass implements GraphQLObject {
     public function new(){}
     public var id:graphql.IDType;
-	/**
-		This is the `simple_string_field` documentation
-	**/
+    /**
+        This is the `simple_string_field` documentation
+    **/
     public var simple_string_field:String;
 
     /**
@@ -197,6 +197,9 @@ class SimpleClass implements GraphQLObject {
     @:GraphQLHide
     public var hidden_field : String;
 
+    public function toString() : String {
+        return "This is a special case, and should NOT appear in the schema";
+    }
 
     /**
         This field is a deprecated `String`
@@ -208,12 +211,9 @@ class SimpleClass implements GraphQLObject {
     public var int_field:Int;
     public var float_field:Float;
 
-
     public var int_array:Array<Int>;
 
-
     public var nested_int_array:Array<Array<Array<Int>>>;
-
 
     public var nullable_string: Null<String>;
     @:optional public var optional_string: String;

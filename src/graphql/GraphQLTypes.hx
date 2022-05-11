@@ -2,16 +2,45 @@ package graphql;
 
 import graphql.externs.Type;
 
+/**
+    This class contains a set of constants representing primitive scalar types
+**/
+@SuppressWarnings("checkstyle:ConstantName", "checkstyle:MethodName") // These constants come from type names, and must match
 class GraphQLTypes {
-    public static var Int = Type.int();
-    public static var String = Type.string();
-    public static var Float = Type.float();
-    public static var Bool = Type.boolean();
-    public static var IDType = Type.id();
-    public static function NonNull(type:Dynamic) {
+    /**
+        GraphQL Native Integer type
+    **/
+    public static final Int : Any = Type.int();
+    /**
+        GraphQL Native String type
+    **/
+    public static final String : Any = Type.string();
+    /**
+        GraphQL Native Float type
+    **/
+    public static final Float : Any = Type.float();
+    /**
+        GraphQL Native Boolean type
+    **/
+    public static final Bool : Any = Type.boolean();
+    /**
+        GraphQL Native ID type
+    **/
+    public static final IDType : Any = Type.id();
+    /**
+        Transforms passed type into a non-nullable type.
+
+        @param type Any valid (nullable) GraphQL type
+    **/
+    public static function NonNull(type:Any) : Any {
         return Type.nonNull(type);
     }
-    public static function Array(type:Dynamic) {
+    /**
+        Transforms passed type into an Array of that type.
+
+        @param type Any valid GraphQL type
+    **/
+    public static function Array(type:Any) : Any {
         return Type.listOf(type);
     }
 }

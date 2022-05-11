@@ -1,11 +1,9 @@
 package tests.cases;
 
-import graphql.GraphQLError;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 import utest.Assert;
 import graphql.externs.NativeArray;
-
 
 using graphql.Util;
 using StringTools;
@@ -33,7 +31,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "mutationOnlyField" on type "MutationTestObject"') == true;
     }
@@ -51,7 +49,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyFieldExplicit" on type "MutationTestObjectMutation"') == true;
 
@@ -61,7 +59,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "MutationTestObjectMutation"') == true;
     }
@@ -79,7 +77,6 @@ class MutationTest extends utest.Test {
         dynamicMutationReturnTest.queryOnlyField == "Query Only";
         dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObject";
 
-
         var response = server.executeQuery('{
             dynamicMutationReturnTest {
                 mutationOnlyField
@@ -90,7 +87,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "mutationOnlyField" on type "DynamicMutationReturnTestObject"') == true;
 
@@ -106,7 +103,6 @@ class MutationTest extends utest.Test {
         dynamicMutationReturnTest.mutationOnlyField == "Mutation Only";
         dynamicMutationReturnTest.__typename == "DynamicMutationReturnTestObjectMutation";
 
-
         var response = server.executeQuery('mutation {
             dynamicMutationReturnTest {
                 queryOnlyField
@@ -117,7 +113,7 @@ class MutationTest extends utest.Test {
 
         var errors = response.errors;
         // errors.length == 1;
-        var error = errors[0];
+        var error : graphql.externs.Error = errors[0];
         var error_message : String = @:privateAccess error.getMessage();
         error_message.startsWith('Cannot query field "queryOnlyField" on type "DynamicMutationReturnTestObjectMutation"') == true;
     }
@@ -132,7 +128,6 @@ class MutationTest extends utest.Test {
         var data : NativeArray = response.data;
         var dynamicRenamedMutationReturnTest : NativeArray = data.dynamicRenamedMutationReturnTest;
         dynamicRenamedMutationReturnTest.__typename == "CustomMutationReturn";
-
 
         // Query
         var response = server.executeQuery('{
@@ -154,13 +149,12 @@ class MutationTest extends utest.Test {
         }');
         var data : NativeArray = response.data;
         Assert.notNull(data.__type);
-        if(data.__type != null) {
+        if (data.__type != null) {
             var __type : NativeArray = data.__type;
             __type.description == 'This is a custom Mutation return object';
         }
     }
 }
-
 
 class MutationTestObject implements GraphQLObject {
     public function new() {}
@@ -173,7 +167,7 @@ class MutationTestObject implements GraphQLObject {
 
     @:query @:mutation public var bothField : String = "Will appear on both";
     @:query @:mutation public var dynamicMutationReturnTest : DynamicMutationReturnTestObject = new DynamicMutationReturnTestObject();
-    
+
     @:query @:mutation public var dynamicRenamedMutationReturnTest : RenamedDynamicMutationReturnTestObject = new RenamedDynamicMutationReturnTestObject();
 
 }

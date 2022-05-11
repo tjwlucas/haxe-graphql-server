@@ -1,9 +1,23 @@
 package graphql;
 
+/**
+    Object representing a property argument field on the generated GraphQL schema
+**/
 typedef GraphQLArgField = {
-    public var name: String;
-    public var type: Dynamic;
-    public var description: Null<String>;
-    public var ?defaultValue : Null<Dynamic>;
-
+    /**
+        Name of the argument field on the GraphQL Schema
+    **/
+    var name: String;
+    /**
+        GraphQL type of the input field on the schema
+    **/
+    var type: Any;
+    /**
+        Description for the argument field
+    **/
+    var description: Null<String>;
+    /**
+        (Optional) Default value passed in, if none provided
+    **/
+    var ?defaultValue : Null<Any>;
 }

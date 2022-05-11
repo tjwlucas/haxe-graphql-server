@@ -6,3 +6,5 @@ manual_test.php
 library.zip
 node_modules
 package-lock.json
+.unittest
+.vscode

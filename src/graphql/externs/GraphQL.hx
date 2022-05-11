@@ -1,18 +1,22 @@
 package graphql.externs;
 
-import graphql.externs.NativeArray;
-
-#if php @:native('GraphQL\\GraphQL')
-#elseif js @:jsRequire('graphql')
+#if php @:native("GraphQL\\GraphQL")
+#elseif js @:jsRequire("graphql")
 #end
 extern class GraphQL {
     #if js inline #end
-    public static function executeQuery(schema: Schema, query: String, rootValue : Dynamic, ?contextValue : Dynamic, ?variables: NativeArray, ?operationName:String) : ExecutionResult
-    #if js
-    {
+    public static function executeQuery(
+        schema: Schema,
+        query: String,
+        rootValue : Any,
+        ?contextValue : Any,
+        ?variables: NativeArray,
+        ?operationName:String
+    ) : ExecutionResult
+    #if js {
         var ast = Language.parse(query);
         var invalidErrors = validate(schema, ast);
-        if(invalidErrors.length > 0) {
+        if (invalidErrors.length > 0) {
             return {
                 errors: invalidErrors
             };
@@ -31,18 +35,18 @@ extern class GraphQL {
 
     #if js
     static function execute(parameters: {
-        schema: Schema, document: JsDocument, ?rootValue:Dynamic, ?contextValue:Dynamic, ?variableValues: NativeArray, ?operationName: String
-    }) : ExecutionResult;
+        schema: Schema, document: JsDocument, ?rootValue:Any, ?contextValue:Any, ?variableValues: NativeArray, ?operationName: String
+        }) : ExecutionResult;
 
     static function validate(schema: Schema, document: JsDocument) : Array<Error>;
     #end
 }
 
 #if js
-    extern class JsDocument {}
+extern class JsDocument {}
 
-    @:jsRequire('graphql')
-    extern class Language {
-        public static function parse(source:String, ?options:Dynamic) : JsDocument;
-    }
+@:jsRequire("graphql")
+extern class Language {
+    public static function parse(source:String, ?options:Any) : JsDocument;
+}
 #end

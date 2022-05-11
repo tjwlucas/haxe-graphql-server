@@ -3,10 +3,10 @@ package tests;
 #if js
 import graphql.externs.js.Process;
 #end
-import graphql.GraphQLError;
 import graphql.GraphQLObject;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
+import graphql.Util;
 using Math;
 
 class Manual {
@@ -16,12 +16,9 @@ class Manual {
         server.run();
     }
 
-	static function __init__() {
-        #if php
-		// PHP 8.1 compatibility workaround https://github.com/HaxeFoundation/haxe/issues/10502
-		untyped if (version_compare(PHP_VERSION, "8.1.0", ">=")) error_reporting(error_reporting() & ~E_DEPRECATED);
-        #end
-	}
+    static function __init__() {
+        Util.phpCompat();
+    }
 }
 
 @:typeName("Query")
@@ -34,14 +31,14 @@ class ManualTest implements GraphQLObject {
 
     public static function calledCount() : Int {
         #if js
-            var requestValues = Process.domain.requestValues;
-            if(!requestValues.exists("CALLED_COUNT")) {
-                requestValues["CALLED_COUNT"] = 1;
-            }
-            return Process.domain.requestValues["CALLED_COUNT"]++;
+        var requestValues = Process.domain.requestValues;
+        if (!requestValues.exists("CALLED_COUNT")) {
+            requestValues["CALLED_COUNT"] = 0;
+        }
+        return ++Process.domain.requestValues["CALLED_COUNT"];
         #end
         #if php
-            return _calledCount++;
+        return ++_calledCount;
         #end
     }
 
@@ -51,9 +48,7 @@ class ManualTest implements GraphQLObject {
     public var loaded:Bool = true;
 
     public function platform() : String {
-        #if php return "PHP";
-        #elseif js return "Javascript";
-        #end
+        return graphql.macro.Util.getTargetMacro();
     }
 
     @:validationContext(var capName = (name:String).toUpperCase())
@@ -69,7 +64,7 @@ class ManualTest implements GraphQLObject {
     @:validate(min <= max, 'min ($min) cannot be greater than max ($max)')
     @:validateResult( !result.contains(0), 'The result contains a 0 (${Std.string(result)})', "invalid_response")
     public function randomInts(n : Int = 10, min : Int = 1, max : Int  = 10) : Null<Array<Int>> {
-        return [for(i in 0...n) (Math.random() * (max - min + 1)).floor() + min];
+        return [for (i in 0...n) (Math.random() * (max - min + 1)).floor() + min];
     }
 
     public function person(name:String = "Me") : ManualPerson {
@@ -97,7 +92,7 @@ class NestedDeferredTestObject implements GraphQLObject {
     public var n : Int;
 
     public function new(n:Int) {
-        this.n = n ;
+        this.n = n;
     }
 
     @:deferred(NestedDeferredLoader, obj.n + 1)
@@ -108,11 +103,11 @@ class NestedDeferredTestObject implements GraphQLObject {
 }
 
 class NestedDeferredLoader extends DeferredLoader {
-    public static var runBatches = [];
+    public static final runBatches : Array<Array<Int>> = [];
     static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
         runBatches.push(keys);
-        for(key in keys) {
+        for (key in keys) {
             results[key] = new NestedDeferredTestObject(key);
         }
         return results;

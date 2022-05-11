@@ -1,14 +1,11 @@
 package tests.cases;
 
-import sys.io.File;
 import graphql.externs.Error;
-import graphql.GraphQLError;
 import utest.Assert;
 import graphql.GraphQLServer;
 import graphql.DeferredLoader;
 import graphql.GraphQLObject;
 import utest.Test;
-import graphql.externs.Deferred;
 using graphql.Util;
 import graphql.externs.NativeArray;
 
@@ -21,9 +18,7 @@ import php.NativeArray;
 @:build(hxasync.AsyncMacro.build())
 #end
 class DeferredTest extends Test {
-    function setup() {
-
-    }
+    function setup() {}
 
     @async function specDeferredResolver(async:utest.Async) {
         var base = new DeferredTestObject();
@@ -73,13 +68,13 @@ class DeferredTest extends Test {
         @:privateAccess Assert.same(
             [],
             DeferredTestLoader.keys
-            );
-            @:privateAccess Assert.notNull(DeferredTestLoader.values);
-            @:privateAccess Assert.same([
-                42 => "This is the value for id 42, loaded",
-                367 => "This is the value for id 367, loaded",
-                13 => "This is the value for id 13, loaded",
-            ], DeferredTestLoader.values);
+        );
+        @:privateAccess Assert.notNull(DeferredTestLoader.values);
+        @:privateAccess Assert.same([
+            42 => "This is the value for id 42, loaded",
+            367 => "This is the value for id 367, loaded",
+            13 => "This is the value for id 13, loaded",
+        ], DeferredTestLoader.values);
         #end
 
         Assert.notNull(result.errors);
@@ -97,7 +92,7 @@ class DeferredTest extends Test {
     @async function specNestedDeferredResolver(async:utest.Async) {
         var base = new DeferredTestObject();
         var server = new GraphQLServer(base);
-        var result = @await server.executeQuery("{
+        @await server.executeQuery("{
             top1: getNested(id: 3) {
                 n
                 getNext {
@@ -131,8 +126,8 @@ class DeferredTest extends Test {
           }
           ");
         Assert.same([
-            [3,0],
-            [4,1],
+            [3, 0],
+            [4, 1],
             [2]
         ], NestedDeferredLoader.runBatches);
         async.done();
@@ -141,10 +136,10 @@ class DeferredTest extends Test {
 
 class DeferredTestObject implements GraphQLObject {
     public function new() {}
-    
+
     @:deferred(tests.cases.DeferredTestLoader)
     public function getValue(id:Int) : String;
-    
+
     @:deferred(tests.cases.DeferredStaticTestLoader)
     @:validateResult(result != 98)
     public function getStaticValue(id:String) : Null<Int>;
@@ -170,7 +165,7 @@ class DeferredTestObject implements GraphQLObject {
 class DeferredTestSubObject implements GraphQLObject {
     public function new() {}
 
-    var objectProperty = 13;
+    var objectProperty : Int = 13;
 
     @:deferred(tests.cases.DeferredTestLoader)
     public function getValue(id:Int) : String;
@@ -182,18 +177,17 @@ class DeferredTestSubObject implements GraphQLObject {
 class DeferredTestLoader extends DeferredLoader {
     static function load(keys:Array<Int>) : Map<Int, String> {
         #if php
-        if(runCount > 0) {
+        if (runCount > 0) {
             throw "Load function should not be called more than once";
         }
         #end
         var results : Map<Int, String> = [];
-        for(key in keys) {
+        for (key in keys) {
             results[key] = 'This is the value for id $key, loaded';
         }
         return results;
     }
 }
-
 
 /**
     Trivial example with different types
@@ -211,7 +205,7 @@ class NestedDeferredTestObject implements GraphQLObject {
     public var n : Int;
 
     public function new(n:Int) {
-        this.n = n ;
+        this.n = n;
     }
 
     @:deferred(NestedDeferredLoader, obj.n + 1)
@@ -222,11 +216,11 @@ class NestedDeferredTestObject implements GraphQLObject {
 }
 
 class NestedDeferredLoader extends DeferredLoader {
-    public static var runBatches = [];
+    public static final runBatches : Array<Array<Int>> = [];
     static function load(keys:Array<Int>) : Map<Int, NestedDeferredTestObject> {
         var results : Map<Int, NestedDeferredTestObject> = [];
         runBatches.push(keys);
-        for(key in keys) {
+        for (key in keys) {
             results[key] = new NestedDeferredTestObject(key);
         }
         return results;

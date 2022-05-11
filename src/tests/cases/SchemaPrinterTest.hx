@@ -1,7 +1,6 @@
 package tests.cases;
 
 import graphql.IDType;
-import sys.io.File;
 import graphql.GraphQLServer;
 import graphql.GraphQLObject;
 
@@ -26,9 +25,9 @@ class SchemaPrinterTest extends utest.Test {
 class SchemaPrintTestObject implements GraphQLObject {
     public function new(){}
     public var id:IDType;
-	/**
-		This is the `simple_string_field` documentation
-	**/
+    /**
+        This is the `simple_string_field` documentation
+    **/
     public var simple_string_field:String;
 
     /**

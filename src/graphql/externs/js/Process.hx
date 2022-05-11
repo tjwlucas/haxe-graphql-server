@@ -1,6 +1,6 @@
 package graphql.externs.js;
 
-@:native('process')
+@:native("process")
 extern class Process {
     static var domain : Domain;
 }

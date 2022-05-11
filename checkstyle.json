@@ -1,0 +1,517 @@
+{
+	"defaultSeverity": "ERROR",
+	"extendsConfigPath": "",
+	"numberOfCheckerThreads": 5,
+	"baseDefines": [],
+	"defineCombinations": [],
+	"checks": [
+        {
+			"type": "BlockBreakingConditional"
+		},
+		{
+			"type": "EmptyBlock",
+			"props": {
+				"option": "empty"
+			}
+		},
+		{
+			"type": "NeedBraces",
+			"props": {
+				"allowSingleLineStatement": true,
+				"tokens": [
+					"CATCH",
+					"DO_WHILE",
+					"ELSE_IF",
+					"FUNCTION",
+					"IF",
+					"WHILE"
+				]
+			}
+		},
+		{
+			"type": "LeftCurly",
+			"props": {
+				"option": "eol",
+				"ignoreEmptySingleline": true
+			}
+		},
+		{
+			"type": "RightCurly",
+			"props": {
+				"option": "aloneorsingle",
+				"tokens": [
+					"ABSTRACT_DEF",
+					"ARRAY_COMPREHENSION",
+					"CATCH",
+					"CLASS_DEF",
+					"ENUM_DEF",
+					"FOR",
+					"FUNCTION",
+					"INTERFACE_DEF",
+					"OBJECT_DECL",
+					"REIFICATION",
+					"SWITCH",
+					"TYPEDEF_DEF",
+					"WHILE"
+				]
+			}
+		},
+		{
+			"type": "ArrowFunction",
+			"props": {
+				"allowCurlyBody": true,
+				"allowFunction": false,
+				"allowReturn": true,
+				"allowSingleArgParens": true
+			}
+		},
+		{
+			"type": "CodeSimilarity",
+			"props": {
+				"thresholdIdentical": 12,
+				"thresholdSimilar": 32,
+				"severityIdentical": "WARNING",
+				"severity": "WARNING"
+			}
+		},
+		{
+			"type": "DefaultComesLast"
+		},
+		{
+			"type": "HiddenField"
+		},
+		{
+			"type": "InnerAssignment"
+		},
+		{
+			"type": "MagicNumber",
+			"props": {
+				"ignoreNumbers": [-1, 0, 1, 2, 3]
+			}
+		},
+		{
+			"type": "NestedControlFlow",
+			"props": {
+				"max": 3
+			}
+		},
+		{
+			"type": "NestedForDepth",
+			"props": {
+				"max": 1
+			}
+		},
+		{
+			"type": "NestedIfDepth",
+			"props": {
+				"max": 2
+			}
+		},
+		{
+			"type": "NestedTryDepth",
+			"props": {
+				"max": 1
+			}
+		},
+		{
+			"type": "NullableParameter",
+			"props": {
+				"option": "questionMark"
+			}
+		},
+		{
+			"type": "ReturnCount",
+			"props": {
+				"max": 2
+			}
+		},
+		{
+			"type": "SimplifyBooleanExpression"
+		},
+		{
+			"type": "SimplifyBooleanReturn"
+		},
+		{
+			"type": "Trace"
+		},
+		{
+			"type": "UnusedLocalVar"
+		},
+		{
+			"type": "DocCommentStyle",
+			"props": {
+				"lineStyle": "none",
+				"startStyle": "twostars"
+			}
+		},
+		{
+			"type": "FieldDocComment",
+			"props": {
+				"modifier": "PUBLIC",
+				"requireReturn": false,
+				"excludeNames": [
+					"__str__",
+					"new"
+				],
+				"tokens": [
+					"CLASS_DEF",
+					"INTERFACE_DEF",
+					"TYPEDEF_DEF"
+				]
+			}
+		},
+		{
+			"type": "TODOComment",
+			"props": {
+				"severity": "INFO"
+			}
+		},
+		{
+			"type": "TypeDocComment"
+		},
+		{
+			"type": "EmptyPackage",
+			"props": {
+				"enforceEmptyPackage": false
+			}
+		},
+		{
+			"type": "UnnecessaryConstructor"
+		},
+		{
+			"type": "AvoidStarImport"
+		},
+		{
+			"type": "UnusedImport"
+		},
+		{
+			"type": "ArrayLiteral"
+		},
+		{
+			"type": "ERegLiteral"
+		},
+		{
+			"type": "HexadecimalLiteral"
+		},
+		{
+			"type": "MultipleStringLiterals",
+			"props": {
+				"allowDuplicates": 1,
+				"minLength": 2
+			}
+		},
+		{
+			"type": "StringLiteral",
+			"props": {
+				"allowException": true,
+				"policy": "doubleAndInterpolation"
+			}
+		},
+		{
+			"type": "RedundantAccessMeta"
+		},
+		{
+			"type": "RedundantAllowMeta"
+		},
+		{
+			"type": "CyclomaticComplexity",
+			"props": {
+				"thresholds": [
+					{
+						"severity": "INFO",
+						"complexity": 6
+					},
+					{
+						"severity": "WARNING",
+						"complexity": 11
+					},
+					{
+						"severity": "ERROR",
+						"complexity": 21
+					}
+				]
+			}
+		},
+		{
+			"type": "Final"
+		},
+		{
+			"type": "ModifierOrder",
+			"props": {
+				"modifiers": [
+					"OVERRIDE",
+					"PUBLIC_PRIVATE",
+					"STATIC",
+					"INLINE",
+					"MACRO",
+					"DYNAMIC"
+				]
+			}
+		},
+		{
+			"type": "PublicAccessor"
+		},
+		{
+			"type": "RedundantModifier"
+		},
+		{
+			"type": "CatchParameterName",
+			"props": {
+				"format": "^e$"
+			}
+		},
+		{
+			"type": "ConstantName",
+			"props": {
+				"format": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"
+			}
+		},
+		{
+			"type": "LocalVariableName"
+		},
+		{
+			"type": "MemberName",
+			"props": {
+				"format": "^[a-z][a-zA-Z0-9]*$",
+				"tokens": [
+					"PUBLIC",
+					"PRIVATE",
+					"CLASS"
+				]
+			}
+		},
+		{
+		  "type": "MemberName",
+		  "props": {
+			"format": "^[A-Z][a-zA-Z0-9]*$",
+			"tokens": [
+			  "ENUM"
+			]
+		  }
+		},
+		{
+			"type": "MethodName",
+            "props": {
+                "format": "^__init__$|^[a-z][a-zA-Z0-9]*$"
+            }
+		},
+		{
+			"type": "ParameterName"
+		},
+		{
+			"type": "TypeName",
+			"props": {
+				"severity": "ERROR",
+				"format": "^[A-Z]+[a-zA-Z0-9]*$",
+				"tokens": [
+					"CLASS",
+					"ENUM",
+					"TYPEDEF",
+					"ABSTRACT",
+					"INTERFACE"
+				]
+			}
+		},
+		{
+			"type": "FileLength",
+			"props": {
+				"max": 500,
+				"ignoreEmptyLines": true
+			}
+		},
+		{
+			"type": "LineLength"
+		},
+		{
+			"type": "MethodCount",
+			"props": {
+				"maxTotal": 100,
+				"maxPublic": 20
+			}
+		},
+		{
+			"type": "MethodLength",
+			"props": {
+				"max": 100,
+				"ignoreEmptyLines": true
+			}
+		},
+		{
+			"type": "ParameterNumber"
+		},
+		{
+			"type": "Anonymous"
+		},
+		{
+			"type": "Dynamic",
+			"props": {
+				"severity": "WARNING"
+			}
+		},
+		{
+			"type": "Return",
+			"props": {
+				"enforceReturnType": true,
+				"allowEmptyReturn": true,
+				"enforceReturnTypeForAnonymous": false
+			}
+		},
+		{
+			"type": "Type",
+			"props": {
+				"ignoreEnumAbstractValues": true
+			}
+		},
+		{
+			"type": "ArrayAccess",
+			"props": {
+				"spaceBefore": false,
+				"spaceInside": false
+			}
+		},
+		{
+			"type": "EmptyLines",
+			"props": {
+				"allowEmptyLineAfterMultiLineComment": false,
+				"allowEmptyLineAfterSingleLineComment": false,
+				"max": 1,
+				"requireEmptyLineAfterAbstract": false,
+				"requireEmptyLineAfterClass": false,
+				"requireEmptyLineAfterInterface": false,
+				"requireEmptyLineAfterPackage": true
+			}
+		},
+		{
+			"type": "Indentation",
+			"props": {
+				"character": "    ",
+				"conditionalPolicy": "ignore",
+				"wrapPolicy": "exact"
+			}
+		},
+		{
+			"type": "OperatorWhitespace",
+			"props": {
+				"arithmeticOpPolicy": "around",
+				"arrowFunctionPolicy": "around",
+				"arrowPolicy": "around",
+				"assignOpPolicy": "around",
+				"bitwiseOpPolicy": "around",
+				"boolOpPolicy": "around",
+				"compareOpPolicy": "around",
+				"intervalOpPolicy": "none",
+				"newFunctionTypePolicy": "around",
+				"oldFunctionTypePolicy": "around",
+				"ternaryOpPolicy": "around",
+				"unaryOpPolicy": "none"
+			}
+		},
+		{
+			"type": "OperatorWrap",
+			"props": {
+				"option": "nl"
+			}
+		},
+		{
+			"type": "SeparatorWhitespace",
+			"props": {
+				"commaPolicy": "after",
+				"dotPolicy": "none",
+				"semicolonPolicy": "after",
+				"allowTrailingComma": true
+			}
+		},
+		{
+			"type": "SeparatorWrap",
+			"props": {
+				"option": "nl",
+				"tokens": [
+					"."
+				]
+			}
+		},
+		{
+			"type": "SeparatorWrap",
+			"props": {
+				"option": "eol",
+				"tokens": [
+					","
+				]
+			}
+		},
+		{
+			"type": "Spacing",
+			"props": {
+				"ignoreRangeOperator": true,
+				"noSpaceAroundUnop": true,
+				"spaceAroundBinop": true,
+				"spaceCatch": "should",
+				"spaceForLoop": "should",
+				"spaceIfCondition": "should",
+				"spaceSwitchCase": "should",
+				"spaceWhileLoop": "should"
+			}
+		},
+		{
+			"type": "TrailingWhitespace"
+		}
+    ],
+	"exclude": {
+		"all": [],
+		"MagicNumber": [
+			"Tests?$",
+			"Manual$"
+		],
+		"StringLiteral": [
+			"Tests?$",
+			"Manual$"
+		],
+		"MultipleStringLiterals": [
+			"Tests?$",
+			"Manual$"
+		],
+		"Return": [
+			"Tests?$",
+			"Manual$"
+		],
+		"TypeDocComment": [
+			"/tests/",
+			"/externs/"
+		],
+		"CodeSimilarity": [
+			"Tests?$",
+			"Manual$"
+		],
+		"SimplifyBooleanExpression": [
+			"Tests?$"
+		],
+		"UnusedLocalVar" : [
+			"Manual$"
+		],
+		"FieldDocComment" : [
+			"Tests?",
+			"Manual$",
+			"/externs/"
+		],
+		"ConstantName": [
+			"Tests?",
+			"Manual$"
+		],
+		"LocalVariableName": [
+			"Tests?",
+			"Manual$"
+		],
+		"MemberName": [
+			"Tests?",
+			"Manual$"
+		],
+		"MethodLength": [
+			"Tests?$"
+		],
+		"MethodCount": [
+			"/tests/",
+			"/externs/"
+		]
+	},
+	"version": 1
+}

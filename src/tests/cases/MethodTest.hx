@@ -1,6 +1,5 @@
 package tests.cases;
 
-import graphql.GraphQLTypes;
 import graphql.GraphQLField;
 import graphql.GraphQLObject;
 
@@ -19,7 +18,8 @@ class MethodTest extends utest.Test {
         arg['name'] == 'name';
         Std.string(arg['type']) == 'String!';
         arg.exists('defaultValue') == false;
-    } 
+    }
+
     function specMethodTestAdd() {
         var field = fields.getFieldDefinitionByName('add');
         Std.string(field.type) == 'Float!';
@@ -32,7 +32,8 @@ class MethodTest extends utest.Test {
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
         arg.exists('defaultValue') == false;
-    } 
+    }
+
     function specMethodTestRandomList() {
         var field = fields.getFieldDefinitionByName('randomList');
         Std.string(field.type) == '[Float!]!';
@@ -40,7 +41,8 @@ class MethodTest extends utest.Test {
         arg['name'] == 'n';
         Std.string(arg['type']) == 'Int!';
         arg.exists('defaultValue') == false;
-    } 
+    }
+
     function specMethodTestRandomListWithDefault() {
         var field = fields.getFieldDefinitionByName('randomListWithDefault');
         Std.string(field.type) == '[Float!]!';
@@ -50,7 +52,7 @@ class MethodTest extends utest.Test {
         Std.string(arg['type']) == 'Int';
         arg.exists('defaultValue') == true;
         arg['defaultValue'] == 5;
-    }    
+    }
 
     function specMethodWithPassedInContext() {
         var field = fields.getFieldDefinitionByName('addWithPassedInContext');
@@ -86,7 +88,7 @@ class MethodTest extends utest.Test {
         arg['name'] == 'y';
         Std.string(arg['type']) == 'Float!';
     }
-    
+
     function specMethodTestGetFromId() {
         var field = fields.getFieldDefinitionByName('getFromId');
         Std.string(field.type) == 'String!';
@@ -94,7 +96,7 @@ class MethodTest extends utest.Test {
         arg['name'] == 'id';
         Std.string(arg['type']) == 'ID!';
         arg.exists('defaultValue') == false;
-    } 
+    }
 }
 
 class MethodTestObject implements GraphQLObject {
@@ -113,23 +115,23 @@ class MethodTestObject implements GraphQLObject {
     }
 
     public function randomList(n:Int) : Array<Float> {
-        return [for (i in 1...(n+1)) Math.random()];
+        return [for (i in 1...(n + 1)) Math.random()];
     }
 
     public function randomListWithDefault(n:Int = 5) : Array<Float> {
-        return [for (i in 1...(n+1)) Math.random()];
+        return [for (i in 1...(n + 1)) Math.random()];
     }
 
-    public function addWithPassedInContext(x:Float, y:Float, ctx:Dynamic) : Float {
+    public function addWithPassedInContext(x:Float, y:Float, ctx:Any) : Float {
         return x + y;
     }
 
     @:context(customContext)
-    public function addWithPassedInCustomContext(x:Float, y:Float, customContext:Dynamic) : Float {
+    public function addWithPassedInCustomContext(x:Float, y:Float, customContext:Any) : Float {
         return x + y;
     }
 
-    public function addWithPassedInContextArbitraryOrder(x:Float, ctx:Dynamic, y:Float) : Float {
+    public function addWithPassedInContextArbitraryOrder(x:Float, ctx:Any, y:Float) : Float {
         return x + y;
     }
 }

@@ -12,36 +12,35 @@ using graphql.Util;
 class TypeObjectDefinition {
     /**
         Name given to the type in GraphQL queries
-    **/ 
-    var type_name: String;
+    **/
+    var typeName: String;
 
     /**
         Name given to the type in GraphQL queries
     **/
-    var mutation_name : String;
+    var mutationName : String;
 
     /**
         Array of fields, constructed from the class to be added to the GraphQL query type object
     **/
-    var fields: Void->Array<graphql.GraphQLField>;
+    var fields: Void -> Array<graphql.GraphQLField>;
 
     /**
         GraphQL query object type definition, as passed to the `graphql-php` library
     **/
     public var type : ObjectType;
-    
+
     /**
         Array of fields, constructed from the class to be added to the GraphQL mutation type object
     **/
-    var mutation_fields: Void->Null<Array<graphql.GraphQLField>>;
+    var mutationFields: Void -> Null<Array<graphql.GraphQLField>>;
 
-    var has_mutation : Bool;
-
+    var hasMutation : Bool;
 
     /**
         GraphQL mutation object type definition, as passed to the `graphql-php` library
     **/
-    public var mutation_type : Null<ObjectType>;
+    public var mutationType : Null<ObjectType>;
 
     /**
         Description of the object, generated from the 'doc' style comment at build time
@@ -49,46 +48,39 @@ class TypeObjectDefinition {
     public var description: Null<String>;
 
     public function new(
-        type_name:String, 
-        mutation_name:String, 
-        fields:Void->Array<graphql.GraphQLField>, 
-        mutation_fields: Void->Array<graphql.GraphQLField>,
+        typeName:String,
+        mutationName:String,
+        fields:Void -> Array<graphql.GraphQLField>,
+        mutationFields: Void -> Array<graphql.GraphQLField>,
         description: String,
-        has_mutation: Bool
-        ) {
-        this.type_name = type_name;
+        hasMutation: Bool
+    ) {
+        this.typeName = typeName;
         this.fields = fields;
-        this.mutation_fields = mutation_fields;
-        this.mutation_name = mutation_name;
+        this.mutationFields = mutationFields;
+        this.mutationName = mutationName;
         this.description = description;
-        this.has_mutation = has_mutation;
+        this.hasMutation = hasMutation;
 
-        type  = new ObjectType({
-            name: this.type_name,
-            description: this.description,
+        type = buildTypeObject(this.typeName, this.description, this.fields);
+
+        if (this.hasMutation) {
+            mutationType  = buildTypeObject(this.mutationName, this.description, this.mutationFields);
+        }
+    }
+
+    inline function buildTypeObject(name : String, typeDescription : String, typeFields : Void -> Array<GraphQLField>) : ObjectType {
+        return new ObjectType({
+            name: name,
+            description: typeDescription,
             fields: () -> {
-                var named_fields : Map<String, NativeArray> = [];
+                var namedFields : Map<String, NativeArray> = [];
 
-                for(f in this.fields()) [
-                    named_fields[f.name] = f.associativeArrayOfObject()
+                for (f in typeFields()) [
+                    namedFields[f.name] = f.associativeArrayOfObject()
                 ];
-                return Util.associativeArrayOfHash(named_fields);
+                return Util.associativeArrayOfHash(namedFields);
             }
         }.associativeArrayOfObject());
-
-        if(this.has_mutation) {           
-            mutation_type  = new ObjectType({
-                name: this.mutation_name,
-                description: this.description,
-                fields: () -> {
-                    var named_mutation_fields : Map<String, NativeArray> = [];
-
-                    for(f in this.mutation_fields()) [
-                        named_mutation_fields[f.name] = f.associativeArrayOfObject()
-                    ];
-                    return Util.associativeArrayOfHash(named_mutation_fields);
-                }
-            }.associativeArrayOfObject());
-        }
     }
 }

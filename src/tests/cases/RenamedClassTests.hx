@@ -2,12 +2,10 @@ package tests.cases;
 
 import graphql.externs.NativeArray;
 import graphql.GraphQLServer;
-import graphql.GraphQLTypes;
 import utest.Assert;
 import utest.Test;
 
 import graphql.GraphQLObject;
-
 
 @:typeName('RenamedForGraphQL')
 class RenamedClass implements GraphQLObject {
@@ -21,14 +19,14 @@ class NotRenamedClass implements GraphQLObject {
 }
 
 class RenamedClassTests extends Test {
-    var type = new RenamedClass();
+    var type : GraphQLObject = new RenamedClass();
     function specTypeExists() {
         Assert.notNull(type.gql);
     }
 
     @:depends(specTypeExists)
     function specTypeName() {
-        @:privateAccess type.gql.type_name == 'RenamedForGraphQL';
+        @:privateAccess type.gql.typeName == 'RenamedForGraphQL';
     }
 
     @:depends(specTypeExists)
@@ -42,14 +40,13 @@ class RenamedClassTests extends Test {
     }
 
     function specQuerySchema() {
-	    var base = new RenamedClass();
+        var base = new RenamedClass();
         var server = new GraphQLServer(base);
         var result = server.executeQuery('{__typename}');
         var data : NativeArray = result.data;
         data.__typename == 'RenamedForGraphQL';
 
-
-	    var base = new NotRenamedClass();
+        var base = new NotRenamedClass();
         var server = new GraphQLServer(base);
         var result = server.executeQuery('{__typename}');
         var data : NativeArray = result.data;
