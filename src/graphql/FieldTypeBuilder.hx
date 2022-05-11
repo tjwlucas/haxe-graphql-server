@@ -13,16 +13,33 @@ using graphql.macro.Util;
 **/
 class FieldTypeBuilder {
 
+    /**
+        The default context variable name
+    **/
     static inline final CTX_DEFAULT_VARIABLE_NAME = "ctx";
+    /**
+        "Not a function" error message
+    **/
     static inline final NOT_A_FUNCTION = "Not a function";
 
+    /**
+        Name of the compiler flag to change the default name of the context variable
+    **/
     static inline final GQL_CONTEXT_VARIABLE = "gql_context_variable";
 
     static inline final UNKNOWN = "Unknown";
 
+    /**
+        The AST field this FieldBuilder is being build based upon.
+    **/
     var field:Field;
-    static var types_class = Context.getType("graphql.GraphQLTypes");
-    static var static_field_name_list = TypeTools.getClass(types_class).statics.get().map((field) -> return field.name);
+
+    static final TYPES_CLASS = Context.getType("graphql.GraphQLTypes");
+    /**
+        String list of the names of the properties on the `graphql.GraphQLTypes` class,
+        used to determine if a type is a specified primitive scalar type
+    **/
+    static final PRIMITIVE_TYPE_NAMES = TypeTools.getClass(TYPES_CLASS).statics.get().map((field) -> return field.name);
 
     var type : Expr;
 
@@ -99,8 +116,14 @@ class FieldTypeBuilder {
         return argumentVariableDefinitions;
     }
 
-    function getBaseType(typeParam) {
-        return switch (static_field_name_list) {
+    /**
+        Checks if passed name represents a GraphQL primitive type, if not,
+        checks if it is a class representing a GraphQLObject. In either of these cases, returns the corresponding type.
+
+        @param typeParam String representation of type to be checked
+    **/
+    function getBaseType(typeParam : String) {
+        return switch (PRIMITIVE_TYPE_NAMES) {
             case a if (a.contains(typeParam)): macro graphql.GraphQLTypes.$typeParam;
             case _: try {
                     var cls = Context.getType(typeParam).getClass();
