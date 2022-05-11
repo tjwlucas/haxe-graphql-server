@@ -27,8 +27,6 @@ class FieldTypeBuilder {
     **/
     static inline final GQL_CONTEXT_VARIABLE = "gql_context_variable";
 
-    static inline final UNKNOWN = "Unknown";
-
     /**
         The AST field this FieldBuilder is being build based upon.
     **/
@@ -74,11 +72,11 @@ class FieldTypeBuilder {
     /**
         Specifies whether this FieldTypeBuilder represents the `Query` or `Mutation` version of this field
     **/
-    public var query_type : GraphQLObjectType;
+    var queryType : GraphQLObjectType;
 
     public function new(field:Field, type: GraphQLObjectType = Query) {
         this.field = field;
-        this.query_type = type;
+        this.queryType = type;
         if (isVisible()) {
             buildFieldType();
         }
@@ -127,14 +125,18 @@ class FieldTypeBuilder {
             case a if (a.contains(typeParam)): macro graphql.GraphQLTypes.$typeParam;
             case _: try {
                     var cls = Context.getType(typeParam).getClass();
-                    switch (this.query_type) {
+                    switch (this.queryType) {
                         case (Query): macro $i{cls.name}._gql.type;
                         case (Mutation): macro $i{cls.name}._gql.mutationType;
                     }
                 } catch (e) {
-                    throw new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos);
+                    throw unsupportedTypeError();
                 }
         }
+    }
+
+    function unsupportedTypeError() {
+        new Error('Type declaration ($type) not supported in the GraphQL type builder', field.pos);
     }
 
     function typeFromTPath(name: String, ?params: Array<TypeParam>, nullable = false) {
@@ -175,7 +177,7 @@ class FieldTypeBuilder {
             case(TPType(TPath({name: a, params: p}))):
                 nullableType = typeFromTPath(a, p, true);
             default:
-                getBaseType(UNKNOWN);
+                throw unsupportedTypeError();
         }
         return nullableType;
     }
@@ -186,7 +188,7 @@ class FieldTypeBuilder {
             case(TPType(TPath({name: a, params: p}))):
                 arrayType = typeFromTPath(a, p);
             default:
-                getBaseType(UNKNOWN);
+                throw unsupportedTypeError();
         }
         return arrayType;
     }
@@ -197,7 +199,7 @@ class FieldTypeBuilder {
             case(TPath({name: a, params: p})):
                 returnType = typeFromTPath(a, p);
             default:
-                getBaseType(UNKNOWN);
+                throw unsupportedTypeError();
         }
         return returnType;
     }
@@ -230,8 +232,7 @@ class FieldTypeBuilder {
                 this.args = macro $a{ argList };
                 type = functionReturnType(return_type);
             default:
-                getBaseType(UNKNOWN);
-                type = macro UNKNOWN;
+                throw unsupportedTypeError();
         }
     }
 
@@ -257,7 +258,7 @@ class FieldTypeBuilder {
                     }
                 case [TPath({name: a, params: p}), name]: argNames.push(name);
                 default:
-                    getBaseType(UNKNOWN);
+                    throw unsupportedTypeError();
             }
         }
         return arg_list;
@@ -391,7 +392,7 @@ class FieldTypeBuilder {
         Determines if the field should be visible in the GraphQL Schema
     **/
     public function isVisible() {
-        return switch [hasMeta(Hide), field.name, query_type, hasMeta(MutationField), hasMeta(QueryField)] {
+        return switch [hasMeta(Hide), field.name, queryType, hasMeta(MutationField), hasMeta(QueryField)] {
             // If not explicitly specified, for query or mutation, use public field access
             // Otherwise, base purely on metadata
             case [true, _, _, _, _]: false; // Never show if flagged as hidden
