@@ -206,10 +206,10 @@ class TypeBuilder {
 
             var resolve = switch [validationsCount, postValidationsCount, field.isStatic(), field.isFunction, Context.defined("gql_explicit_resolvers")] {
                 case [0, 0, false, false, false]: {
-                    // Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
+                        // Add @:keep metadata to fields without explicit resolvers, to prevent DCE removing them
                         f.meta.push({name:":keep", pos: Context.currentPos()});
-                    // Prevents creation of redundant anonymous function that simply returns the property value
-                    // (This is already the behaviour of the server when no/null callback is provided)
+                        // Prevents creation of redundant anonymous function that simply returns the property value
+                        // (This is already the behaviour of the server when no/null callback is provided)
                         macro null;
                     }
                 default: macro (obj : $objectType, args : graphql.externs.NativeArray, ctx) -> {
