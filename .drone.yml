@@ -5,7 +5,7 @@ name: Run Tests
 
 platform:
   os: linux
-  arch: arm
+  arch: arm64
 
 steps:
   - name: Check Style
@@ -56,7 +56,7 @@ name: Release
 
 platform:
   os: linux
-  arch: arm
+  arch: arm64
 
 steps:
   - name: Zip Library
@@ -81,6 +81,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 4c5c12d36375cdfac7ebd44201a6dc5a65cb4c11c33142556f7b7ad2a70fc230
+hmac: 53ac53a2ee640608cccf47fb643af48e9575d48e8ab5d025fe06266fd32cc62c
 
 ...
