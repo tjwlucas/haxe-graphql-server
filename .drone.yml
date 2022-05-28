@@ -3,6 +3,10 @@ kind: pipeline
 type: docker
 name: Run Tests
 
+platform:
+  os: linux
+  arch: arm64
+
 steps:
   - name: Check Style
     image: haxe:4.2.4
@@ -49,6 +53,10 @@ steps:
 ---
 kind: pipeline
 name: Release
+
+platform:
+  os: linux
+  arch: arm64
 
 steps:
   - name: Zip Library
