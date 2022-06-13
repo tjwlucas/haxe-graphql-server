@@ -50,6 +50,11 @@ steps:
     commands:
       - node ./bin/tests.js
 
+when:
+  branch:
+    exclude:
+    - gh-pages
+
 ---
 kind: pipeline
 name: Release
