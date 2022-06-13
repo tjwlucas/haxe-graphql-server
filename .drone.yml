@@ -50,10 +50,10 @@ steps:
     commands:
       - node ./bin/tests.js
 
-when:
-  target:
-    exclude:
-    - github-pages
+trigger:
+  event:
+    exclude: 
+      - promote
 
 ---
 kind: pipeline
@@ -86,6 +86,6 @@ depends_on:
 - Run Tests
 ---
 kind: signature
-hmac: 0c9bf3596079afed85366edfd3c95aab859a9d36851d3138427a5db097bbf30c
+hmac: 2cbf222f920ea952de8dd88a4beacbda96b63229100fe084ce232cf66c668d89
 
 ...
