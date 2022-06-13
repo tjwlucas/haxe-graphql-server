@@ -51,7 +51,7 @@ steps:
       - node ./bin/tests.js
 
 when:
-  branch:
+  target:
     exclude:
     - gh-pages
 
