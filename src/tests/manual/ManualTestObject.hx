@@ -34,9 +34,9 @@ class ManualTestObject implements GraphQLObject {
     }
 
     @:validationContext(var capName = (name:String).toUpperCase())
-    @:validationContext(var disallowed = 'me'.toUpperCase())
+    @:validationContext(var disallowed = "me".toUpperCase())
     @:validate(capName != disallowed, 'You are not allowed to greet "$name"')
-    public function greet(name : String = 'Sir') : String {
+    public function greet(name : String = "Sir") : String {
         return 'Hello, $name';
     }
 
