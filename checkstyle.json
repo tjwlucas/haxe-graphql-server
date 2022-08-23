@@ -460,19 +460,23 @@
 		"all": [],
 		"MagicNumber": [
 			"Tests?$",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"StringLiteral": [
 			"Tests?$",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"MultipleStringLiterals": [
 			"Tests?$",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"Return": [
 			"Tests?$",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"TypeDocComment": [
 			"/tests/",
@@ -480,30 +484,36 @@
 		],
 		"CodeSimilarity": [
 			"Tests?$",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"SimplifyBooleanExpression": [
 			"Tests?$"
 		],
 		"UnusedLocalVar" : [
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"FieldDocComment" : [
 			"Tests?",
 			"Manual$",
+			"manual/",
 			"/externs/"
 		],
 		"ConstantName": [
 			"Tests?",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"LocalVariableName": [
 			"Tests?",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"MemberName": [
 			"Tests?",
-			"Manual$"
+			"Manual$",
+			"manual/"
 		],
 		"MethodLength": [
 			"Tests?$"

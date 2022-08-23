@@ -14,5 +14,3 @@ class ManualPerson implements GraphQLObject {
         return 'Hello, $name, my name is $_name';
     }
 }
-
-
