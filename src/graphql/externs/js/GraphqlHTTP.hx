@@ -5,6 +5,7 @@ extern class GraphqlHTTP {
     @:selfCall public function new(options:{
         schema: Schema,
         rootValue: Any,
-        graphiql: Bool
+        graphiql: Bool,
+        ?context: Any
     });
 }

@@ -108,7 +108,8 @@ class GraphQLServer {
         app.use("/", new graphql.externs.js.GraphqlHTTP({
             schema: this.schema,
             rootValue: this.root,
-            graphiql: true
+            graphiql: true,
+            context: context
         }));
         var portString = Sys.args()[0];
         var port = Std.parseInt(portString);
