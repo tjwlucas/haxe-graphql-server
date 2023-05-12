@@ -323,7 +323,7 @@ class FieldTypeBuilder {
         Returns expression of the function body (If the field is a function)
     **/
     public function getFunctionBody() {
-        getFunctionInfo().expr;
+        return getFunctionInfo().expr;
     }
 
     /**

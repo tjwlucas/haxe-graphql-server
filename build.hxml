@@ -6,7 +6,7 @@
 --each
 -main tests.TestLoader
 -php bin/tests
-
+-D message-reporting=pretty
 # --next
 # -main tests.Manual
 # -php bin/manual
