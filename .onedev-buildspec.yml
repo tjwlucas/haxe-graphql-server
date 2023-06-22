@@ -189,6 +189,7 @@ jobs:
   retryDelay: 30
   timeout: 3600
 - name: Publish Docs
+  jobExecutor: DockerWithSites
   steps:
   - !CheckoutStep
     name: Checkout
