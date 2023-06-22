@@ -117,10 +117,10 @@ jobs:
   jobDependencies:
   - jobName: Build
     requireSuccessful: true
-    artifacts: bin/**
+    artifacts: '**'
   - jobName: Composer Install
     requireSuccessful: true
-    artifacts: vendor/**
+    artifacts: '**'
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
@@ -141,10 +141,49 @@ jobs:
   jobDependencies:
   - jobName: Build
     requireSuccessful: true
-    artifacts: bin/**
+    artifacts: '**'
   - jobName: NPM install
     requireSuccessful: true
-    artifacts: node_modules/**
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Publish to Haxelib
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Zip Library
+    runInContainer: true
+    image: alpine:3.15.2
+    interpreter: !DefaultInterpreter
+      commands:
+      - apk add zip jq
+      - cat haxelib.json | jq -r ". += {\"version\":\"@tag@\"}" > tmp && mv tmp haxelib.json
+      - zip -r library.zip src *.md haxelib.json README
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Publish
+    runInContainer: true
+    image: haxe:4.2.4
+    interpreter: !DefaultInterpreter
+      commands:
+      - '# haxelib submit library.zip  --always'
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !TagCreateTrigger {}
+  jobDependencies:
+  - jobName: Run Tests on PHP
+    requireSuccessful: true
+  - jobName: Run Tests on NodeJS
+    requireSuccessful: true
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
