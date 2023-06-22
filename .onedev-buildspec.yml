@@ -15,9 +15,14 @@ jobs:
     interpreter: !DefaultInterpreter
       commands:
       - haxelib install --always --quiet checkstyle
-      - haxelib run checkstyle -s src --exitcode
+      - haxelib run checkstyle -s src -r xml --exitcode
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishCheckstyleReportStep
+    name: Haxe Checkstyle Report
+    reportName: Haxe Checkstyle
+    filePatterns: checkstyle-result.xml
+    condition: ALWAYS
   - !CommandStep
     name: Build
     runInContainer: true
