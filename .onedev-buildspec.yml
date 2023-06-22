@@ -82,6 +82,8 @@ jobs:
       - php ./bin/tests/index.php
     useTTY: false
     condition: ALWAYS
+  triggers:
+  - !BranchUpdateTrigger {}
   jobDependencies:
   - jobName: Build
     requireSuccessful: true
@@ -104,6 +106,8 @@ jobs:
       - node ./bin/tests.js
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
   jobDependencies:
   - jobName: Build
     requireSuccessful: true
