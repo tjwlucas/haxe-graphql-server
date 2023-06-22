@@ -203,6 +203,10 @@ jobs:
     sourcePath: docs
     artifacts: '**'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  jobDependencies:
+  - jobName: Publish to Haxelib
+    requireSuccessful: true
+    artifacts: '**'
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
