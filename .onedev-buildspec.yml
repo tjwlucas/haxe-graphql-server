@@ -1,0 +1,213 @@
+version: 22
+jobs:
+- name: Build
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Check Style
+    runInContainer: true
+    image: haxe:4.2.4
+    interpreter: !DefaultInterpreter
+      commands:
+      - haxelib install --always --quiet checkstyle
+      - haxelib run checkstyle -s src --exitcode
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Build
+    runInContainer: true
+    image: haxe:4.2.4
+    interpreter: !DefaultInterpreter
+      commands:
+      - haxelib install --always --quiet build.hxml
+      - haxe build.hxml
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: Publish Build
+    artifacts: bin/**
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Composer Install
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Composer Install
+    runInContainer: true
+    image: composer
+    interpreter: !DefaultInterpreter
+      commands:
+      - composer install
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: Publish Vendor
+    artifacts: vendor/**
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  caches:
+  - key: haxe-gql-vendor
+    path: vendor
+  timeout: 3600
+- name: NPM install
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: NPM Install
+    runInContainer: true
+    image: node:17-alpine3.14
+    interpreter: !DefaultInterpreter
+      commands:
+      - npm install
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: Publish Node Modules
+    artifacts: node_modules/**
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  caches:
+  - key: haxe-gql-node-modules
+    path: node_modules
+  timeout: 3600
+- name: Run Tests on PHP
+  steps:
+  - !CommandStep
+    name: Run Tests on PHP7
+    runInContainer: true
+    image: php:7-cli-alpine
+    interpreter: !DefaultInterpreter
+      commands:
+      - php ./bin/tests/index.php
+    useTTY: false
+    condition: ALWAYS
+  - !CommandStep
+    name: Run Tests on PHP8
+    runInContainer: true
+    image: php:8-cli-alpine
+    interpreter: !DefaultInterpreter
+      commands:
+      - php ./bin/tests/index.php
+    useTTY: false
+    condition: ALWAYS
+  triggers:
+  - !BranchUpdateTrigger {}
+  jobDependencies:
+  - jobName: Build
+    requireSuccessful: true
+    artifacts: '**'
+  - jobName: Composer Install
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Run Tests on NodeJS
+  steps:
+  - !CommandStep
+    name: Run Tests on NodeJS
+    runInContainer: true
+    image: node:17-alpine3.14
+    interpreter: !DefaultInterpreter
+      commands:
+      - node ./bin/tests.js
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
+  jobDependencies:
+  - jobName: Build
+    requireSuccessful: true
+    artifacts: '**'
+  - jobName: NPM install
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Publish to Haxelib
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Zip Library
+    runInContainer: true
+    image: alpine:3.15.2
+    interpreter: !DefaultInterpreter
+      commands:
+      - apk add zip jq
+      - cat haxelib.json | jq -r ". += {\"version\":\"@tag@\"}" > tmp && mv tmp haxelib.json
+      - zip -r library.zip src *.md haxelib.json README
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Publish
+    runInContainer: true
+    image: haxe:4.2.4
+    interpreter: !DefaultInterpreter
+      commands:
+      - '# haxelib submit library.zip  --always'
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !TagCreateTrigger {}
+  jobDependencies:
+  - jobName: Run Tests on PHP
+    requireSuccessful: true
+  - jobName: Run Tests on NodeJS
+    requireSuccessful: true
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Publish Docs
+  jobExecutor: DockerWithSites
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishSiteStep
+    projectPath: haxe-graphql-server
+    name: Publish Documentation
+    sourcePath: docs
+    artifacts: '**'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  jobDependencies:
+  - jobName: Publish to Haxelib
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
