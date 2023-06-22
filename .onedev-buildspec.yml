@@ -188,6 +188,10 @@ jobs:
   maxRetries: 3
   retryDelay: 30
   timeout: 3600
+  postBuildActions:
+  - !RunJobAction
+    condition: successful
+    jobName: Publish Docs
 - name: Publish Docs
   jobExecutor: DockerWithSites
   steps:
@@ -203,10 +207,39 @@ jobs:
     sourcePath: docs
     artifacts: '**'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
-  jobDependencies:
-  - jobName: Publish to Haxelib
-    requireSuccessful: true
-    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Push to Github
+  steps:
+  - !PushRepository
+    name: Push to github
+    remoteUrl: https://github.com/tjwlucas/haxe-graphql-server
+    passwordSecret: github-access-token
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
+  - !TagCreateTrigger {}
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
+- name: Pull from Github
+  steps:
+  - !PullRepository
+    name: Pull from github
+    remoteUrl: https://github.com/tjwlucas/haxe-graphql-server
+    syncToChildProject: false
+    passwordSecret: github-access-token
+    refs: refs/heads/* refs/tags/*
+    withLfs: false
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !ScheduleTrigger
+    cronExpression: 0 0 1 * * ?
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
