@@ -72,7 +72,7 @@ jobs:
     image: node:17-alpine3.14
     interpreter: !DefaultInterpreter
       commands:
-      - npm install graphql
+      - npm install
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
