@@ -188,3 +188,24 @@ jobs:
   maxRetries: 3
   retryDelay: 30
   timeout: 3600
+- name: Publish Docs
+  steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishSiteStep
+    projectPath: haxe-graphql-server
+    name: Publish Documentation
+    sourcePath: docs
+    artifacts: '**'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  jobDependencies:
+  - jobName: Publish to Haxelib
+    requireSuccessful: true
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
