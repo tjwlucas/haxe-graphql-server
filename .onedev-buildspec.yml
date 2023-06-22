@@ -2,6 +2,12 @@ version: 22
 jobs:
 - name: Build
   steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !CommandStep
     name: Check Style
     runInContainer: true
@@ -28,6 +34,12 @@ jobs:
   timeout: 3600
 - name: Composer Install
   steps:
+  - !CheckoutStep
+    name: Checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !CommandStep
     name: Composer Install
     runInContainer: true
